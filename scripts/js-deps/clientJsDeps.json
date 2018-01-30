@@ -1,0 +1,256 @@
+{
+	"events/messageHandlers/ConnectionHandler": [
+		"ui/dialogs/AlertDialog"
+	],
+	"events/messageHandlers/MapEventHandler": [
+		"model/datamodel"
+	],
+	"events/messageHandlers/UserEventHandler": [
+		"model/datamodel"
+	],
+	"events/messageHandlers/ErrorMessageHandler": [
+		"ui/dialogs/AlertDialog"
+	],
+	"events/messageHandlers/SiteSettingHandler": [
+		"model/datamodel"
+	],
+	"events/MessageHandlingService": [
+		"model/datamodel"
+	],
+	"map/EditMarkerContext": [
+		"lib/microevent"
+	],
+	"map/ExtentUpdater": [
+		"model/datamodel",
+		"map/ExtentUpdateStrategy",
+		"utils/comms/CommsService"
+	],
+	"map/ExtentUpdateStrategy": [
+		"model/datamodel"
+	],
+	"map/google/GoogleMap": [
+		"map/MapBase"
+	],
+	"map/google/GoogleMapsApiProvider": [
+		"map/MapApiProviderBase"
+	],
+	"map/MapApiProviderBase": [
+		"lib/microevent"
+	],
+	"map/mapApiProviderFactory": [
+		"map/MapApiProviderBase",
+		"map/google/GoogleMapsApiProvider"
+	],
+	"map/MapBase": [
+		"lib/microevent"
+	],
+	"map/mapFactory": [
+		"map/MapBase",
+		"map/google/GoogleMap",
+		"map/mapApiProviderFactory"
+	],
+	"map/MapService": [
+		"map/MapBase",
+		"map/MarkerInfoContext",
+		"model/datamodel"
+	],
+	"map/MarkerInfoContext": [
+		"lib/microevent"
+	],
+	"map/MarkerSelectionContext": [
+		"lib/microevent",
+		"map/symbols"
+	],
+	"security/MarkerPermissionsService": [
+		"model/datamodel"
+	],
+	"settings/SettingsService": [
+		"model/datamodel",
+		"lib/microevent"
+	],
+	"settings/SiteSettingsService": [
+		"settings/SettingsService"
+	],
+	"settings/UserSettingsService": [
+		"settings/SettingsService"
+	],
+	"startup/bootstrappers/commsBootstrapper": [
+		"utils/comms/commsProviderFactory",
+		"utils/comms/CommsService",
+		"utils/logging/Logger",
+		"events/EventBus"
+	],
+	"startup/bootstrappers/dialogBootstrapper": [
+		"events/EventBus",
+		"ui/DialogService"
+	],
+	"startup/bootstrappers/extentUpdatingBootstrapper": [
+		"utils/comms/CommsService",
+		"map/ExtentUpdateStrategy",
+		"map/ExtentUpdater"
+	],
+	"startup/bootstrappers/loggingBootstrapper": [
+		"utils/logging/loggerFactory",
+		"events/EventBus",
+		"startup/startupParametersService"
+	],
+	"startup/bootstrappers/mapBootstrapper": [
+		"events/EventBus",
+		"utils/scriptInjectionService",
+		"map/MapService",
+		"map/mapFactory",
+		"map/mapApiProviderFactory",
+		"angular/ViewInjectionService",
+		"security/MarkerPermissionsService",
+		"state/SiteService",
+		"ui/MarkerDialogService",
+		"map/MarkerSelectionContext",
+		"utils/comms/CommsService"
+	],
+	"startup/bootstrappers/messageHandlingBootstrapper": [
+		"events/EventBus",
+		"utils/logging/Logger",
+		"utils/comms/CommsService",
+		"map/ExtentUpdater",
+		"state/SiteService",
+		"ui/DialogService",
+		"events/messageHandlers/StartupDataHandler",
+		"events/messageHandlers/ConnectionHandler",
+		"events/messageHandlers/PageUnloadHandler",
+		"events/messageHandlers/MapEventHandler",
+		"events/messageHandlers/UserEventHandler",
+		"events/messageHandlers/ChatMessageHandler",
+		"events/messageHandlers/ErrorMessageHandler",
+		"events/messageHandlers/SiteSettingHandler",
+		"events/MessageHandlingService"
+	],
+	"startup/bootstrappers/notifyBootstrapper": [
+		"state/SiteService",
+		"events/EventBus",
+		"ui/NotifyService"
+	],
+	"startup/bootstrappers/pageStateBootstrapper": [
+		"state/PageStateService"
+	],
+	"startup/bootstrappers/siteBootstrapper": [
+		"state/StateService",
+		"state/SiteService",
+		"events/EventBus",
+		"map/ExtentUpdater",
+		"utils/comms/CommsService"
+	],
+	"startup/bootstrappers/startupWorkflowBootstrapper": [
+		"events/EventBus",
+		"utils/logging/Logger",
+		"utils/StorageService",
+		"utils/comms/CommsService",
+		"state/PageStateService",
+		"utils/SecretGenerator",
+		"startup/StartupWorkflowService"
+	],
+	"startup/bootstrappers/trackingBootstrapper": [
+		"events/EventBus",
+		"utils/logging/Logger",
+		"tracking/trackingProviderFactory",
+		"tracking/TrackingService"
+	],
+	"startup/bootstrapManager": [
+		"startup/bootstrappers/commsBootstrapper",
+		"startup/bootstrappers/extentUpdatingBootstrapper",
+		"startup/bootstrappers/loggingBootstrapper",
+		"startup/bootstrappers/siteBootstrapper",
+		"startup/bootstrappers/trackingBootstrapper",
+		"startup/bootstrappers/notifyBootstrapper",
+		"startup/bootstrappers/dialogBootstrapper",
+		"startup/bootstrappers/pageStateBootstrapper",
+		"startup/bootstrappers/messageHandlingBootstrapper",
+		"startup/bootstrappers/startupWorkflowBootstrapper",
+		"startup/bootstrappers/mapBootstrapper",
+		"startup/bootstrappers/markerBootstrapper"
+	],
+	"startup/startupParametersService": [
+		"utils/queryStringParser"
+	],
+	"startup/StartupWorkflowService": [
+		"model/datamodel"
+	],
+	"state/SiteService": [
+		"state/StateService",
+		"model/datamodel"
+	],
+	"state/StateService": [
+		"model/datamodel"
+	],
+	"tracking/GoogleAnalyticsTrackingProvider": [
+		"tracking/TrackingProviderBase"
+	],
+	"tracking/TrackingProviderBase": [
+		"errors/ValueError"
+	],
+	"tracking/trackingProviderFactory": [
+		"tracking/GoogleAnalyticsTrackingProvider",
+		"errors/ValueError"
+	],
+	"tracking/TrackingService": [
+		"tracking/TrackingProviderBase"
+	],
+	"ui/dialogs/AlertDialog": [
+		"ui/dialogs/TextDialog",
+		"ui/dialogs/DialogButton"
+	],
+	"ui/dialogs/ConfirmDialog": [
+		"ui/dialogs/TextDialog",
+		"ui/dialogs/DialogButton"
+	],
+	"ui/dialogs/Dialog": [
+		"ui/dialogs/DialogButton"
+	],
+	"ui/dialogs/TextDialog": [
+		"ui/dialogs/Dialog"
+	],
+	"ui/dialogs/ViewDialog": [
+		"ui/dialogs/Dialog"
+	],
+	"ui/DialogService": [
+		"ui/dialogs/Dialog"
+	],
+	"ui/MarkerDialogService": [
+		"ui/dialogs/ConfirmDialog",
+		"ui/dialogs/ViewDialog",
+		"map/EditMarkerContext"
+	],
+	"ui/layoutService": [
+		"events/EventBus"
+	],
+	"utils/comms/CommsProviderBase": [
+		"errors/ValueError",
+		"lib/microevent"
+	],
+	"utils/comms/commsProviderFactory": [
+		"utils/comms/SocketIoCommsProvider"
+	],
+	"utils/comms/CommsService": [
+		"utils/comms/CommsProviderBase"
+	],
+	"utils/comms/SocketIoCommsProvider": [
+		"utils/comms/CommsProviderBase"
+	],
+	"utils/logging/ConsoleLogProvider": [
+		"utils/logging/LogProviderBase"
+	],
+	"utils/logging/Logger": [
+		"utils/logging/LogProviderBase",
+		"utils/logging/ConsoleLogProvider",
+		"errors/ValueError",
+		"utils/dateTimeFormatter"
+	],
+	"utils/logging/loggerFactory": [
+		"utils/logging/Logger",
+		"utils/logging/ConsoleLogProvider"
+	],
+	"utils/configService": [
+		"events/EventBus",
+		"utils/ajaxService"
+	]
+
+}

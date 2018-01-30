@@ -1,0 +1,22 @@
+<div class="marker-info">
+	<div class="name" ng-show="largeOnStart">{{marker.name}}</div>
+	<div class="description">{{marker.description}}</div>
+	<div class="marker-info-buttons">
+		<button 
+			type="button" 
+			class="btn btn-danger" 
+			ng-show="userCanEditMarker"
+			ng-class="{'btn-xs': largeOnStart, 'btn-sm': smallOnStart}"
+			ng-click="deleteMarker()">
+			Delete
+		</button>
+		<button
+			type="button"
+			class="btn btn-primary"
+			ng-show="userCanEditMarker"
+			ng-class="{'btn-xs': largeOnStart, 'btn-sm': smallOnStart}"
+			ng-click="editMarker()">
+			Edit
+		</button>
+	</div>
+</div>

@@ -1,0 +1,21 @@
+body {
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+.jumbotron {
+	text-align: center;
+}
+
+.jumbotron .btn {
+	font-size: 20px;
+}
+
+.footer {
+	text-align: center;
+	color: #999;
+}
+.footer a:link, .footer a:visited {
+	color: #999;
+	text-decoration: underline;
+}

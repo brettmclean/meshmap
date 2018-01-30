@@ -1,0 +1,14 @@
+{
+	"libs": [
+		"browser"
+	],
+	"loadEagerly": [
+		"**/*.js"
+	],
+	"plugins": {
+		"angular": "./",
+		"doc_comment": {
+			"fullDocs": true
+		}
+	}
+}

@@ -1,0 +1,119 @@
+<div class="select-marker" ng-class="{small: small, large: large}">
+	<div class="select-marker-types">
+		<div class="select-marker-type pan" ng-show="markerTypesOpen || !currType">
+			<div class="select-marker-button" ng-click="onTypeClick(null)" ng-class="{active: !currType}">
+				<img src="images/pan.png" />
+			</div>
+		</div>
+		<div class="select-marker-type point" ng-show="markerTypesOpen || currType === MARKER_TYPE_POINT">
+			<div class="select-marker-button" ng-click="onTypeClick(MARKER_TYPE_POINT)" ng-class="{active: currType === MARKER_TYPE_POINT}">
+				<img ng-src="{{pointSymbol.iconUrl}}" />
+			</div>
+			<div class="marker-options-expander glyphicon glyphicon-chevron-right" ng-click="optionsClick(MARKER_TYPE_POINT)" ng-class="{active: showOptionsForType === MARKER_TYPE_POINT}"></div>
+		</div>
+		<div class="select-marker-type polyline" ng-show="markerTypesOpen || currType === MARKER_TYPE_POLYLINE">
+			<div class="select-marker-button" ng-click="onTypeClick(MARKER_TYPE_POLYLINE)" ng-class="{active: currType === MARKER_TYPE_POLYLINE}">
+				<div
+					class="marker-type-color-preview"
+					ng-style="{'background-color': (small && markerTypesOpen ? null : polylineSymbol.lineColor)}">
+				</div>
+				<div class="marker-type-icon"><img src="images/polyline.png" /></div>
+			</div>
+			<div class="marker-options-expander glyphicon glyphicon-chevron-right" ng-click="optionsClick(MARKER_TYPE_POLYLINE)" ng-class="{active: showOptionsForType === MARKER_TYPE_POLYLINE}"></div>
+		</div>
+		<div class="select-marker-type polygon" ng-show="markerTypesOpen || currType === MARKER_TYPE_POLYGON">
+			<div class="select-marker-button" ng-click="onTypeClick(MARKER_TYPE_POLYGON)" ng-class="{active: currType === MARKER_TYPE_POLYGON}">
+				<div class="marker-type-color-preview">
+					<div
+						class="marker-type-color-preview-inner"
+						ng-style="{'background-color': (small && markerTypesOpen ? null : polygonSymbol.lineColor)}">
+					</div>
+					<div
+						class="marker-type-color-preview-inner"
+						ng-style="{'background-color': (small && markerTypesOpen ? null : polygonSymbol.fillColor)}">
+					</div>
+				</div>
+				<div class="marker-type-icon"><img src="images/polygon.png" /></div>
+			</div>
+			<div class="marker-options-expander glyphicon glyphicon-chevron-right" ng-click="optionsClick(MARKER_TYPE_POLYGON)" ng-class="{active: showOptionsForType === MARKER_TYPE_POLYGON}"></div>
+		</div>
+
+		<div class="select-marker-button marker-show-options"
+			ng-show="small && !markerTypesOpen && currType"
+			ng-class="{active: showOptionsForType}"
+			ng-click="optionsClick(currType)">
+			<div class="glyphicon glyphicon-th">
+			</div>
+		</div>
+	</div>
+
+	<div class="marker-symbol-options point" ng-show="showOptionsForType === MARKER_TYPE_POINT" ng-style="styles.symbolOptions">
+		<div class="marker-option-header">Icon</div>
+		<div class="option-scroller outer">
+			<div class="option-scroller inner" ng-style="styles.optionScroller.icons.inner">
+				<div
+					class="select-marker-button icon-swatch"
+					ng-repeat="mi in markerIcons"
+					ng-click="selectPointMarker(mi)"
+					ng-class="{active: mi.id === pointSymbol.iconId}">
+						<img ng-src="{{mi.url}}" />
+				</div>
+			</div>
+		</div>
+		<button type="button" class="btn btn-default pull-right marker-done-button" ng-click="hideOptions()">Done</button>
+	</div>
+
+	<div class="marker-symbol-options polyline" ng-show="showOptionsForType === MARKER_TYPE_POLYLINE" ng-style="styles.symbolOptions">
+		<div class="marker-option-header">Line color</div>
+		<div class="option-scroller outer">
+			<div class="option-scroller inner" ng-style="styles.optionScroller.color.inner">
+				<div
+					class="select-marker-button color-swatch"
+					ng-repeat="mc in markerColors"
+					ng-click="selectPolylineColor(mc)"
+					ng-style="{'background-color': mc.color}"
+					ng-class="{active: mc.id === polylineSymbol.lineColorId}">
+				</div>
+			</div>
+		</div>
+		<div class="marker-option-header">Line width</div>
+		<div class="marker-option-range">
+			<input type="range" min="1" max="10" value="2" ng-model="polylineSymbol.lineWidth" ng-blur="onPolylineLineWidthChange()" />
+			<span ng-bind="polylineSymbol.lineWidth" ng-show="browserSupport.rangeInput"></span>
+		</div>
+		<button type="button" class="btn btn-default pull-right marker-done-button" ng-click="hideOptions()">Done</button>
+	</div>
+
+	<div class="marker-symbol-options polygon" ng-show="showOptionsForType === MARKER_TYPE_POLYGON" ng-style="styles.symbolOptions">
+		<div class="marker-option-header">Line color</div>
+		<div class="option-scroller outer">
+			<div class="option-scroller inner" ng-style="styles.optionScroller.color.inner">
+				<div
+					class="select-marker-button color-swatch"
+					ng-repeat="mc in markerColors"
+					ng-click="selectPolygonLineColor(mc)"
+					ng-style="{'background-color': mc.color}"
+					ng-class="{active: mc.id === polygonSymbol.lineColorId}">
+				</div>
+			</div>
+		</div>
+		<div class="marker-option-header">Fill color</div>
+		<div class="option-scroller outer">
+			<div class="option-scroller inner" ng-style="styles.optionScroller.color.inner">
+				<div
+					class="select-marker-button color-swatch"
+					ng-repeat="mc in markerColors"
+					ng-click="selectPolygonFillColor(mc)"
+					ng-style="{'background-color': mc.color}"
+					ng-class="{active: mc.id === polygonSymbol.fillColorId}">
+				</div>
+			</div>
+		</div>
+		<div class="marker-option-header">Line width</div>
+		<div class="marker-option-range">
+			<input type="range" min="1" max="10" value="2" ng-model="polygonSymbol.lineWidth" ng-blur="onPolygonLineWidthChange()" />
+			<span ng-bind="polygonSymbol.lineWidth" ng-show="browserSupport.rangeInput"></span>
+		</div>
+		<button type="button" class="btn btn-default pull-right marker-done-button" ng-click="hideOptions()">Done</button>
+	</div>
+</div>

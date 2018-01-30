@@ -1,0 +1,16 @@
+<div class="edit-marker" novalidate>
+	<div class="name form-group">
+		<div class="field-label">Name</div>
+		<div class="field-value">
+			<input type="text" maxlength="100" ng-model="ctx.marker.name" required />
+		</div>
+		<div class="field-validation-msg error-msg" ng-show="validationMsgs.name" ng-bind="validationMsgs.name">
+		</div>
+	</div>
+	<div class="description form-group">
+		<div class="field-label">Description</div>
+		<div class="field-value">
+			<textarea maxlength="500" rows="3" ng-model="ctx.marker.description"></textarea>
+		</div>
+	</div>
+</div>

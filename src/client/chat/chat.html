@@ -1,0 +1,23 @@
+<div class="user-chat view" ng-controller="ChatCtrl">
+	<div class="user-chat-messages" mm-auto-scroll mm-as-scroll-to="bottom">
+		<div class="chat-item" ng-repeat="chatItem in chatLog" ng-switch on="chatItem.messageType">
+			<div class="chat-system-message" ng-attr-title="Received at {{chatItem.date}}" ng-switch-when="system">
+				{{chatItem.text}}
+			</div>
+			<div ng-attr-title="Received at {{chatItem.date}}" ng-class="{meUser: chatItem.userId === myUserId, siteOwnerUser: chatItem.userId === siteOwnerId}" ng-switch-when="chat">
+				<span class="username">{{chatItem.username}}</span>:
+				<span class="chat-lines">
+					<span class="chat-line" ng-repeat="line in chatItem.lines">{{line.text}}</span>
+				</span>
+			</div>
+		</div>
+	</div>
+	<div class="user-chat-input">
+		<div class="user-chat-text">
+			<textarea maxlength="4096" ng-model="userInput" ng-keypress="onInputKeyPress($event)" placeholder="Chat about this map"></textarea>
+		</div>
+		<div class="user-chat-button">
+			<button ng-click="sendChat()">Send</button>
+		</div>
+	</div>
+</div>

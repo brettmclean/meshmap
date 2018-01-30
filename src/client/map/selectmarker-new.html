@@ -1,0 +1,126 @@
+<div class="select-marker" ng-class="{small: ctx.small, large: ctx.large}">
+	<div class="select-marker-types">
+
+		<div class="select-marker-type pan" ng-show="ctx.toolDrawerIsOpen() || ctx.panToolIsActive()">
+			<div class="select-marker-button" ng-click="ctx.selectTool(ctx.TOOL_PAN)" ng-class="{active: ctx.panToolIsActive()}">
+				<img src="images/pan.png" />
+			</div>
+		</div>
+
+		<div class="select-marker-type point" ng-show="ctx.toolDrawerIsOpen() || ctx.pointToolIsActive()">
+			<div class="select-marker-button" ng-click="ctx.selectTool(ctx.TOOL_POINT)" ng-class="{active: ctx.pointToolIsActive()}">
+				<img ng-src="{{ctx.activePointSymbolIcon.iconUrl}}" />
+			</div>
+			<div class="marker-options-expander glyphicon glyphicon-chevron-right" ng-click="ctx.toggleOptionsForTool(ctx.TOOL_POINT)" ng-class="{active: ctx.pointToolOptionsAreVisible()}"></div>
+		</div>
+
+		<div class="select-marker-type polyline" ng-show="ctx.toolDrawerIsOpen() || ctx.polylineToolIsActive()">
+			<div class="select-marker-button" ng-click="ctx.selectTool(ctx.TOOL_POLYLINE)" ng-class="{active: ctx.polylineToolIsActive()}">
+				<div
+					class="marker-type-color-preview"
+					ng-class="{invisible: ctx.small && ctx.toolDrawerIsOpen()}"
+					ng-style="{'background-color': ctx.activePolylineSymbol.lineColor}">
+				</div>
+				<div class="marker-type-icon"><img src="images/polyline.png" /></div>
+			</div>
+			<div class="marker-options-expander glyphicon glyphicon-chevron-right" ng-click="ctx.toggleOptionsForTool(ctx.TOOL_POLYLINE)" ng-class="{active: ctx.polylineToolOptionsAreVisible()}"></div>
+		</div>
+
+		<div class="select-marker-type polygon" ng-show="ctx.toolDrawerIsOpen() || ctx.polygonToolIsActive()">
+			<div class="select-marker-button" ng-click="ctx.selectTool(ctx.TOOL_POLYGON)" ng-class="{active: ctx.polygonToolIsActive()}">
+				<div class="marker-type-color-preview">
+					<div
+						class="marker-type-color-preview-inner"
+						ng-class="{invisible: ctx.small && ctx.toolDrawerIsOpen()}"
+						ng-style="{'background-color': ctx.activePolygonSymbol.lineColor}">
+					</div>
+					<div
+						class="marker-type-color-preview-inner"
+						ng-class="{invisible: ctx.small && ctx.toolDrawerIsOpen()}"
+						ng-style="{'background-color': ctx.activePolygonSymbol.fillColor}">
+					</div>
+				</div>
+				<div class="marker-type-icon"><img src="images/polygon.png" /></div>
+			</div>
+			<div class="marker-options-expander glyphicon glyphicon-chevron-right" ng-click="ctx.toggleOptionsForTool(ctx.TOOL_POLYGON)" ng-class="{active: ctx.polygonToolOptionsAreVisible()}"></div>
+		</div>
+
+		<div class="select-marker-button marker-show-options"
+			ng-show="ctx.small && ctx.activeToolHasAvailableOptions()"
+			ng-class="{active: ctx.toolOptionsAreVisible()}"
+			ng-click="ctx.toggleOptionsForActiveTool()">
+			<div class="glyphicon glyphicon-th">
+			</div>
+		</div>
+	</div>
+
+	<div class="marker-symbol-options point" ng-show="ctx.pointToolOptionsAreVisible()">
+		<div class="marker-option-header">Icon</div>
+		<div class="option-scroller outer">
+			<div class="option-scroller inner">
+				<div
+					class="select-marker-button icon-swatch"
+					ng-repeat="mi in ctx.markerIconOptions"
+					ng-click="ctx.selectPointIcon(mi)"
+					ng-class="{active: mi.iconId === ctx.activePointSymbolIcon.iconId}">
+						<img ng-src="{{mi.iconUrl}}" />
+				</div>
+			</div>
+		</div>
+		<button type="button" class="btn btn-default pull-right marker-done-button" ng-click="ctx.hideToolOptions()">Done</button>
+	</div>
+
+	<div class="marker-symbol-options polyline" ng-show="ctx.polylineToolOptionsAreVisible()">
+		<div class="marker-option-header">Line color</div>
+		<div class="option-scroller outer">
+			<div class="option-scroller inner">
+				<div
+					class="select-marker-button color-swatch"
+					ng-repeat="mc in ctx.markerColorOptions"
+					ng-click="ctx.selectPolylineColor(mc)"
+					ng-style="{'background-color': mc.color}"
+					ng-class="{active: mc.colorId === ctx.activePolylineSymbol.lineColorId}">
+				</div>
+			</div>
+		</div>
+		<div class="marker-option-header">Line width</div>
+		<div class="marker-option-range">
+			<input type="range" min="1" max="10" ng-model="ctx.activePolylineSymbol.lineWidth" ng-change="ctx.setPolylineWidth(ctx.activePolylineSymbol.lineWidth)" />
+			<span ng-bind="ctx.activePolylineSymbol.lineWidth"></span>
+		</div>
+		<button type="button" class="btn btn-default pull-right marker-done-button" ng-click="ctx.hideToolOptions()">Done</button>
+	</div>
+
+	<div class="marker-symbol-options polygon" ng-show="ctx.polygonToolOptionsAreVisible()">
+		<div class="marker-option-header">Line color</div>
+		<div class="option-scroller outer">
+			<div class="option-scroller inner">
+				<div
+					class="select-marker-button color-swatch"
+					ng-repeat="mc in ctx.markerColorOptions"
+					ng-click="ctx.selectPolygonLineColor(mc)"
+					ng-style="{'background-color': mc.color}"
+					ng-class="{active: mc.colorId === ctx.activePolygonSymbol.lineColorId}">
+				</div>
+			</div>
+		</div>
+		<div class="marker-option-header">Fill color</div>
+		<div class="option-scroller outer">
+			<div class="option-scroller inner">
+				<div
+					class="select-marker-button color-swatch"
+					ng-repeat="mc in ctx.markerColorOptions"
+					ng-click="ctx.selectPolygonFillColor(mc)"
+					ng-style="{'background-color': mc.color}"
+					ng-class="{active: mc.colorId === ctx.activePolygonSymbol.fillColorId}">
+				</div>
+			</div>
+		</div>
+		<div class="marker-option-header">Line width</div>
+		<div class="marker-option-range">
+			<input type="range" min="1" max="10" ng-model="ctx.activePolygonSymbol.lineWidth" ng-change="ctx.setPolygonLineWidth(ctx.activePolygonSymbol.lineWidth)" />
+			<span ng-bind="ctx.activePolygonSymbol.lineWidth"></span>
+		</div>
+		<button type="button" class="btn btn-default pull-right marker-done-button" ng-click="ctx.hideToolOptions()">Done</button>
+	</div>
+</div>

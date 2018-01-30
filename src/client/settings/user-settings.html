@@ -1,0 +1,16 @@
+<div class="user-settings" ng-controller="UserSettingsCtrl">
+
+	<div class="setting" ng-class="{saving: saving.username}">
+		<span class="setting-label short">User name</span>
+		<span class="setting-input long"><input type="text" maxlength="60" ng-model="settingValues.username" ng-blur="usernameSave()" ng-keypress="onInputKeyPress($event, 'username')" /></span>
+		<span class="setting-checkmark glyphicon glyphicon-ok"></span>
+		<div class="setting-desc">Others can see your user name</div>
+	</div>
+
+	<div class="setting" ng-class="{saving: saving.confirmMarkerDeletion}">
+		<span class="setting-label long">Confirm before deletion</span>
+		<span class="setting-input short"><input type="checkbox" ng-model="settingValues.confirmMarkerDeletion" ng-change="confirmMarkerDeletionSave()" /></span>
+		<span class="setting-checkmark glyphicon glyphicon-ok"></span>
+		<div class="setting-desc">Require confirmation before deleting locations</div>
+	</div>
+</div>

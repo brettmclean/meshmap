@@ -1,0 +1,7 @@
+<div class="about-map" ng-controller="AboutMapCtrl">
+
+	<div class="name" ng-bind="siteName"></div>
+	<div class="description" ng-show="siteDescription" ng-bind="siteDescription"></div>
+	<div class="createDate" ng-show="siteCreateDate">This map was created on {{siteCreateDate | date:'MMM d, yyyy'}} at {{siteCreateDate | date:'h:mm a'}}.</div>
+
+</div>

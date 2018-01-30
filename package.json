@@ -1,0 +1,61 @@
+{
+  "name": "meshmap",
+  "title": "Meshmap",
+  "description": "Real-time map collaboration",
+  "version": "0.1.0",
+  "scripts": {
+    "test": "jasmine",
+    "wtest": "onchange 'src/**/*' 'spec/**/*' -- jasmine",
+    "lint": "npm run lint:spec && npm run lint:client",
+    "lint:spec": "jshint ./spec",
+    "lint:client": "jshint ./src/client --config src/client/.jshintrc",
+    "style": "jscs ./spec ./src/client",
+    "check": "npm test && npm run lint && npm run style",
+    "cover": "istanbul cover -i 'src/**' jasmine",
+    "clean": "rm -Rf app build coverage logs",
+    "sloc": "npm run sloc:src && npm run sloc:spec",
+    "sloc:src": "echo -n src/; sloc src --keys file,source --exclude 'client/lib'",
+    "sloc:spec": "echo -n spec/; sloc spec --keys file,source --exclude 'client/support'"
+  },
+  "contributors": [
+    {
+      "name": "Brett McLean",
+      "email": "brettrmclean@gmail.com"
+    }
+  ],
+  "bugs": "https://www.github.com/brettmclean/meshmap/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://www.github.com/brettmclean/meshmap.git"
+  },
+  "dependencies": {
+    "node-static": "~0.7.3",
+    "pg": "~6.1.2",
+    "pg-copy-streams": "~1.2.0",
+    "socket.io": "~0.9.16",
+    "streamifier": "~0.1.1",
+    "toobusy-js": "~0.5.1"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.5",
+    "grunt-angular-templates": "~1.1.0",
+    "grunt-concurrent": "~2.3.1",
+    "grunt-contrib-clean": "~1.1.0",
+    "grunt-contrib-concat": "~1.0.1",
+    "grunt-contrib-copy": "~1.0.0",
+    "grunt-contrib-cssmin": "~2.2.1",
+    "grunt-contrib-uglify": "~3.3.0",
+    "grunt-contrib-watch": "~1.0.0",
+    "grunt-nodemon": "~0.4.2",
+    "istanbul": "~0.4.5",
+    "jasmine": "~2.3.2",
+    "jscs": "~3.0.7",
+    "jshint": "~2.9.5",
+    "onchange": "~3.3.0",
+    "sloc": "~0.2.0"
+  },
+  "engines": {
+    "node": ">= 8.0.0"
+  },
+  "license": "GPL-3.0"
+}

@@ -1,0 +1,591 @@
+
+
+html {
+	height: 100%;
+}
+
+body {
+	height: 100%;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+}
+
+input {
+	line-height: normal;
+}
+input.ng-invalid.ng-dirty {
+	background-color: #FA787E;
+}
+
+.form-group {
+	margin-bottom: 10px;
+}
+
+.map {
+	width: 100%;
+	position: absolute;
+	background-color: #EEEEEE;
+}
+
+.view {
+	height: 100%;
+}
+
+@media screen and (min-width: 768px) {
+	.modal-dialog {
+		margin: 0 auto;
+	}
+}
+.modal {
+	display: block;
+	overflow: hidden;
+}
+.modal-backdrop {
+	background-color: #888;
+	background-color: rgb(0, 0, 0);
+	background-color: rgba(0, 0, 0, 0.5);
+}
+.modal-dialog {
+	height: 100%;
+}
+.modal-content {
+	position: relative;
+	top: 50%;
+	transform: translateY(-50%);
+}
+.modal-body {
+	max-height: calc(100vh - 200px);
+	overflow-y: auto;
+}
+.modal-footer {
+	margin: 0;
+}
+
+.users-view-container, .user-chat-messages, .advanced-buttons, .about-app, .about-map, .site-settings, .user-settings {
+	padding: 5px;
+}
+
+.user-container {
+
+}
+
+.meUser .username {
+	font-weight: bold
+}
+
+.siteOwnerUser .username {
+	color: #009900;
+}
+
+.user-chat-messages {
+	height: calc(100% - 100px);
+	overflow-y: auto;
+}
+
+.user-chat-input {
+	height: 100px;
+	width: 100%;
+	display: table;
+	border-top: 1px solid #DDD;
+}
+
+.chat-system-message {
+	font-style: italic;
+}
+
+.chat-item .chat-line:first-child {
+	display: inline;
+}
+
+.chat-line {
+	display: block;
+	word-wrap: break-word;
+}
+
+.user-chat-text, .user-chat-button {
+	display: table-cell;
+	height: 100%;
+	vertical-align: middle;
+}
+
+.user-chat-text {
+	background-color: rgba(255, 255, 255, 0.5);
+}
+
+.user-chat-button {
+	width: 75px;
+	background-color: rgb(128, 128, 128);
+	background-color: rgba(128, 128, 128, 0.3);
+}
+
+.user-chat-button:hover {
+	background-color: rgb(160, 160, 160);
+	background-color: rgba(160, 160, 160, 0.3);
+}
+
+.user-chat-button:active {
+	background-color: rgb(96, 96, 96);
+	background-color: rgba(96, 96, 96, 0.3);
+}
+
+.user-chat-text textarea, .user-chat-button button {
+	height: 100%;
+	width: 100%;
+	padding: 0;
+	margin: 0;
+	border: 0;
+	background: none;
+}
+
+.user-chat-text textarea {
+	padding: 3px;
+	resize: none;
+}
+
+.user-chat-text textarea::input-placeholder {
+	color: #000;
+}
+.user-chat-text textarea::-webkit-input-placeholder {
+	color: #000;
+}
+.user-chat-text textarea::-moz-placeholder {
+	color: #000;
+}
+.user-chat-text textarea:-ms-input-placeholder {
+	color: #000;
+}
+
+.advanced-view-container {
+	height: 100%;
+}
+.advanced-buttons {
+	list-style-type: none;
+	padding: 0;
+	margin: 0;
+}
+.advanced-button {
+	width: 100%;
+	display: inline-block;
+	cursor: pointer;
+}
+.advanced-button:hover {
+	background-color: #F6F6F6;
+}
+.advanced-button-icon .glyphicon, .advanced-button-text {
+	line-height: 50px;
+}
+.advanced-button-icon {
+	float: left;
+	color: #CCC;
+	font-size: 32px;
+	width: 50px;
+	text-align: center;
+}
+.advanced-button-text {
+	overflow: hidden;
+}
+.advanced-back-to-menu, .advanced-view-header {
+	color: #888;
+}
+.advanced-back-to-menu {
+	cursor: pointer;
+	width: 40px;
+	float: left;
+	text-align: center;
+	font-size: 20px;
+}
+.advanced-back-to-menu:hover {
+	color: #AAA;
+}
+.advanced-back-to-menu .glyphicon, .advanced-view-header {
+	line-height: 40px;
+}
+.advanced-view-header {
+	overflow: hidden;
+	text-align: center;
+	font-size: 18px;
+	margin-right: 40px;
+}
+.advanced-view {
+	overflow-y: auto;
+	overflow-x: hidden;
+	height: calc(100% - 40px);
+}
+
+.about-map .name {
+	font-weight: bold;
+}
+.about-map .description {
+	color: #666;
+}
+.about-map .createDate {
+	margin-top: 10px;
+	font-size: 12px;
+}
+
+.about-app .name {
+	font-weight: bold;
+	font-size: 16px;
+}
+.about-app .description {
+	color: #666;
+}
+.about-app .name, .about-app .description {
+	text-align: center;
+}
+.about-app .contacts {
+	margin-top: 20px;
+}
+.about-app .contact {
+	padding-left: 10px;
+}
+.about-app .license-source {
+	margin-top: 10px;
+	font-size: 12px;
+}
+
+.setting {
+	margin: 0 auto 10px;
+	max-width: 290px;
+}
+.setting-label, .setting-input, .setting-checkmark {
+	display: inline-block;
+}
+.setting-label {
+
+}
+.setting-label.short {
+	width: 100px;
+}
+.setting-label.long {
+	width: 200px;
+}
+.setting-label.full {
+	width: 265px;
+}
+.setting-checkmark {
+	opacity: 0;
+	filter: alpha(opacity = 0);
+	color: rgb(0, 200, 0);
+	-webkit-transition: opacity 0.5s linear;
+	transition: opacity 0.5s linear;
+}
+.setting-input.short, .setting-input.long {
+	margin-left: 5px;
+}
+.setting-input.short, .setting-input.short input[type="text"] {
+	width: 60px;
+}
+.setting-input.long, .setting-input.long input[type="text"] {
+	width: 160px;
+}
+.setting-input input[type="checkbox"] {
+	margin-bottom: -2px;
+	float: right;
+}
+.setting-input textarea {
+	width: 290px;
+	resize: vertical;
+}
+.setting.saving .setting-checkmark {
+	filter: alpha(opacity = 100);
+	opacity: 1;
+}
+.setting-desc {
+	font-size: 12px;
+	color: #666;
+	clear: both;
+}
+
+.select-marker {
+	position: relative;
+}
+.select-marker-button {
+	height: 50px;
+	width: 50px;
+	line-height: 50px;
+	text-align: center;
+	cursor: pointer;
+}
+.select-marker-types {
+	float: left;
+	vertical-align: top;
+}
+.select-marker-type {
+	height: 50px;
+}
+.marker-type-icon {
+	float: left;
+	width: 40px;
+}
+.marker-type-color-preview, .marker-type-color-preview-inner {
+	width: 5px;
+}
+.marker-type-color-preview {
+	float: left;
+	height: 50px;
+}
+.marker-type-color-preview-inner {
+	height: 25px;
+}
+.select-marker-type .select-marker-button, .select-marker-type .marker-options-expander {
+	float: left;
+	background-color: #F0F0F0;
+}
+.select-marker-types .select-marker-button.active, .marker-options-expander.active {
+	background-color: #E0E0E0;
+}
+.marker-options-expander {
+	color: #aaa;
+	height: 50px;
+	text-align: center;
+	line-height: 50px;
+	cursor: pointer;
+	font-family: "Glyphicons Halflings" !important;
+	font-size: 14px !important;
+	width: 20px !important;
+	top: 0;
+}
+.marker-show-options {
+	clear: both;
+	position: relative;
+	top: 10px;
+	background-color: #F0F0F0;
+}
+.marker-show-options .glyphicon {
+	font-family: "Glyphicons Halflings" !important;
+	font-size: 20px !important;
+	color: #666;
+	top: 6px;
+}
+.select-marker.large .marker-symbol-options {
+	max-width: 320px;
+}
+.select-marker.small .marker-symbol-options {
+	max-width: 300px;
+}
+
+.marker-symbol-options {
+	float: left;
+	margin-left: 10px;
+	background-color: #F0F0F0;
+	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif !important;
+}
+.select-marker.large .marker-symbol-options .select-marker-button {
+	float: left;
+}
+.marker-option-header {
+	font-size: 14px !important;
+	text-align: center;
+}
+.marker-option-range {
+	text-align: center;
+}
+.marker-option-range input[type="range"] {
+	width: 80%;
+	vertical-align: middle;
+}
+.marker-option-range span {
+	font-size: 14px;
+	vertical-align: middle;
+	position: relative;
+	left: 3px;
+}
+.marker-done-button {
+	margin: 5px;
+	margin-top: 10px;
+}
+.select-marker.small {
+	top: 10px;
+}
+.select-marker.small .select-marker-type {
+	float: left;
+}
+.select-marker.small .marker-options-expander {
+	display: none;
+}
+.select-marker.small .option-scroller.outer {
+	overflow-x: auto;
+	overflow-y: hidden;
+}
+.select-marker.small .option-scroller.inner {
+	white-space: nowrap;
+}
+.select-marker.small .color-swatch,
+.select-marker.small .icon-swatch {
+	display: inline-block;
+}
+.select-marker.large .option-scroller.outer {
+	overflow-x: hidden;
+	overflow-y: auto;
+	max-height: 125px;
+}
+.select-marker.large .option-scroller.inner {
+	height: 50px;
+}
+.select-marker.large .color-swatch {
+	height: 35px;
+	width: 35px;
+}
+.select-marker.large .icon-swatch {
+	width: 40px;
+}
+.icon-swatch.active {
+	border-bottom: 3px solid #999;
+}
+.color-swatch.active {
+	border: solid 3px;
+	border-color: #444 #BBB;
+}
+
+.field-label {
+	margin-bottom: 2px;
+}
+.field-validation-msg.error-msg {
+	color: #C00;
+}
+.field-validation-msg.warning-msg {
+	color: #CA5;
+}
+
+.marker-info {
+	min-width: 300px;
+}
+.marker-info .name, .marker-info .description, .marker-info-buttons {
+	font-size: 14px !important;
+	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif !important;
+}
+.marker-info .name {
+	font-weight: bold !important;
+}
+.marker-info .description {
+	color: #666;
+	white-space: pre-line;
+	max-height: 100px;
+	overflow-y: auto;
+	margin-bottom: 10px;
+}
+.marker-info-buttons {
+	text-align: right;
+}
+
+.edit-marker {
+}
+.edit-marker .field-value input {
+	width: 100%;
+}
+.edit-marker .field-value textarea {
+	width: 100%;
+	resize: none;
+}
+
+/* TASK PANEL */
+
+@media (max-width: 1024px) {
+	.task-panel {
+		height: 50px;
+		width: 100%;
+	}
+
+	.task-panel.visibleTask {
+		height: 100%;
+	}
+}
+
+@media (min-width: 1025px) {
+	.task-panel {
+		right: 0;
+		margin-top: 20px;
+		width: 300px;
+		height: calc(100% - 40px);
+	}
+
+	.task-panel.collapsed,
+	.task-panel.collapsed .task-panel-header,
+	.task-panel.collapsed .task-panel-header ul {
+		height: auto;
+		width: 60px;
+	}
+
+	.task-panel.collapsed .collapse-button,
+	.task-panel.collapsed .task-panel-body {
+		display: none;
+	}
+
+	.task-panel.collapsed .task-panel-header ul li {
+		float: none;
+	}
+}
+
+.task-panel {
+	position: absolute;
+	background-color: rgba(255, 255, 255, 0.85);
+}
+
+.task-panel-header {
+	height: 50px;
+}
+
+.task-panel-header .glyphicon {
+	color: #CCC;
+	font-size: 32px;
+	line-height: 50px;
+}
+
+.task-panel-header ul, .task-panel-header ul li {
+	height: 50px;
+	margin: 0;
+	padding: 0;
+}
+
+.task-panel-header ul li {
+	display: inline;
+	text-align: center;
+	line-height: 50px;
+	float: left;
+	cursor: pointer;
+	overflow-y: hidden;
+}
+
+.task-panel-header ul li.active {
+	background-color: #E0E0E0;
+}
+
+.task-panel-header ul li:hover {
+	background-color: #DDDDDD;
+}
+
+.task-button-notify {
+	-webkit-transition: background-color 0.5s linear;
+	transition: background-color 0.5s linear;
+}
+
+.task-button-notify.green {
+	background-color: rgba(0, 200, 0, 0.75);
+}
+
+.task-button-notify.red {
+	background-color: rgba(200, 0, 0, 0.75);
+}
+
+.task-button-tiny-info {
+	margin-left: -27px;
+	margin-top: 12px;
+	position: absolute;
+	font-size: 12px;
+	width: 30px;
+	text-align: right;
+	font-weight: bold;
+}
+
+.task-panel-body {
+	overflow-y: auto;
+	height: calc(100% - 50px);
+}
+
+.task-view {
+	overflow-y: auto;
+	height: 100%;
+	width: 100%;
+}

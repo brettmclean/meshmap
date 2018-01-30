@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Meshmap - Real-time Map Collaboration Made Easy</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+
+	<link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap-theme.min.css">
+	<link rel="stylesheet" type="text/css" href="css/index.css">
+</head>
+<body>
+	<div class="container">
+		<div class="jumbotron">
+			<h2>Real-time Map Collaboration Made Easy</h2>
+			<p class="lead">
+				Meshmaps allow people to share and edit maps instantly. Plan a road trip. Give a guided tour of your hometown. Show off the places you've travelled to. It's all fun, easy and free!
+			</p>
+			<p>
+				<a href="/new" class="btn btn-large btn-success" rel="nofollow">Start a Meshmap</a>
+			</p>
+		</div>
+
+		<div ng-include="'html/partials/footer.html'"></div>
+
+		<input type="hidden" id="pageName" value="main" />
+	</div>
+
+	<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.12/angular.min.js"></script>
+	<script type="text/javascript" src="js/meshmap.js"></script>
+</body>
+
+</html>

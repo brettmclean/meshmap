@@ -1,0 +1,22 @@
+<div class="marker-info">
+	<div class="name" ng-show="ctx.layoutIsLarge">{{ctx.marker.name}}</div>
+	<div class="description">{{ctx.marker.description}}</div>
+	<div class="marker-info-buttons">
+		<button
+			type="button"
+			class="btn btn-danger"
+			ng-show="ctx.userCanEditMarker"
+			ng-class="{'btn-xs': ctx.layoutIsLarge, 'btn-sm': !ctx.layoutIsLarge}"
+			ng-click="ctx.deleteMarker()">
+			Delete
+		</button>
+		<button
+			type="button"
+			class="btn btn-primary"
+			ng-show="ctx.userCanEditMarker"
+			ng-class="{'btn-xs': ctx.layoutIsLarge, 'btn-sm': !ctx.layoutIsLarge}"
+			ng-click="ctx.editMarker()">
+			Edit
+		</button>
+	</div>
+</div>

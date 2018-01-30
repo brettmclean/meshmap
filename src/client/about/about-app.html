@@ -1,0 +1,17 @@
+<div class="about-app" ng-controller="AboutAppCtrl">
+	<div class="name">{{appName}} v{{version}}</div>
+	<div class="description" ng-show="description">{{description}}</div>
+
+	<div class="contacts" ng-show="contacts">
+		Questions? Please contact:
+		<div class="contact" ng-repeat="contact in contacts" ng-show="contact.name">
+			<span>{{contact.name}}</span>
+			<span ng-show="contact.email"> - <a ng-href="mailto:{{contact.email}}">{{contact.email}}</a></span>
+		</div>
+	</div>
+
+	<div class="license-source">
+		<span class="license" ng-show="license">Licensed under {{license}}.</span>
+		<span class="source" ng-show="source">Get source code <a target="_blank" ng-href="{{source}}">here</a>.</span>
+	</div>
+</div>

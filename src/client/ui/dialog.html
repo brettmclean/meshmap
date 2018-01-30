@@ -1,0 +1,21 @@
+<div ng-show="currDialog">
+	<div class="modal-backdrop"></div>
+
+	<div class="modal">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title">{{currDialog.title}}</h4>
+				</div>
+				<div class="modal-body">
+					<div class="dialog-message" ng-bind="currDialog.message" ng-show="currDialogUiType === 'message'"></div>
+					<div class="dialog-view" ng-show="currDialogUiType === 'view'" mm-assign-element="setViewContainer"></div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn" ng-repeat="btn in currDialog.buttons" ng-class="btn.classes.join(' ')" ng-click="btn.onclick()" ng-bind="btn.text"></button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>

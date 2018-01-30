@@ -1,0 +1,19 @@
+<div class="advanced-view-container" ng-controller="AdvancedCtrl">
+	<ul class="advanced-buttons" ng-show="!currView">
+		<li class="advanced-button" ng-repeat="view in views" ng-click="view.buttonClick(view.id)">
+			<div class="advanced-button-icon">
+				<span class="glyphicon" ng-class="view.classes.icon"></span>
+			</div>
+			<div class="advanced-button-text">{{view.text}}</div>
+		</li>
+	</ul>
+	<div class="advanced-view-container" ng-show="currView && currView.partial">
+		<div class="advanced-back-to-menu" ng-click="backToMenu()">
+			<span class="glyphicon glyphicon-chevron-left"></span>
+		</div>
+		<div class="advanced-view-header">
+			{{currView.text}}
+		</div>
+		<div class="advanced-view" ng-repeat="view in views" ng-include="view.partial" ng-show="view.id === currView.id"></div>
+	</div>
+</div>

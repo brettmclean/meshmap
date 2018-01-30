@@ -1,0 +1,11 @@
+{
+	"extends": "../../.jshintrc",
+	"browser": true,
+	"globals": {
+		"angular": false,
+		"google": false,
+		"io": false,
+		"meshmap": true,
+		"MicroEvent": false
+	}
+}

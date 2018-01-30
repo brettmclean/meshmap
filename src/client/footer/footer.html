@@ -1,0 +1,11 @@
+<div class="footer" ng-controller="FooterCtrl">
+	<span ng-show="appName">
+		{{appName}} v{{version}}
+	</span>
+	<span ng-show="contactName && contactEmail">
+		- Contact: <a ng-href="mailto:{{contactEmail}}">{{contactName}}</a>
+	</span>
+	<span ng-show="source">
+		- <a target="_blank" ng-href="{{source}}">Source</a>
+	</span>
+</div>

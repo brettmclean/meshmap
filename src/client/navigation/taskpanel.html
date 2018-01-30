@@ -1,0 +1,21 @@
+<div class="task-panel" ng-class="{visibleTask: currTask.partial, collapsed: collapsed}">
+
+	<div class="task-panel-header">
+		<ul>
+			<li ng-repeat="task in tasks" ng-class="{active: currTask.id === task.id}" ng-style="taskButtonStyle" ng-show="taskShouldBeAvailable(task)" ng-click="taskButtonClick(task)">
+				<div class="task-button-notify" ng-class="{green: task.notify.colors.green, red: task.notify.colors.red}">
+					<span ng-class="task.classes.icon" class="glyphicon"></span>
+					<span class="task-button-tiny-info">{{task.tinyText}}</span>
+				</div>
+			</li>
+			<li class="collapse-button" ng-style="taskButtonStyle" ng-show="currentLayoutIsLarge()" ng-click="toggleSidePanel()">
+				<span class="glyphicon glyphicon-chevron-right"></span>
+			</li>
+		</ul>
+	</div>
+
+	<div class="task-panel-body">
+		<div class="task-view" ng-repeat="task in tasks" ng-include="task.partial" ng-show="task === currTask"></div>
+	</div>
+
+</div>

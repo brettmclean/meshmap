@@ -1,0 +1,25 @@
+{
+	"mmServer": {
+		"host": null,
+		"port": null
+	},
+
+	"map": {
+		"type": "googleMaps",
+		"key": "GOOGLE_MAPS_API_KEY_GOES_HERE"
+	},
+
+	"logging": {
+		"level": "info"
+	},
+
+	"about": {
+		"contacts": [
+			{
+				"name": "Brett McLean",
+				"email": "brettrmclean@gmail.com"
+			}
+		],
+		"source": "https://www.github.com/brettmclean/meshmap"
+	}
+}

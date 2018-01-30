@@ -1,0 +1,1 @@
+DROP USER <DB_USER>;

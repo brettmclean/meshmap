@@ -1,0 +1,32 @@
+<div class="site-settings" ng-controller="SiteSettingsCtrl">
+
+	<div class="setting" ng-class="{saving: saving.siteName}">
+		<span class="setting-label short">Map name</span>
+		<span class="setting-input long"><input type="text" maxlength="100" ng-model="settingValues.siteName" ng-blur="siteNameSave()" ng-keypress="onInputKeyPress($event, 'siteName')" /></span>
+		<span class="setting-checkmark glyphicon glyphicon-ok"></span>
+	</div>
+
+	<div class="setting" ng-class="{saving: saving.siteDescription}">
+		<span class="setting-label full">Map description</span>
+		<span class="setting-checkmark glyphicon glyphicon-ok"></span>
+		<div class="setting-input">
+			<textarea maxlength="500" ng-model="settingValues.siteDescription" ng-blur="siteDescriptionSave()" ng-keypress="onInputKeyPress($event, 'siteDescription')"></textarea>
+		</div>
+	</div>
+
+	<div class="setting" ng-class="{saving: saving.onlyOwnerCanEdit}">
+		<span class="setting-label long">Only owners can edit locations</span>
+		<span class="setting-input short"><input type="checkbox" ng-model="settingValues.onlyOwnerCanEdit" ng-change="onlyOwnerCanEditSave()" /></span>
+		<span class="setting-checkmark glyphicon glyphicon-ok"></span>
+		<div class="setting-desc">Added locations are editable only by their creators</div>
+	</div>
+
+	<div class="setting" ng-class="{saving: saving.initialExtent}">
+		<span class="setting-label full">Initial map area</span>
+		<span class="setting-checkmark glyphicon glyphicon-ok"></span>
+		<div class="setting-input">
+			<button ng-click="initialExtentSave()" ng-disabled="!settingAvailability.initialExtent">Use as Initial Map Area</button>
+		</div>
+		<div class="setting-desc">Set current view as the initial map area for new users</div>
+	</div>
+</div>

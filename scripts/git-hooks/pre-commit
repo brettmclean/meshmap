@@ -1,0 +1,9 @@
+git stash -k -u -q
+
+npm run check --silent
+CHECK_RESULT=$?
+
+git stash pop -q
+
+[ $CHECK_RESULT -ne 0 ] && exit 1
+exit 0

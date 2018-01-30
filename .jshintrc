@@ -1,0 +1,15 @@
+{
+	"node": true,
+	"jasmine": true,
+	"esversion": 6,
+
+	"bitwise": true,
+	"curly": true,
+	"eqeqeq": true,
+	"forin": true,
+	"freeze": true,
+	"nocomma": true,
+	"nonew": true,
+	"undef": true,
+	"unused": true
+}

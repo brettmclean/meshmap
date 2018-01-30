@@ -1,0 +1,9 @@
+<div class="users-view-container" ng-controller="UsersCtrl">
+
+	<div class="user-container" ng-repeat="user in users" ng-class="{meUser: user.id === myUserId, siteOwnerUser: user.id === siteOwnerId}">
+		<div class="username">
+			{{user.name}}
+		</div>
+	</div>
+
+</div>

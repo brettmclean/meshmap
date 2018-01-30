@@ -1,0 +1,11 @@
+app
+build
+config/dev
+coverage
+env
+logs
+npm-debug.log
+
+node_modules
+
+TODO
