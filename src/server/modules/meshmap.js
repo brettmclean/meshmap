@@ -17,7 +17,7 @@ function handleConnectInfo(
 	var stopwatch = new sw.Stopwatch("Handle connect info from " + ipAddress);
 
 	var origCallback = callback;
-	callback = function(/* String */ err, /* User */ user, /* Site */ site, /* UserSiteState */ state) {
+	callback = function(err, user, site, state) {
 		if(origCallback) {
 			origCallback(err, user, site, state);
 		}
@@ -68,7 +68,7 @@ function handleConnectInfo(
 
 				if(!user) {
 					user = new dm.User(connectInfo.secret);
-					user.name = "Guest " + Math.floor(Math.random()*10000);
+					user.name = "Guest " + Math.floor(Math.random() * 10000);
 					store.insertUser(user, function(err) {
 						if(err) {
 							logger.error("Failed to insert user: " + err);
@@ -165,7 +165,7 @@ function handleUserDisconnect(
 	var clients = site.clients;
 	for(var i = 0; i < clients.length; i++) {
 		if(clients[i] === client) {
-			clients.splice(i,1);
+			clients.splice(i, 1);
 			break;
 		}
 	}
@@ -235,7 +235,7 @@ function sendUserStartupData(
 	stopwatch.stop();
 }
 
-function sendErrorMessage(/* Socket */ socket, /* String*/ errorMsg) {
+function sendErrorMessage(socket, errorMsg) {
 	"use strict";
 
 	socket.emit("message", new dm.Message("error", errorMsg));

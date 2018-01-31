@@ -23,7 +23,7 @@ var writingToLog = false;
 
 function init(config) {
 	"use strict";
-	
+
 	loadConfig(config);
 	initialized = true;
 }
@@ -33,7 +33,7 @@ function loadConfig(config) {
 
 	var appBase = path.resolve(__dirname, "../");
 	logDirectory = path.resolve(appBase, "logs");
-	
+
 	var loggingCfg = config.logging;
 
 	if(loggingCfg) {
@@ -57,7 +57,7 @@ function loadConfig(config) {
 			info("Log files will be stored in " + logDirectory);
 		}
 	}
-	
+
 	if(loggingCfg) {
 		logToConsole = typeof loggingCfg.logToConsole === "boolean" ? loggingCfg.logToConsole : logToConsole;
 	}
@@ -65,12 +65,12 @@ function loadConfig(config) {
 
 function shutdown() {
 	"use strict";
-	
+
 	// Flush the last bit to log file
 	if(logDirectory && initialized && logBuffer) {
 		flushBufferToFile();
 	}
-	
+
 	initialized = false;
 }
 
@@ -99,20 +99,20 @@ function trace(/* String */ message) {
 	log("trace", message);
 }
 
-function log(/* String */ level, /* String|Object */ message) {
+function log(level, message) {
 	"use strict";
 	if(LOG_LEVELS[level] && LOG_LEVELS[level] <= LOG_LEVELS[currentLogLevel]) {
 
 		if(typeof message !== "string") {
 			message = JSON.stringify(message);
 		}
-		
+
 		var output = "[" + getTimestamp() + "] " + level.toUpperCase() + ": " + message;
-		
+
 		if(logToConsole) {
 			console.log(output);
 		}
-		
+
 		if(logDirectory || !initialized) {
 			logBuffer += output + os.EOL;
 		}
@@ -148,7 +148,7 @@ function getTimestamp() {
 
 	var now = new Date();
 	var year = now.getFullYear();
-	var month = now.getMonth()+1;
+	var month = now.getMonth() + 1;
 	month = month > 9 ? month : "0" + month;
 	var dayOfMonth = now.getDate();
 	dayOfMonth = dayOfMonth > 9 ? dayOfMonth : "0" + dayOfMonth;
@@ -175,7 +175,7 @@ function getLogFilePath() {
 
 	var now = new Date();
 	var year = now.getFullYear();
-	var month = now.getMonth()+1;
+	var month = now.getMonth() + 1;
 	month = month > 9 ? month : "0" + month;
 	var dayOfMonth = now.getDate();
 	dayOfMonth = dayOfMonth > 9 ? dayOfMonth : "0" + dayOfMonth;

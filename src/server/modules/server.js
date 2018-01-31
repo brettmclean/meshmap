@@ -58,12 +58,12 @@ function startSocketIo() {
 	sioServer.sockets.on("connection", handleSocketIoConnection);
 }
 
-function handleHttpRequest(/* http.IncomingMessage */ request, /* http.ServerResponse */ response) {
+function handleHttpRequest(request, response) {
 	"use strict";
 	httpHandlers.handleHttpRequest(request, response);
 }
 
-function handleSocketIoConnection(/* Socket */ socket) {
+function handleSocketIoConnection(socket) {
 	"use strict";
 
 	if(busy()) {
@@ -93,7 +93,7 @@ function handleSocketIoConnection(/* Socket */ socket) {
 	}
 }
 
-function checkIpAddressBanned(/* Socket */ socket, /* String */ ipAddress, /* Function */ callback) {
+function checkIpAddressBanned(socket, ipAddress, callback) {
 	"use strict";
 
 	if(!callback) {
@@ -119,7 +119,7 @@ function checkIpAddressBanned(/* Socket */ socket, /* String */ ipAddress, /* Fu
 	});
 }
 
-function subscribeToSocketIoConnectionEvents(/* Socket */ socket, /* String */ ipAddress) {
+function subscribeToSocketIoConnectionEvents(socket, ipAddress) {
 	"use strict";
 
 	var stopwatch = new sw.Stopwatch("Handle new Socket.IO connection");
@@ -153,7 +153,7 @@ function handleSocketIoConnectInfoEvent(
 	"use strict";
 
 	try {
-		mm.handleConnectInfo(message, context.ipAddress, function(err, /* User */ u, /* Site */ s, /* UserSiteState */ uss) {
+		mm.handleConnectInfo(message, context.ipAddress, function(err, user, site, userSiteState) {
 			if(err) {
 				logger.error("Failed to handle connect info from user at " + context.ipAddress + ": " + err);
 				mm.sendErrorMessage(context.socket, "Provided connection information is not valid.");
@@ -161,8 +161,8 @@ function handleSocketIoConnectInfoEvent(
 				return;
 			}
 
-			context.client = new dm.Client(context.socket, context.ipAddress, u, uss);
-			context.site = s;
+			context.client = new dm.Client(context.socket, context.ipAddress, user, userSiteState);
+			context.site = site;
 
 			sm.ensureUserIsAssociatedWithSite(context.client, context.site, function(err) {
 				if(err) {

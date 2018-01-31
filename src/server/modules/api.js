@@ -54,7 +54,7 @@ function handleApiRequest(
 	}
 }
 
-function getApiResult(/* String */ apiPath, /* Object */ queryString, /* Function */ callback) {
+function getApiResult(apiPath, queryString, callback) {
 	"use strict";
 
 	// /api/sites
@@ -112,28 +112,28 @@ function getApiResult(/* String */ apiPath, /* Object */ queryString, /* Functio
 	}
 }
 
-function getDirectory(/* String[] */ pathSegments, /* Object */ queryString, /* Function */ callback) {
+function getDirectory(pathSegments, queryString, callback) {
 	"use strict";
 
 	var result = {
-			apiEndpoints: [
-				"/",
-				"/sites",
-				"/sites/{siteCode}",
-				"/users",
-				"/users/{userId}",
-				"/status",
-				"/activity?max={maxResults}",
-				"/api/ban?ip={ipAddress}",
-				"/api/unban?ip={ipAddress}",
-				"/api/reloadconfig"
-			]
+		apiEndpoints: [
+			"/",
+			"/sites",
+			"/sites/{siteCode}",
+			"/users",
+			"/users/{userId}",
+			"/status",
+			"/activity?max={maxResults}",
+			"/api/ban?ip={ipAddress}",
+			"/api/unban?ip={ipAddress}",
+			"/api/reloadconfig"
+		]
 	};
 
 	callback(null, result);
 }
 
-function getSites(/* String[] */ pathSegments, /* Object */ queryString, /* Function */ callback) {
+function getSites(pathSegments, queryString, callback) {
 	"use strict";
 
 	store.apiGetSites(function(err, apiSites) {
@@ -150,7 +150,7 @@ function getSites(/* String[] */ pathSegments, /* Object */ queryString, /* Func
 	});
 }
 
-function getSite(/* String[] */ pathSegments, /* Object */ queryString, /* Function */ callback) {
+function getSite(pathSegments, queryString, callback) {
 	"use strict";
 
 	pathSegments.shift(); // Remove "sites"
@@ -169,7 +169,7 @@ function getSite(/* String[] */ pathSegments, /* Object */ queryString, /* Funct
 	});
 }
 
-function getUsers(/* String[] */ pathSegments, /* Object */ queryString, /* Function */ callback) {
+function getUsers(pathSegments, queryString, callback) {
 	"use strict";
 
 	store.apiGetUsers(function(err, apiUsers) {
@@ -186,7 +186,7 @@ function getUsers(/* String[] */ pathSegments, /* Object */ queryString, /* Func
 	});
 }
 
-function getUser(/* String[] */ pathSegments, /* Object */ queryString, /* Function */ callback) {
+function getUser(pathSegments, queryString, callback) {
 	"use strict";
 
 	pathSegments.shift(); // Remove "users"
@@ -205,7 +205,7 @@ function getUser(/* String[] */ pathSegments, /* Object */ queryString, /* Funct
 	});
 }
 
-function getStatus(/* String[] */ pathSegments, /* Object */ queryString, /* Function */ callback) {
+function getStatus(pathSegments, queryString, callback) {
 	"use strict";
 
 	store.apiGetStatus(function(err, apiStatus) {
@@ -221,7 +221,7 @@ function getStatus(/* String[] */ pathSegments, /* Object */ queryString, /* Fun
 	});
 }
 
-function getUserActivity(/* String[] */ pathSegments, /* Object */ queryString, /* Function */ callback) {
+function getUserActivity(pathSegments, queryString, callback) {
 	"use strict";
 
 	var options = {
@@ -245,7 +245,7 @@ function getUserActivity(/* String[] */ pathSegments, /* Object */ queryString, 
 	});
 }
 
-function banUnbanUser(/* String[] */ pathSegments, /* Object */ queryString, /* Function */ callback) {
+function banUnbanUser(pathSegments, queryString, callback) {
 	"use strict";
 
 	var operation = pathSegments[0];
@@ -276,7 +276,7 @@ function banUnbanUser(/* String[] */ pathSegments, /* Object */ queryString, /* 
 	});
 }
 
-function reloadConfig(/* String[] */ pathSegments, /* Object */ queryString, /* Function */ callback) {
+function reloadConfig(pathSegments, queryString, callback) {
 	"use strict";
 
 	var err = null;

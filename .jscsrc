@@ -6,7 +6,6 @@
 	"disallowMultipleLineStrings": true,
 	"disallowMultipleSpaces": true,
 	"requireBlocksOnNewline": true,
-	"requireCamelCaseOrUpperCaseIdentifiers": true,
 	"requireCapitalizedConstructors": true,
 	"requireCommaBeforeLineBreak": true,
 	"requireCurlyBraces": [

@@ -77,6 +77,7 @@ dm.User = function(secret) {
 */
 dm.Message = function(messageType, messageData) {
 	"use strict";
+
 	// Possible values: connectInfo, mapEvent, userEvent, chatMessage, error, updateSiteSetting, updateUserSetting
 	this.type = messageType;
 	this.data = messageData;
@@ -227,7 +228,7 @@ dm.UserEvent = function(eventType, eventData) {
 	@param {Number} id The user's ID
 	@param {String} name The user's display name
 */
-dm.UserInfo = function(/* Number */ id, /* String */ name) {
+dm.UserInfo = function(id, name) {
 	"use strict";
 	this.id = id;
 	this.name = name || "User " + this.id;
@@ -356,6 +357,7 @@ dm.ChatMessage = function(/* String */ text) {
 */
 dm.SettingUpdate = function(settingKey, settingValue) {
 	"use strict";
+
 	// Possible values: username, onlyOwnerCanEdit, siteName
 	this.key = settingKey;
 	this.value = settingValue;

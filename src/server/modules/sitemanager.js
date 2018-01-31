@@ -86,7 +86,7 @@ function pruneDisconnectedClients() {
 	});
 }
 
-function createNewSite(/* String */ ipAddress, /* Function */ callback) {
+function createNewSite(ipAddress, callback) {
 	"use strict";
 
 	if(!callback) {
@@ -189,19 +189,19 @@ function writePendingUserExtentsToStore() {
 	}
 }
 
-function getSite(/* String */ siteCode, /* Function */ callback) {
+function getSite(siteCode, callback) {
 	"use strict";
 
 	store.getSite(siteCode, null, callback);
 }
 
-function ensureUserIsAssociatedWithSite(/* Client */ client, /* Site */ site, /* Function */ callback) {
+function ensureUserIsAssociatedWithSite(client, site, callback) {
 	"use strict";
 
 	store.insertUserSiteAssociation(client, site, callback);
 }
 
-function changeUserExtent(/* Client */ client, /* MapExtent */ extent, /* Site */ site) {
+function changeUserExtent(client, extent, site) {
 	"use strict";
 
 	client.state.extent = extent;

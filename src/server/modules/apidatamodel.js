@@ -264,7 +264,7 @@ ApiStatus.prototype.populateAverages = function() {
 			return 0;
 		}
 
-		return parseFloat((a/b).toFixed(2));
+		return parseFloat(( a / b ).toFixed(2));
 	};
 
 	this.avgMarkersPerSite = getAvg(this.totalMarkers, this.totalSites);

@@ -4,7 +4,7 @@ var dm = require("../datamodel");
 var logger = require("../logger");
 var os = require("os");
 var pg = require("pg");
-var copyFrom = require('pg-copy-streams').from;
+var copyFrom = require("pg-copy-streams").from;
 var util = require("../util");
 
 var siteCache = new cache.Cache();
@@ -109,10 +109,10 @@ var convertPsqlPathStringToLocationArray = function(/* String */ pathStr) {
 	var nums = pathStr.split(",");
 
 	var locations = [];
-	for(var i = 0; i < nums.length; i+= 2) {
+	for(var i = 0; i < nums.length; i += 2) {
 		locations.push(
 			new dm.Location(
-				parseFloat(nums[i+1]),
+				parseFloat(nums[i + 1]),
 				parseFloat(nums[i])
 			)
 		);
@@ -150,10 +150,10 @@ var convertPsqlPolygonStringToLocationArray = function(/* String */ polygonStr) 
 	var nums = polygonStr.split(",");
 
 	var locations = [];
-	for(var i = 0; i < nums.length; i+= 2) {
+	for(var i = 0; i < nums.length; i += 2) {
 		locations.push(
 			new dm.Location(
-				parseFloat(nums[i+1]),
+				parseFloat(nums[i + 1]),
 				parseFloat(nums[i])
 			)
 		);
@@ -179,7 +179,7 @@ function getConnection(/* Function */ callback) {
 	});
 }
 
-function runQuery(/* String */ sql, /* Object[] */ parameters, /* Client */ client, /* Function */ callback) {
+function runQuery(sql, parameters, client, callback) {
 	"use strict";
 
 	var exec = function(sql, parameters, client, callback) {
@@ -316,7 +316,7 @@ var populateMarkerSymbols = function() {
 	);
 };
 
-function getSite(/* String */ siteCode, /* Object */ options, /* Function */ callback) {
+function getSite(siteCode, options, callback) {
 	"use strict";
 
 	if(!callback) {
@@ -388,10 +388,10 @@ function getSite(/* String */ siteCode, /* Object */ options, /* Function */ cal
 			} else {
 				callback("Site " + siteCode + " not found.", null);
 			}
-	});
+		});
 }
 
-function getUser(/* String */ secret, /* Function */ callback) {
+function getUser(secret, callback) {
 	"use strict";
 
 	if(!callback) {
@@ -428,10 +428,10 @@ function getUser(/* String */ secret, /* Function */ callback) {
 			}
 
 			callback(err, user);
-	});
+		});
 }
 
-function getUserSiteState(/* Number */ userId, /* Number */ siteId, /* Function */ callback) {
+function getUserSiteState(userId, siteId, callback) {
 	"use strict";
 
 	if(!callback) {
@@ -457,7 +457,7 @@ function getUserSiteState(/* Number */ userId, /* Number */ siteId, /* Function 
 	);
 }
 
-function getIpAddressBanned(/* String */ ipAddress, /* Function */ callback) {
+function getIpAddressBanned(ipAddress, callback) {
 	"use strict";
 
 	if(!callback) {
@@ -524,7 +524,7 @@ function getSitesWithClients(/* Function */ callback) {
 	callback(err, sitesWithClients);
 }
 
-function getMarkers(/* Number */ siteId, /* Function */ callback) {
+function getMarkers(siteId, callback) {
 	"use strict";
 
 	if(!callback) {
@@ -555,13 +555,13 @@ function getMarkers(/* Number */ siteId, /* Function */ callback) {
 					for(var j = 0; j < symbolParts.length; j++) {
 						var symbolPart = symbolParts[j];
 						if(symbolPart.match(/^ico=/)) {
-							iconId = parseInt(symbolPart.replace("ico=",""));
+							iconId = parseInt(symbolPart.replace("ico=", ""));
 						} else if(symbolPart.match(/^lncl=/)) {
-							lineColorId = parseInt(symbolPart.replace("lncl=",""));
+							lineColorId = parseInt(symbolPart.replace("lncl=", ""));
 						} else if(symbolPart.match(/^flcl=/)) {
-							fillColorId = parseInt(symbolPart.replace("flcl=",""));
+							fillColorId = parseInt(symbolPart.replace("flcl=", ""));
 						} else if(symbolPart.match(/^lnwd=/)) {
-							lineWidth = parseInt(symbolPart.replace("lnwd=",""));
+							lineWidth = parseInt(symbolPart.replace("lnwd=", ""));
 						}
 					}
 
@@ -593,7 +593,7 @@ function getMarkers(/* Number */ siteId, /* Function */ callback) {
 	);
 }
 
-function insertSite(/* Site */ site, /* Function */ callback) {
+function insertSite(site, callback) {
 	"use strict";
 
 	if(!callback) {
@@ -645,7 +645,7 @@ function insertSite(/* Site */ site, /* Function */ callback) {
 	}
 }
 
-function insertUser(/* User */ user, /* Function */ callback) {
+function insertUser(user, callback) {
 	"use strict";
 
 	if(!callback) {
@@ -655,46 +655,48 @@ function insertUser(/* User */ user, /* Function */ callback) {
 	var err = null;
 
 	if(user && user.secret) {
+		getConnection(
+			function(err, dbClient, dbDone) {
+				if(err) {
+					callback(err);
+					return;
+				}
 
-		getConnection(function(err, dbClient, dbDone) {
-			if(err) {
-				callback(err);
-				return;
-			}
+				var dbCallback = function(err) {
+					dbDone();
+					callback(err);
+				};
 
-			var dbCallback = function(err) {
-				dbDone();
-				callback(err);
-			};
-
-			runQuery("INSERT INTO users (name, secret) VALUES ($1, $2) RETURNING id",
-				[user.name, user.secret],
-				dbClient,
-				function(err, result) {
-					if(result && result.rowCount > 0 && result.rows[0].id) {
-						user.id = result.rows[0].id;
-					}
-
-					if(err) {
-						return dbCallback(err);
-					}
-
-					runQuery("INSERT INTO user_settings (user_id, confirm_marker_deletion) VALUES ($1, $2)",
-						[user.id, user.settings.confirmMarkerDeletion],
-						dbClient,
-						function(err) {
-							dbCallback(err);
+				runQuery("INSERT INTO users (name, secret) VALUES ($1, $2) RETURNING id",
+					[user.name, user.secret],
+					dbClient,
+					function(err, result) {
+						if(result && result.rowCount > 0 && result.rows[0].id) {
+							user.id = result.rows[0].id;
 						}
-					);
-			});
-		});
+
+						if(err) {
+							return dbCallback(err);
+						}
+
+						runQuery("INSERT INTO user_settings (user_id, confirm_marker_deletion) VALUES ($1, $2)",
+							[user.id, user.settings.confirmMarkerDeletion],
+							dbClient,
+							function(err) {
+								dbCallback(err);
+							}
+						);
+					}
+				);
+			}
+		);
 	} else {
 		err = !user ? "User was not provided." : "Provided user does not have secret.";
 		callback(err);
 	}
 }
 
-function insertMarker(/* Site */ site, /* PointMarker */ marker, /* Function */ callback) {
+function insertMarker(site, marker, callback) {
 	"use strict";
 
 	if(!callback) {
@@ -757,7 +759,7 @@ function insertMarker(/* Site */ site, /* PointMarker */ marker, /* Function */ 
 	}
 }
 
-function insertUserSiteAssociation(/* Client */ client, /* Site */ site, /* Function */ callback) {
+function insertUserSiteAssociation(client, site, callback) {
 	"use strict";
 
 	if(!callback) {
@@ -823,8 +825,7 @@ function insertUserSiteAssociation(/* Client */ client, /* Site */ site, /* Func
 	}
 }
 
-
-function insertConnectionLog(/* Client */ client, /* Function */ callback) {
+function insertConnectionLog(client, callback) {
 	"use strict";
 
 	if(!callback) {
@@ -847,7 +848,7 @@ function insertConnectionLog(/* Client */ client, /* Function */ callback) {
 				callback(err);
 			};
 
-			var checkIpAddressExists = function(/* String */ ipAddress) {
+			var checkIpAddressExists = function(ipAddress) {
 				runQuery("SELECT id FROM ip_addresses WHERE ip_address = $1",
 					[ipAddress],
 					dbClient,
@@ -868,7 +869,7 @@ function insertConnectionLog(/* Client */ client, /* Function */ callback) {
 				);
 			};
 
-			var insertIpAddress = function(/* String */ ipAddress) {
+			var insertIpAddress = function(ipAddress) {
 				runQuery("INSERT INTO ip_addresses (ip_address, is_banned) VALUES ($1, $2) RETURNING id",
 					[ipAddress, false],
 					dbClient,
@@ -884,7 +885,7 @@ function insertConnectionLog(/* Client */ client, /* Function */ callback) {
 				);
 			};
 
-			var insertUserConnection = function(/* Number */ ipId) {
+			var insertUserConnection = function(ipId) {
 				runQuery("INSERT INTO user_connections (user_id, ip_id, connect_date) VALUES ($1, $2, $3)",
 					[client.user.id, ipId, new Date()],
 					dbClient,
@@ -904,11 +905,11 @@ function insertConnectionLog(/* Client */ client, /* Function */ callback) {
 }
 
 function insertUserActivity(
-	/* Number */ activityId,
-	/* Number */ userId,
-	/* Number */ siteId,
-	/* Number */ markerId,
-	/* Function */ callback) {
+	activityId,
+	userId,
+	siteId,
+	markerId,
+	callback) {
 	"use strict";
 
 	if(!callback) {
@@ -939,7 +940,7 @@ function insertUserActivity(
 	}
 }
 
-function updateSite(/* Site */ site, /* Function */ callback) {
+function updateSite(site, callback) {
 	"use strict";
 
 	if(!callback) {
@@ -990,7 +991,7 @@ function updateSite(/* Site */ site, /* Function */ callback) {
 	});
 }
 
-function updateUser(/* User */ user, /* Function */ callback) {
+function updateUser(user, callback) {
 	"use strict";
 
 	if(!callback) {
@@ -1030,9 +1031,9 @@ function updateUser(/* User */ user, /* Function */ callback) {
 }
 
 function updateMarker(
-	/* Site */ site,
-	/* PointMarker|PolylineMarker|PolygonMarker */ marker,
-	/* Function */ callback) {
+	site,
+	marker,
+	callback) {
 	"use strict";
 
 	if(!callback) {
@@ -1048,7 +1049,7 @@ function updateMarker(
 	);
 }
 
-function updateUserExtents(/* { userId: Number, siteId: Number, extent: MapExtent }[] */ userSiteExtents, /* Function */ callback) {
+function updateUserExtents(userSiteExtents, callback) {
 	"use strict";
 
 	if(!callback) {
@@ -1155,7 +1156,7 @@ function updateUserExtents(/* { userId: Number, siteId: Number, extent: MapExten
 	});
 }
 
-function updateSiteAccessDate(/* Site */ site, /* Date */ date, /* Function */ callback) {
+function updateSiteAccessDate(site, date, callback) {
 	"use strict";
 
 	if(!date) {
@@ -1194,7 +1195,7 @@ function updateSiteAccessDate(/* Site */ site, /* Date */ date, /* Function */ c
 	);
 }
 
-function updateIpAddressBanned(/* String */ ipAddress, /* Boolean */ isBanned, /* Function */ callback) {
+function updateIpAddressBanned(ipAddress, isBanned, callback) {
 	"use strict";
 
 	var err = null;
@@ -1225,7 +1226,7 @@ function updateIpAddressBanned(/* String */ ipAddress, /* Boolean */ isBanned, /
 	}
 }
 
-function deleteMarker(/* Site */ site, /* Number */ markerId, /* Function */ callback) {
+function deleteMarker(site, markerId, callback) {
 	"use strict";
 
 	if(!callback) {
@@ -1245,7 +1246,7 @@ function deleteMarker(/* Site */ site, /* Number */ markerId, /* Function */ cal
 	var markers = site.markers;
 	for(var i = 0; i < markers.length; i++) {
 		if(markers[i].id === markerId) {
-			markers.splice(i,1);
+			markers.splice(i, 1);
 			break;
 		}
 	}
@@ -1259,7 +1260,7 @@ function deleteMarker(/* Site */ site, /* Number */ markerId, /* Function */ cal
 	);
 }
 
-function apiGetSites(/* Function */ callback) {
+function apiGetSites(callback) {
 	"use strict";
 
 	if(!callback) {
@@ -1308,7 +1309,7 @@ function apiGetSites(/* Function */ callback) {
 	);
 }
 
-function apiGetSite(/* String */ siteCode, /* Function */ callback) {
+function apiGetSite(siteCode, callback) {
 	"use strict";
 
 	if(!callback) {
@@ -1331,7 +1332,7 @@ function apiGetSite(/* String */ siteCode, /* Function */ callback) {
 	});
 }
 
-function apiGetUsers(/* Function */ callback) {
+function apiGetUsers(callback) {
 	"use strict";
 
 	if(!callback) {
@@ -1369,7 +1370,7 @@ function apiGetUsers(/* Function */ callback) {
 	);
 }
 
-function apiGetUser(/* Number */ userId, /* Function */ callback) {
+function apiGetUser(userId, callback) {
 	"use strict";
 
 	if(!callback) {
@@ -1418,7 +1419,8 @@ function apiGetUser(/* Number */ userId, /* Function */ callback) {
 						}
 
 						callback(null, new apiDm.ApiUser(user, siteCodes));
-				});
+					}
+				);
 			} else {
 				callback("User with ID " + userId + " not found.", null);
 			}
@@ -1426,7 +1428,7 @@ function apiGetUser(/* Number */ userId, /* Function */ callback) {
 	);
 }
 
-function apiGetStatus(/* Function */ callback) {
+function apiGetStatus(callback) {
 	"use strict";
 
 	if(!callback) {
@@ -1525,7 +1527,7 @@ function apiGetStatus(/* Function */ callback) {
 	});
 }
 
-function apiGetUserActivity(/* Object */ options, /* Function */ callback) {
+function apiGetUserActivity(options, callback) {
 	"use strict";
 
 	if(!callback) {

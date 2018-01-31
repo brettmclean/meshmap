@@ -17,13 +17,13 @@ var createSiteCode = function() {
 	// A site code is {siteCodeLength} characters from the SITE_CODE_CHARS array.
 	var code = [];
 	for(var i = 0; i < appConfig.siteCodeLength; i++) {
-		code.push(SITE_CODE_CHARS.charAt(Math.floor(Math.random()*SITE_CODE_CHARS.length)));
+		code.push(SITE_CODE_CHARS.charAt(Math.floor(Math.random() * SITE_CODE_CHARS.length)));
 	}
 
 	return code.join("");
 };
 
-var isSiteCode = function(/* String */ code) {
+var isSiteCode = function(code) {
 	"use strict";
 
 	// Ensure site code has value and is a string
@@ -44,7 +44,7 @@ var isSiteCode = function(/* String */ code) {
 	return true;
 };
 
-var getMarkerType = function(/* PointMarker|PolylineMarker|PolygonMarker */ marker) {
+var getMarkerType = function(marker) {
 	"use strict";
 	var result = null;
 
@@ -61,7 +61,7 @@ var getMarkerType = function(/* PointMarker|PolylineMarker|PolygonMarker */ mark
 	return result;
 };
 
-var getIpAddressFromHttpRequest = function(/* http.IncomingMessage */ request) {
+var getIpAddressFromHttpRequest = function(request) {
 	"use strict";
 
 	var ipAddress = null;
@@ -79,7 +79,7 @@ var getIpAddressFromHttpRequest = function(/* http.IncomingMessage */ request) {
 	return ipAddress;
 };
 
-var getIpAddressFromSocketIoRequest = function(/* Socket */ socket) {
+var getIpAddressFromSocketIoRequest = function(socket) {
 	"use strict";
 
 	var ipAddress = null;
@@ -94,7 +94,7 @@ var getIpAddressFromSocketIoRequest = function(/* Socket */ socket) {
 	return ipAddress;
 };
 
-var disconnectUsersFromIpAddress = function(/* String */ ipAddress, /* Site[] */ possibleSites) {
+var disconnectUsersFromIpAddress = function(ipAddress, possibleSites) {
 	"use strict";
 
 	var clientsFromIp = [];
@@ -115,7 +115,7 @@ var disconnectUsersFromIpAddress = function(/* String */ ipAddress, /* Site[] */
 	}
 };
 
-var isUserConnectedToSite = function(/* Site */ site, /* User */ user) {
+var isUserConnectedToSite = function(site, user) {
 	"use strict";
 
 	var userConnectedToSite = false;
@@ -130,13 +130,13 @@ var isUserConnectedToSite = function(/* Site */ site, /* User */ user) {
 	return userConnectedToSite;
 };
 
-var isUserSiteOwner = function(/* Site */ site, /* User */ user) {
+var isUserSiteOwner = function(site, user) {
 	"use strict";
 
 	return site.ownerId && site.ownerId === user.id;
 };
 
-var canUserEditMarker = function(/* Site */ site, /* User */ user, /* PointMarker|PolylineMarker|PolygonMarker */ marker) {
+var canUserEditMarker = function(site, user, marker) {
 	"use strict";
 
 	var canEditMarker = !site.settings.onlyOwnerCanEdit;
@@ -153,7 +153,7 @@ var getNodeUptimeDisplay = function() {
 	"use strict";
 
 	var seconds = Math.floor(process.uptime());
-	var days = Math.floor(seconds/86400);
+	var days = Math.floor(seconds / 86400);
 	seconds -= days * 86400;
 	var hours = Math.floor(seconds / 3600);
 	seconds -= hours * 3600;

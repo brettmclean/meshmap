@@ -10,7 +10,7 @@
     "lint:spec": "jshint ./spec --config spec/.jshintrc",
     "lint:client": "jshint ./src/client --config src/client/.jshintrc",
     "lint:server": "jshint ./src/server --config src/server/.jshintrc",
-    "style": "jscs ./spec ./src/client",
+    "style": "jscs ./spec ./src/client ./src/server",
     "check": "npm test && npm run lint && npm run style",
     "cover": "istanbul cover -i 'src/**' jasmine",
     "clean": "rm -Rf app build coverage logs",

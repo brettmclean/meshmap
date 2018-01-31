@@ -39,7 +39,7 @@ function CacheEntry(data, expiryTime) {
 
 Cache.prototype = {
 
-	get: function(/* String */ key) {
+	get: function(key) {
 		"use strict";
 		var result = null;
 
@@ -56,7 +56,7 @@ Cache.prototype = {
 		return result;
 	},
 
-	put: function(/* String */ key, /* Object */ data) {
+	put: function(key, data) {
 		"use strict";
 		var cacheTime = this.getCacheTime();
 
@@ -92,7 +92,7 @@ Cache.prototype = {
 
 		var result = this.maxCacheTime;
 
-		var percUsed = (process.memoryUsage().heapUsed / 1048576) /  this.maxHeapSizeMb;
+		var percUsed = (process.memoryUsage().heapUsed / 1048576) / this.maxHeapSizeMb;
 
 		// If our heap size is more than 50% of configured maximum.
 		if(percUsed > 0.5) {

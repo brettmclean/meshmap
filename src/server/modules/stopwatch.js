@@ -1,13 +1,13 @@
 var logger = require("./logger");
 
-var Stopwatch = function(/* String */ operation) {
+var Stopwatch = function(operation) {
 	"use strict";
 
 	this.operation = operation || "Operation";
 	this.startTime = 0;
 
 	this.start = function() {
-		this.startTime =  (new Date()).getTime();
+		this.startTime = (new Date()).getTime();
 	};
 
 	this.stop = function() {
