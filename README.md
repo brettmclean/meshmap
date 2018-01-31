@@ -1,5 +1,5 @@
-[Meshmap](http://mesh-map.com/)
-===============================
+Meshmap
+=======
 
 Meshmap is a Node.js-based web application which allows users to share and edit maps in real time.
 
