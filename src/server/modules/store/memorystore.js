@@ -18,7 +18,7 @@ var bannedIpAddresses = {};
 
 /*
  * id ->
- * { 
+ * {
  *	user: User
  *	sites: { siteCode: String, extent: MapExtent },
  *	connects: { connectDate: Date, ipAddress: String }[]
@@ -30,7 +30,7 @@ var users = {};
  * {
  *	date: Date,
  *	type: Number,
- *	userId: Number, 
+ *	userId: Number,
  *	siteCode: String,
  *	markerId: Number
  * }[]
@@ -85,17 +85,18 @@ var createUserEntry = function(/* User */ user)
 
 function init(config) {
 	"use strict";
-	
+
 	logger.warn("IMPORTANT! Using the in-memory data store. All data will be lost the next time this application is stopped. The in-memory data store should only be used for testing purposes.");
-	
+
 	loadConfig(config);
 }
 
 function shutdown() {
-	
+
 }
 
 function loadConfig(config) {
+	// jshint unused: false
 	"use strict";
 }
 
@@ -109,7 +110,7 @@ function getSite(/* String */ siteCode, /* Object */ options, /* Function */ cal
 	if(!siteCode) {
 		callback(null, null);
 	}
-	
+
 	if(!options) {
 		options = {};
 	}
@@ -122,7 +123,7 @@ function getSite(/* String */ siteCode, /* Object */ options, /* Function */ cal
 	if(site && options.updateSiteAccessDate) {
 		site.lastAccessDate = new Date();
 	}
-	
+
 	callback(null, site);
 }
 
@@ -132,10 +133,10 @@ function getUser(/* String */ secret, /* Function */ callback) {
 	if(!callback) {
 		return;
 	}
-	
+
 	var user = null;
 	var err = null;
-	
+
 	for(var prop in users) {
 		if(users.hasOwnProperty(prop)) {
 			if(users[prop].user.secret === secret) {
@@ -173,16 +174,16 @@ function getIpAddressBanned(/* String */ ipAddress, /* Function */ callback) {
 
 	var err = null;
 	var isBanned = false;
-	
+
 	if(!ipAddress) {
 		err = "IP Address was not provided.";
 	}
-	
+
 	if(err) {
 		callback(err, null);
 		return;
 	}
-	
+
 	if(bannedIpAddresses[ipAddress]) {
 		isBanned = true;
 	}
@@ -196,9 +197,9 @@ function getSitesWithClients(/* Function */ callback) {
 	if(!callback) {
 		return;
 	}
-	
+
 	var err = null;
-	
+
 	var sitesWithClients = [];
 
 	var cachedSites = siteCache.getValues();
@@ -207,17 +208,17 @@ function getSitesWithClients(/* Function */ callback) {
 			sitesWithClients.push(cachedSites[i]);
 		}
 	}
-	
+
 	callback(err, sitesWithClients);
 }
 
 function insertSite(/* Site */ site, /* Function */ callback) {
 	"use strict";
-		
+
 	if(!callback) {
 		callback = function() {};
 	}
-	
+
 	var err = null;
 	if(site && site.siteCode) {
 		siteCache.put(site.siteCode, site);
@@ -227,21 +228,21 @@ function insertSite(/* Site */ site, /* Function */ callback) {
 	} else {
 		err = !site ? "Site was not provided." : "Provided site does not have siteCode.";
 	}
-	
+
 	callback(err);
 }
 
 function insertUser(/* User */ user, /* Function */ callback) {
 	"use strict";
-		
+
 	if(!callback) {
 		callback = function() {};
 	}
-	
+
 	var err = null;
-	
+
 	if(user && user.secret) {
-		
+
 		getUser(user.secret, function(err, foundUser) {
 			if(!foundUser) {
 				if(!user.id) {
@@ -261,17 +262,17 @@ function insertUser(/* User */ user, /* Function */ callback) {
 
 function insertMarker(/* Site */ site, /* PointMarker */ marker, /* Function */ callback) {
 	"use strict";
-	
+
 	if(!callback) {
 		callback = function() {};
 	}
-	
+
 	var err = null;
 
 	if(site && marker) {
 		site.markers.push(marker);
 		marker.id = nextMarkerId++;
-		
+
 	} else {
 		if(!site) {
 			err = "Site was not provided.";
@@ -279,29 +280,29 @@ function insertMarker(/* Site */ site, /* PointMarker */ marker, /* Function */ 
 			err = "Marker was not provided.";
 		}
 	}
-	
+
 	callback(err);
 }
 
 function insertUserSiteAssociation(/* Client */ client, /* Site */ site, /* Function */ callback) {
 	"use strict";
-	
+
 	if(!callback) {
 		callback = function() {};
 	}
-	
+
 	var err = null;
 
 	if(site && site.id && client && client.user) {
-	
+
 		var userEntry = users[client.user.id];
-		
+
 		if(!userEntry) {
 			users[client.user.id] = userEntry = createUserEntry(client.user);
 		}
-		
+
 		userEntry.sites[site.id] = {siteCode: site.siteCode, extent: client.state.extent};
-		
+
 	} else {
 		if(!site) {
 			err = "Site was not provided.";
@@ -313,23 +314,23 @@ function insertUserSiteAssociation(/* Client */ client, /* Site */ site, /* Func
 			err = "Provided client does not have user.";
 		}
 	}
-	
+
 	callback(err);
 }
 
 function insertConnectionLog(/* Client */ client, /* Function */ callback) {
 	"use strict";
-	
+
 	if(!callback) {
 		callback = function() {};
 	}
-	
+
 	var err = null;
 
 	if(client && client.user) {
-	
+
 		var userEntry = users[client.user.id];
-		
+
 		if(!userEntry) {
 			users[client.user.id] = createUserEntry(client.user);
 		}
@@ -337,7 +338,7 @@ function insertConnectionLog(/* Client */ client, /* Function */ callback) {
 	} else {
 		err = !client ? "Client was not provided." : "Provided client does not have user.";
 	}
-	
+
 	callback(err);
 }
 
@@ -348,20 +349,20 @@ function insertUserActivity(
 	/* Number */ markerId,
 	/* Function */ callback) {
 	"use strict";
-	
+
 	if(!callback) {
 		callback = function() {};
 	}
-	
+
 	var err = null;
-	
+
 	if(activityId) {
-	
+
 		var entry = {
 			date: new Date(),
 			type: activityId
 		};
-		
+
 		if(userId) {
 			entry.userId = userId;
 		}
@@ -371,21 +372,21 @@ function insertUserActivity(
 		if(markerId) {
 			entry.markerId = markerId;
 		}
-		
+
 		userActivity.push(entry);
-		
+
 	} else {
 		if(!activityId) {
 			err = "Activity ID was not provided.";
 		}
 	}
-	
+
 	callback(err);
 }
 
 function updateSite(/* Site */ site, /* Function */ callback) {
 	"use strict";
-	
+
 	if(callback) {
 		callback(null);
 	}
@@ -393,21 +394,21 @@ function updateSite(/* Site */ site, /* Function */ callback) {
 
 function updateUser(/* User */ user, /* Function */ callback) {
 	"use strict";
-	
+
 	if(callback) {
 		callback(null);
 	}
 }
 
 function updateMarker(
-	/* Site */ site, 
-	/* PointMarker|PolylineMarker|PolygonMarker */ marker, 
+	/* Site */ site,
+	/* PointMarker|PolylineMarker|PolygonMarker */ marker,
 	/* Function */ callback) {
 	"use strict";
-	
+
 	if(callback) {
 		callback(null);
-	}	
+	}
 }
 
 function updateUserExtents(/* { userId: Number, siteId: Number, extent: MapExtent }[] */ userSiteExtents, /* Function */ callback) {
@@ -439,25 +440,25 @@ function updateIpAddressBanned(/* String */ ipAddress, /* Boolean */ isBanned, /
 	"use strict";
 
 	var err = null;
-	
+
 	if(!ipAddress) {
 		err = "IP Address was not provided.";
 	} else if(typeof isBanned !== "boolean") {
 		err = "IsBanned was not provided or is not a boolean.";
 	}
-	
+
 	if(err) {
 		callback(err);
 		return;
 	}
-	
+
 	if(isBanned) {
 		bannedIpAddresses[ipAddress] = true;
 		util.disconnectUsersFromIpAddress(ipAddress, siteCache.getValues());
 	} else {
 		delete bannedIpAddresses[ipAddress];
 	}
-	
+
 	callback(err);
 }
 
@@ -467,12 +468,12 @@ function deleteMarker(/* Site */ site, /* Number */ markerId, /* Function */ cal
 	if(!callback) {
 		callback = function() {};
 	}
-	
+
 	if(!site) {
 		callback("Site was not provided.");
 		return;
 	}
-	
+
 	if(!markerId) {
 		callback("Marker ID was not provided.");
 		return;
@@ -485,7 +486,7 @@ function deleteMarker(/* Site */ site, /* Number */ markerId, /* Function */ cal
 			break;
 		}
 	}
-	
+
 	callback(null);
 }
 
@@ -495,11 +496,11 @@ function apiGetSites(/* Function */ callback) {
 	if(!callback) {
 		return;
 	}
-	
+
 	var sites = siteCache.getValues();
-	
+
 	var results = [];
-	
+
 	for(var i = 0; i < sites.length; i++) {
 		if(sites[i]) {
 			var site = sites[i];
@@ -507,7 +508,7 @@ function apiGetSites(/* Function */ callback) {
 			results.push(apiSite);
 		}
 	}
-	
+
 	callback(null, results);
 }
 
@@ -517,14 +518,14 @@ function apiGetSite(/* String */ siteCode, /* Function */ callback) {
 	if(!callback) {
 		return;
 	}
-	
+
 	if(!siteCode) {
 		callback("siteCode was not provided.", null);
 		return;
 	}
-	
+
 	var site = siteCache.get(siteCode);
-	
+
 	if(site) {
 		callback(null, new apiDm.ApiSite(site));
 	} else {
@@ -542,7 +543,7 @@ function apiGetUsers(/* Function */ callback) {
 			results.push(new apiDm.ApiUserSummary(users[prop].user));
 		}
 	}
-	
+
 	callback(null, results);
 }
 
@@ -552,21 +553,21 @@ function apiGetUser(/* Number */ userId, /* Function */ callback) {
 	if(!callback) {
 		return;
 	}
-	
+
 	if(!userId) {
 		callback("userId was not provided.", null);
 		return;
 	}
-	
+
 	var userEntry = users[userId];
-	
+
 	var siteCodes = [];
 	for(var siteId in userEntry.sites) {
 		if(userEntry.sites.hasOwnProperty(siteId)) {
 			siteCodes.push(userEntry.sites[siteId].siteCode);
 		}
 	}
-	
+
 	if(userEntry) {
 		callback(null, new apiDm.ApiUser(userEntry.user, siteCodes));
 	} else {
@@ -580,19 +581,19 @@ function apiGetStatus(/* Function */ callback) {
 	if(!callback) {
 		return;
 	}
-	
+
 	var err = null;
 	var result = new apiDm.ApiStatus();
-	
+
 	var sites = siteCache.getValues();
 	result.sitesInMemory = siteCache.size;
-	
+
 	var totalCurrentConnections = 0;
 	var totalSites = 0;
 	var totalMarkers = 0;
 	var totalUsers = 0;
 	var totalConnects = 0;
-	
+
 	for(var i = 0; i < sites.length; i++) {
 		if(sites[i]) {
 			var site = sites[i];
@@ -607,7 +608,7 @@ function apiGetStatus(/* Function */ callback) {
 			}
 		}
 	}
-	
+
 	for(var prop in users) {
 		if(users.hasOwnProperty(prop)) {
 			var userEntry = users[prop];
@@ -619,15 +620,15 @@ function apiGetStatus(/* Function */ callback) {
 			}
 		}
 	}
-	
+
 	result.totalCurrentConnections = totalCurrentConnections;
 	result.totalSites = totalSites;
 	result.totalMarkers = totalMarkers;
 	result.totalUsers = totalUsers;
 	result.totalConnects = totalConnects;
-	
+
 	result.populateAverages();
-	
+
 	callback(err, result);
 }
 
@@ -644,16 +645,16 @@ function apiGetUserActivity(/* Object */ options, /* Function */ callback) {
 	if(typeof options.maxRecords === "undefined") {
 		options.maxRecords = 100;
 	}
-	
+
 	var err = null;
-	
+
 	var activity = [];
-	
+
 	var start = userActivity.length - options.maxRecords;
 	if(start < 0) {
 		start = 0;
 	}
-	
+
 	for(var i = userActivity.length - 1; i >= start; i--) {
 		var entry = userActivity[i];
 		var ua = new apiDm.ApiUserActivity(
@@ -665,11 +666,11 @@ function apiGetUserActivity(/* Object */ options, /* Function */ callback) {
 		);
 		activity.push(ua);
 	}
-	
+
 	var result = {
 		activity: activity
 	};
-	
+
 	callback(err, result);
 }
 

@@ -136,7 +136,7 @@ function handleUserConnect(
 		sendMessageToExclude("userEvent", userEvent, [client], site);
 	}
 
-	store.insertUserActivity(ua.activityTypes["connect_to_site"].id,
+	store.insertUserActivity(ua.activityTypes.connect_to_site.id,
 		client.user.id,
 		site.id,
 		null,
@@ -175,7 +175,7 @@ function handleUserDisconnect(
 		sendMessageToAll("userEvent", userEvent, site);
 	}
 
-	store.insertUserActivity(ua.activityTypes["disconnect_from_site"].id,
+	store.insertUserActivity(ua.activityTypes.disconnect_from_site.id,
 		client.user.id,
 		site.id,
 		null,

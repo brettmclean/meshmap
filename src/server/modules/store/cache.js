@@ -24,7 +24,7 @@ function Cache() {
 	this.maxHeapSizeMb = appConfig.limits.avoidCachingAboveHeapSizeMib;
 
 	// Can we remove the given item from the cache when it has expired?
-	this.canRemoveItem = function(item) {
+	this.canRemoveItem = function() {
 		return true;
 	};
 

@@ -121,7 +121,7 @@ function createNewSite(/* String */ ipAddress, /* Function */ callback) {
 			siteCreationByIp[ipAddress]++;
 			callback(null, false, newSiteCode);
 
-			store.insertUserActivity(ua.activityTypes["create_site"].id,
+			store.insertUserActivity(ua.activityTypes.create_site.id,
 				null,
 				site.id,
 				null,

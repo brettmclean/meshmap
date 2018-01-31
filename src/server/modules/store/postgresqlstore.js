@@ -287,7 +287,7 @@ var populateMarkerSymbols = function() {
 			if(iconResults) {
 				markerIcons = {};
 				for(var i = 0; i < iconResults.rowCount; i++) {
-					markerIcons[iconResults.rows[i]["id"]] = iconResults.rows[i]["url"];
+					markerIcons[iconResults.rows[i].id] = iconResults.rows[i].url;
 				}
 
 				exports.markerIcons = markerIcons;
@@ -307,7 +307,7 @@ var populateMarkerSymbols = function() {
 			if(colorResults) {
 				markerColors = {};
 				for(var i = 0; i < colorResults.rowCount; i++) {
-					markerColors[colorResults.rows[i]["id"]] = colorResults.rows[i]["color"];
+					markerColors[colorResults.rows[i].id] = colorResults.rows[i].color;
 				}
 
 				exports.markerColors = markerColors;
@@ -358,15 +358,15 @@ function getSite(/* String */ siteCode, /* Object */ options, /* Function */ cal
 			if(siteResult && siteResult.rowCount > 0) {
 				var row = siteResult.rows[0];
 				site = new dm.Site();
-				site.id = row["id"];
+				site.id = row.id;
 				site.siteCode = siteCode;
-				site.name = row["name"];
-				site.description = row["description"];
-				site.ownerId = row["owner_id"];
-				site.createDate = row["creation_date"];
-				site.lastAccessDate = row["last_access_date"];
-				site.settings.onlyOwnerCanEdit = row["only_owner_can_edit"];
-				site.settings.initialExtent = convertPsqlBoxStringToMapExtent(row["initial_extent"]);
+				site.name = row.name;
+				site.description = row.description;
+				site.ownerId = row.owner_id;
+				site.createDate = row.creation_date;
+				site.lastAccessDate = row.last_access_date;
+				site.settings.onlyOwnerCanEdit = row.only_owner_can_edit;
+				site.settings.initialExtent = convertPsqlBoxStringToMapExtent(row.initial_extent);
 
 				if(err) {
 					callback(err, site);
@@ -422,9 +422,9 @@ function getUser(/* String */ secret, /* Function */ callback) {
 			if(userResult && userResult.rowCount > 0) {
 				var row = userResult.rows[0];
 				user = new dm.User(secret);
-				user.id = row["id"];
-				user.name = row["name"];
-				user.settings.confirmMarkerDeletion = row["confirm_marker_deletion"];
+				user.id = row.id;
+				user.name = row.name;
+				user.settings.confirmMarkerDeletion = row.confirm_marker_deletion;
 			}
 
 			callback(err, user);
@@ -438,8 +438,6 @@ function getUserSiteState(/* Number */ userId, /* Number */ siteId, /* Function 
 		return;
 	}
 
-	var err = null;
-
 	runQuery("SELECT extent FROM user_sites WHERE user_id = $1 AND site_id = $2;",
 		[userId, siteId],
 		null,
@@ -451,7 +449,7 @@ function getUserSiteState(/* Number */ userId, /* Number */ siteId, /* Function 
 			var stateObj = {};
 
 			if(result && result.rowCount > 0) {
-				stateObj.extent = convertPsqlBoxStringToMapExtent(result.rows[0]["extent"]);
+				stateObj.extent = convertPsqlBoxStringToMapExtent(result.rows[0].extent);
 			}
 
 			callback(err, new dm.UserSiteState(stateObj));
@@ -495,7 +493,7 @@ function getIpAddressBanned(/* String */ ipAddress, /* Function */ callback) {
 			var isBanned = false;
 
 			if(result && result.rowCount > 0) {
-				isBanned = result.rows[0]["is_banned"];
+				isBanned = result.rows[0].is_banned;
 			}
 
 			bannedIpCache.put(ipAddress, { isBanned: isBanned });
@@ -547,13 +545,13 @@ function getMarkers(/* Number */ siteId, /* Function */ callback) {
 			if(markersResult && markersResult.rowCount > 0) {
 				for(var i = 0; i < markersResult.rowCount; i++) {
 					var row = markersResult.rows[i];
-					var markerId = row["id"];
+					var markerId = row.id;
 
 					var iconId = null;
 					var lineColorId = null;
 					var fillColorId = null;
 					var lineWidth = null;
-					var symbolParts = (row["symbol"] && row["symbol"].split(";")) || [];
+					var symbolParts = (row.symbol && row.symbol.split(";")) || [];
 					for(var j = 0; j < symbolParts.length; j++) {
 						var symbolPart = symbolParts[j];
 						if(symbolPart.match(/^ico=/)) {
@@ -570,21 +568,21 @@ function getMarkers(/* Number */ siteId, /* Function */ callback) {
 					var marker = null;
 					var location = null;
 					var locations = null;
-					if(row["point"]) {
-						location = convertPsqlPointToLocation(row["point"]);
+					if(row.point) {
+						location = convertPsqlPointToLocation(row.point);
 						marker = new dm.PointMarker(markerId, location, parseInt(iconId));
-					} else if(row["polyline"]) {
-						locations = convertPsqlPathStringToLocationArray(row["polyline"]);
+					} else if(row.polyline) {
+						locations = convertPsqlPathStringToLocationArray(row.polyline);
 						marker = new dm.PolylineMarker(markerId, locations, lineColorId, lineWidth);
-					} else if(row["polygon"]) {
-						locations = convertPsqlPolygonStringToLocationArray(row["polygon"]);
+					} else if(row.polygon) {
+						locations = convertPsqlPolygonStringToLocationArray(row.polygon);
 						marker = new dm.PolygonMarker(markerId, locations, lineColorId, fillColorId, lineWidth);
 					}
 
 					if(marker) {
-						marker.name = row["name"];
-						marker.description = row["description"];
-						marker.ownerId = row["owner_id"];
+						marker.name = row.name;
+						marker.description = row.description;
+						marker.ownerId = row.owner_id;
 						markers.push(marker);
 					}
 				}
@@ -633,7 +631,7 @@ function insertSite(/* Site */ site, /* Function */ callback) {
 					runQuery("INSERT INTO site_settings (site_id, only_owner_can_edit, initial_extent) VALUES ($1, $2, $3)",
 						[site.id, site.settings.onlyOwnerCanEdit, boxStr],
 						dbClient,
-						function(err, result) {
+						function(err) {
 							dbCallback(err);
 						}
 					);
@@ -684,7 +682,7 @@ function insertUser(/* User */ user, /* Function */ callback) {
 					runQuery("INSERT INTO user_settings (user_id, confirm_marker_deletion) VALUES ($1, $2)",
 						[user.id, user.settings.confirmMarkerDeletion],
 						dbClient,
-						function(err, result) {
+						function(err) {
 							dbCallback(err);
 						}
 					);
@@ -790,11 +788,11 @@ function insertUserSiteAssociation(/* Client */ client, /* Site */ site, /* Func
 					}
 
 					if(result && result.rowCount > 0) {
-						if(result.rows[0]["count"] <= 0) {
+						if(result.rows[0].count <= 0) {
 							runQuery("INSERT INTO user_sites (site_id, user_id) VALUES ($1, $2)",
 								[site.id, client.user.id],
 								dbClient,
-								function(err, result) {
+								function(err) {
 									dbCallback(err);
 								}
 							);
@@ -861,7 +859,7 @@ function insertConnectionLog(/* Client */ client, /* Function */ callback) {
 						}
 
 						if(result && result.rowCount > 0) {
-							var ipId = result.rows[0]["id"];
+							var ipId = result.rows[0].id;
 							insertUserConnection(ipId);
 						} else {
 							insertIpAddress(ipAddress);
@@ -880,7 +878,7 @@ function insertConnectionLog(/* Client */ client, /* Function */ callback) {
 							return;
 						}
 
-						var ipId = result.rows[0]["id"];
+						var ipId = result.rows[0].id;
 						insertUserConnection(ipId);
 					}
 				);
@@ -890,7 +888,7 @@ function insertConnectionLog(/* Client */ client, /* Function */ callback) {
 				runQuery("INSERT INTO user_connections (user_id, ip_id, connect_date) VALUES ($1, $2, $3)",
 					[client.user.id, ipId, new Date()],
 					dbClient,
-					function(err, result) {
+					function(err) {
 						dbCallback(err);
 					}
 				);
@@ -928,7 +926,7 @@ function insertUserActivity(
 		runQuery("INSERT INTO user_activity (activity_date, activity_type, user_id, site_id, marker_id) VALUES ($1, $2, $3, $4, $5)",
 			[new Date(), activityId, userId, siteId, markerId],
 			null,
-			function(err, result) {
+			function(err) {
 				callback(err);
 			}
 		);
@@ -973,7 +971,7 @@ function updateSite(/* Site */ site, /* Function */ callback) {
 		runQuery("UPDATE sites SET owner_id = $1, name = $2, description = $3 WHERE id = $4",
 			[site.ownerId, site.name, site.description, site.id],
 			dbClient,
-			function(err, result) {
+			function(err) {
 				if(err) {
 					return dbCallback(err);
 				}
@@ -983,7 +981,7 @@ function updateSite(/* Site */ site, /* Function */ callback) {
 				runQuery("UPDATE site_settings SET only_owner_can_edit = $1, initial_extent = $2 WHERE site_id = $3",
 					[settings.onlyOwnerCanEdit, convertMapExtentToPsqlBoxString(settings.initialExtent), site.id],
 					dbClient,
-					function(err, result) {
+					function(err) {
 						dbCallback(err);
 					}
 				);
@@ -1013,7 +1011,7 @@ function updateUser(/* User */ user, /* Function */ callback) {
 		runQuery("UPDATE users SET name = $1 WHERE id = $2",
 			[user.name, user.id],
 			null,
-			function(err, result) {
+			function(err) {
 				if(err) {
 					return dbCallback(err);
 				}
@@ -1022,7 +1020,7 @@ function updateUser(/* User */ user, /* Function */ callback) {
 				runQuery("UPDATE user_settings SET confirm_marker_deletion = $1 WHERE user_id = $2",
 					[settings.confirmMarkerDeletion, user.id],
 					dbClient,
-					function(err, result) {
+					function(err) {
 						dbCallback(err);
 					}
 				);
@@ -1044,7 +1042,7 @@ function updateMarker(
 	runQuery("UPDATE markers SET name = $1, description = $2 WHERE id = $3",
 		[marker.name, marker.description, marker.id],
 		null,
-		function(err, result) {
+		function(err) {
 			callback(err);
 		}
 	);
@@ -1092,14 +1090,14 @@ function updateUserExtents(/* { userId: Number, siteId: Number, extent: MapExten
 
 		dbClient.query("BEGIN",
 			[],
-			function(err, result) {
+			function(err) {
 				if(err) {
 					return rollback(err);
 				}
 
 				dbClient.query("CREATE TEMP TABLE user_sites_temp (LIKE user_sites INCLUDING ALL) ON COMMIT DROP",
 					[],
-					function(err, result) {
+					function(err) {
 						if(err) {
 							return rollback("Error while creating temp table user_sites_temp: " + err);
 						}
@@ -1134,13 +1132,13 @@ function updateUserExtents(/* { userId: Number, siteId: Number, extent: MapExten
 								"FROM user_sites_temp ust " +
 								"WHERE us.site_id = ust.site_id AND us.user_id = ust.user_id",
 								[],
-								function(err, result) {
+								function(err) {
 
 									if(err) {
 										return rollback("Error while updating user_sites from user_sites_temp: " + err);
 									}
 
-									dbClient.query("COMMIT", function(err, result) {
+									dbClient.query("COMMIT", function(err) {
 										if(err) {
 											return rollback("Error occurred while committing extent updates to user_sites: " + err);
 										}
@@ -1190,7 +1188,7 @@ function updateSiteAccessDate(/* Site */ site, /* Date */ date, /* Function */ c
 	runQuery("UPDATE sites SET last_access_date = $1 WHERE id = $2",
 			[date, site.id],
 			null,
-			function(err, result) {
+			function(err) {
 				callback(err);
 			}
 	);
@@ -1217,7 +1215,7 @@ function updateIpAddressBanned(/* String */ ipAddress, /* Boolean */ isBanned, /
 	runQuery("UPDATE ip_addresses SET is_banned = $1 WHERE ip_address = $2",
 		[isBanned, ipAddress],
 		null,
-		function(err, result) {
+		function(err) {
 			callback(err);
 		}
 	);
@@ -1255,7 +1253,7 @@ function deleteMarker(/* Site */ site, /* Number */ markerId, /* Function */ cal
 	runQuery("DELETE FROM markers WHERE id = $1",
 		[markerId],
 		null,
-		function(err, result) {
+		function(err) {
 			callback(err);
 		}
 	);
@@ -1288,16 +1286,16 @@ function apiGetSites(/* Function */ callback) {
 
 					// Use cached site so we can see if there are any connected
 					// users.
-					var cachedSite = siteCache.get(row["site_code"]);
+					var cachedSite = siteCache.get(row.site_code);
 
 					if(cachedSite) {
 						site = cachedSite;
 					} else {
 						site = new dm.Site();
-						site.siteCode = row["site_code"];
-						site.name = row["name"];
-						site.createDate = row["creation_date"];
-						site.lastAccessDate = row["last_access_date"];
+						site.siteCode = row.site_code;
+						site.name = row.name;
+						site.createDate = row.creation_date;
+						site.lastAccessDate = row.last_access_date;
 					}
 
 					var apiSite = new apiDm.ApiSiteSummary(site);
@@ -1358,8 +1356,8 @@ function apiGetUsers(/* Function */ callback) {
 				for(var i = 0; i < usersResult.rowCount; i++) {
 					var row = usersResult.rows[i];
 					user = new dm.User();
-					user.id = row["id"];
-					user.name = row["name"];
+					user.id = row.id;
+					user.name = row.name;
 
 					var apiUser = new apiDm.ApiUserSummary(user);
 					results.push(apiUser);
@@ -1397,7 +1395,7 @@ function apiGetUser(/* Number */ userId, /* Function */ callback) {
 				var row = userResult.rows[0];
 				var user = new dm.User();
 				user.id = userId;
-				user.name = row["name"];
+				user.name = row.name;
 
 				runQuery("SELECT s.site_code FROM user_sites us INNER JOIN sites s ON us.site_id = s.id WHERE us.user_id = $1",
 					[userId],
@@ -1413,8 +1411,8 @@ function apiGetUser(/* Number */ userId, /* Function */ callback) {
 
 						if(siteCodesResult) {
 							for(var i = 0; i < siteCodesResult.rowCount; i++) {
-								if(siteCodesResult.rows[i] && siteCodesResult.rows[i]["site_code"]) {
-									siteCodes.push(siteCodesResult.rows[i]["site_code"]);
+								if(siteCodesResult.rows[i] && siteCodesResult.rows[i].site_code) {
+									siteCodes.push(siteCodesResult.rows[i].site_code);
 								}
 							}
 						}
@@ -1435,7 +1433,6 @@ function apiGetStatus(/* Function */ callback) {
 		return;
 	}
 
-	var err = null;
 	var statusResult = new apiDm.ApiStatus();
 	statusResult.sitesInMemory = siteCache.size;
 
@@ -1491,8 +1488,8 @@ function apiGetStatus(/* Function */ callback) {
 						return;
 					}
 
-					if(result && result.rowCount > 0 && result.rows[0]["count"]) {
-						totalCallback(result.rows[0]["count"]);
+					if(result && result.rowCount > 0 && result.rows[0].count) {
+						totalCallback(result.rows[0].count);
 					} else {
 						totalCallback(0);
 					}
@@ -1542,8 +1539,6 @@ function apiGetUserActivity(/* Object */ options, /* Function */ callback) {
 		options.maxRecords = 100;
 	}
 
-	var err = null;
-
 	runQuery("SELECT ua.activity_date, ua.activity_type, ua.user_id, ua.marker_id, s.site_code FROM user_activity ua INNER JOIN sites s ON ua.site_id = s.id ORDER BY activity_date DESC LIMIT $1;",
 		[options.maxRecords],
 		null,
@@ -1561,11 +1556,11 @@ function apiGetUserActivity(/* Object */ options, /* Function */ callback) {
 					var row = activityResult.rows[i];
 
 					activity.push(new apiDm.ApiUserActivity(
-						row["activity_date"],
-						row["activity_type"],
-						row["user_id"],
-						row["site_code"],
-						row["marker_id"]));
+						row.activity_date,
+						row.activity_type,
+						row.user_id,
+						row.site_code,
+						row.marker_id));
 				}
 
 				var result = {

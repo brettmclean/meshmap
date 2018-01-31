@@ -123,7 +123,7 @@ function serveFile(
 
 	request.addListener("end", function () {
 		if(!override.path) {
-			fileServer.serve(request, response, function(err, result) {
+			fileServer.serve(request, response, function(err) {
 				if(err) {
 					fileServer.serveFile(getErrorPageForStatusCode(err.status), err.status, {}, request, response);
 				}

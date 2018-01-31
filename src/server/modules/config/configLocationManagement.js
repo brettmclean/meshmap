@@ -6,7 +6,7 @@ var getConfigDirectory = function() {
 };
 
 var getEnvConfigDirectory = function() {
-	return process.env["MM_CONFIG_DIR"];
+	return process.env.MM_CONFIG_DIR;
 };
 
 var getDefaultConfigDirectory = function() {

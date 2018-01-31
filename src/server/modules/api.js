@@ -27,14 +27,14 @@ function handleApiRequest(
 	var validKey = false;
 	var indent = 0;
 
-	if(qs["key"] && qs["key"] === appConfig.apiKey) {
+	if(qs.key && qs.key === appConfig.apiKey) {
 		validKey = true;
 	} else {
 		var ipAddress = util.getIpAddressFromHttpRequest(request);
 		logger.warn("Incorrect or missing API key sent from " + ipAddress + ".");
 	}
 
-	if(qs["pretty"] && qs["pretty"].toLowerCase() === "true") {
+	if(qs.pretty && qs.pretty.toLowerCase() === "true") {
 		indent = 4;
 	}
 
@@ -228,8 +228,8 @@ function getUserActivity(/* String[] */ pathSegments, /* Object */ queryString, 
 		maxRecords: 100
 	};
 
-	if(queryString["max"] && !isNaN(queryString["max"])) {
-		options.maxRecords = parseInt(queryString["max"]);
+	if(queryString.max && !isNaN(queryString.max)) {
+		options.maxRecords = parseInt(queryString.max);
 	}
 
 	store.apiGetUserActivity(options, function(err, apiUserActivities) {
@@ -252,7 +252,7 @@ function banUnbanUser(/* String[] */ pathSegments, /* Object */ queryString, /* 
 	var isBanned = operation === "ban" ? true : false;
 
 	var err = null;
-	var ipAddress = queryString["ip"];
+	var ipAddress = queryString.ip;
 
 	if(!ipAddress) {
 		var errorObj = {
@@ -267,9 +267,9 @@ function banUnbanUser(/* String[] */ pathSegments, /* Object */ queryString, /* 
 		var resultObj = {};
 
 		if(err) {
-			resultObj["result"] = "Failed to " + (isBanned ? "ban" : "unban") + " IP address " + ipAddress + ".";
+			resultObj.result = "Failed to " + (isBanned ? "ban" : "unban") + " IP address " + ipAddress + ".";
 		} else {
-			resultObj["result"] = "Successfully " + (isBanned ? "banned" : "unbanned") + " IP address " + ipAddress + ".";
+			resultObj.result = "Successfully " + (isBanned ? "banned" : "unbanned") + " IP address " + ipAddress + ".";
 		}
 
 		callback(err, resultObj);

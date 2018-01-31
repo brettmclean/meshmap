@@ -75,7 +75,7 @@ function handleSocketIoConnection(/* Socket */ socket) {
 	try {
 		var ipAddress = util.getIpAddressFromSocketIoRequest(socket);
 		subscribeToSocketIoConnectionEvents(socket, ipAddress);
-		checkIpAddressBanned(socket, ipAddress, function(/* Boolean */ proceed) {});
+		checkIpAddressBanned(socket, ipAddress, function() {});
 	} catch(err) {
 		logger.error("An error occurred while handling a new Socket.IO connection: " + err.stack);
 		if(socket) {

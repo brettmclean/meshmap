@@ -102,7 +102,7 @@ function handleAddMarker(
 			site
 		);
 
-		store.insertUserActivity(ua.activityTypes["create_marker"].id,
+		store.insertUserActivity(ua.activityTypes.create_marker.id,
 			client.user.id,
 			site.id,
 			marker.id,
@@ -149,7 +149,7 @@ function handleRemoveMarker(
 				site
 			);
 
-			store.insertUserActivity(ua.activityTypes["delete_marker"].id,
+			store.insertUserActivity(ua.activityTypes.delete_marker.id,
 				client.user.id,
 				site.id,
 				markerId,
@@ -215,7 +215,7 @@ function handleUpdateMarker(
 			);
 
 			store.insertUserActivity(
-				ua.activityTypes["edit_marker"].id,
+				ua.activityTypes.edit_marker.id,
 				client.user.id,
 				site.id,
 				marker.id,
@@ -386,7 +386,7 @@ function handleUpdateUserSetting(
 			handleUpdateUsername(settingUpdate.value, client, site);
 			break;
 		case "confirmMarkerDeletion":
-			handleUpdateConfirmMarkerDeletion(settingUpdate.value, client, site);
+			handleUpdateConfirmMarkerDeletion(settingUpdate.value, client);
 			break;
 		default:
 			break;
@@ -425,8 +425,7 @@ function handleUpdateUsername(
 
 function handleUpdateConfirmMarkerDeletion(
 	/* Boolean */ confirmMarkerDeletion,
-	/* Client */ client,
-	/* String */ site
+	/* Client */ client
 	) {
 	"use strict";
 
