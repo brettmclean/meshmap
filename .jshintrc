@@ -1,7 +1,5 @@
 {
 	"node": true,
-	"jasmine": true,
-	"esversion": 6,
 
 	"bitwise": true,
 	"curly": true,

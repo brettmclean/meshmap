@@ -7,7 +7,7 @@
     "test": "jasmine",
     "wtest": "onchange 'src/**/*' 'spec/**/*' -- jasmine",
     "lint": "npm run lint:spec && npm run lint:client && npm run lint:server",
-    "lint:spec": "jshint ./spec",
+    "lint:spec": "jshint ./spec --config spec/.jshintrc",
     "lint:client": "jshint ./src/client --config src/client/.jshintrc",
     "lint:server": "jshint ./src/server --config src/server/.jshintrc",
     "style": "jscs ./spec ./src/client",
