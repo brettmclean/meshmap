@@ -1,6 +1,7 @@
 var path = require("path");
 var fs = require("fs");
 var os = require("os");
+var consoleLogProviderFactory = require("./logging/consoleLogProviderFactory");
 
 var LOG_LEVELS = {
 	"error": 100,
@@ -15,6 +16,8 @@ var initialized = false;
 var currentLogLevel = "info";
 var logDirectory = null;
 var logToConsole = true;
+
+var consoleLogProvider = consoleLogProviderFactory.create();
 
 // Batch writes to log file to ensure we don't have several handles
 // to log file open at once.
@@ -110,7 +113,7 @@ function log(level, message) {
 		var output = "[" + getTimestamp() + "] " + level.toUpperCase() + ": " + message;
 
 		if(logToConsole) {
-			console.log(output);
+			logOutputToConsole(level, output);
 		}
 
 		if(logDirectory || !initialized) {
@@ -133,7 +136,7 @@ function flushBufferToFile() {
 			fs.appendFile(logPath, logBuffer, function(err) {
 				writingToLog = false;
 				if(err) {
-					console.log("Failed to write to log file: " + JSON.stringify(err));
+					consoleLogProvider.error("Failed to write to log file: " + JSON.stringify(err));
 				} else if(logBuffer) {
 					flushBufferToFile();
 				}
@@ -181,6 +184,26 @@ function getLogFilePath() {
 	dayOfMonth = dayOfMonth > 9 ? dayOfMonth : "0" + dayOfMonth;
 	var filename = year + "-" + month + "-" + dayOfMonth + ".log";
 	return path.join(logDirectory, filename);
+}
+
+function logOutputToConsole(level, output) {
+	switch(level) {
+		case "error":
+			consoleLogProvider.error(output);
+			break;
+		case "warn":
+			consoleLogProvider.warn(output);
+			break;
+		case "info":
+			consoleLogProvider.info(output);
+			break;
+		case "debug":
+			consoleLogProvider.debug(output);
+			break;
+		case "trace":
+			consoleLogProvider.trace(output);
+			break;
+	}
 }
 
 exports.init = init;
