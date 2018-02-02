@@ -3,6 +3,7 @@ var fs = require("fs");
 var os = require("os");
 var consoleLogProviderFactory = require("./logging/consoleLogProviderFactory");
 var FileWriteService = require("./utils/FileWriteService");
+var LogBufferService = require("./logging/LogBufferService");
 
 var LOG_LEVELS = {
 	"error": 100,
@@ -20,10 +21,10 @@ var logToConsole = true;
 
 var consoleLogProvider = consoleLogProviderFactory.create();
 var fileWriteService = new FileWriteService();
+var logBufferService = new LogBufferService();
 
 // Batch writes to log file to ensure we don't have several handles
 // to log file open at once.
-var logBuffer = "";
 var writingToLog = false;
 
 function init(config) {
@@ -72,7 +73,7 @@ function shutdown() {
 	"use strict";
 
 	// Flush the last bit to log file
-	if(logDirectory && initialized && logBuffer) {
+	if(logDirectory && initialized && logBufferService.hasEntries()) {
 		flushBufferToFile();
 	}
 
@@ -119,7 +120,7 @@ function log(level, message) {
 		}
 
 		if(logDirectory || !initialized) {
-			logBuffer += output + os.EOL;
+			logBufferService.queueEntry(level, output);
 		}
 
 		if(!writingToLog && logDirectory) {
@@ -131,19 +132,24 @@ function log(level, message) {
 function flushBufferToFile() {
 	"use strict";
 
-	if(logBuffer) {
+	if(logBufferService.hasEntries()) {
 		var logPath = getLogFilePath();
 		if(logPath) {
+
+			var logEntries = logBufferService.dequeueAndClearEntries();
+			var logLines = logEntries.map(function(entry) {
+				return entry.message + os.EOL;
+			}).join("");
+
 			writingToLog = true;
-			fileWriteService.appendUtf8StringToFile(logPath, logBuffer, function(err) {
+			fileWriteService.appendUtf8StringToFile(logPath, logLines, function(err) {
 				writingToLog = false;
 				if(err) {
 					consoleLogProvider.error("Failed to write to log file: " + JSON.stringify(err));
-				} else if(logBuffer) {
+				} else if(logBufferService.hasEntries()) {
 					flushBufferToFile();
 				}
 			});
-			logBuffer = "";
 		}
 	}
 }

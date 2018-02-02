@@ -12,6 +12,10 @@ LogBufferService.prototype.dequeueAndClearEntries = function() {
 	return entries;
 };
 
+LogBufferService.prototype.hasEntries = function() {
+	return this._entryQueue.length > 0;
+};
+
 var LogEntry = function(level, message) {
 	this.level = level;
 	this.message = message;

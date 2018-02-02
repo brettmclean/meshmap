@@ -73,4 +73,41 @@ describe("A log buffer service", function() {
 		});
 	});
 
+	describe("hasEntries method", function() {
+
+		it("exists", function() {
+			var lbs = new LogBufferService();
+
+			expect(typeof lbs.hasEntries).toBe("function");
+		});
+
+		it("returns true after entries have been queued", function() {
+			var lbs = new LogBufferService();
+
+			lbs.queueEntry("trace", "Message 1");
+			var hasEntries = lbs.hasEntries();
+
+			expect(hasEntries).toBe(true);
+		});
+
+		it("returns false by default", function() {
+			var lbs = new LogBufferService();
+
+			var hasEntries = lbs.hasEntries();
+
+			expect(hasEntries).toBe(false);
+		});
+
+		it("returns false after entries have been dequeued", function() {
+			var lbs = new LogBufferService();
+
+			lbs.queueEntry("trace", "Message 1");
+			lbs.dequeueAndClearEntries();
+			var hasEntries = lbs.hasEntries();
+
+			expect(hasEntries).toBe(false);
+		});
+
+	});
+
 });
