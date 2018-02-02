@@ -2,6 +2,7 @@ var path = require("path");
 var fs = require("fs");
 var os = require("os");
 var consoleLogProviderFactory = require("./logging/consoleLogProviderFactory");
+var FileWriteService = require("./utils/FileWriteService");
 
 var LOG_LEVELS = {
 	"error": 100,
@@ -18,6 +19,7 @@ var logDirectory = null;
 var logToConsole = true;
 
 var consoleLogProvider = consoleLogProviderFactory.create();
+var fileWriteService = new FileWriteService();
 
 // Batch writes to log file to ensure we don't have several handles
 // to log file open at once.
@@ -133,7 +135,7 @@ function flushBufferToFile() {
 		var logPath = getLogFilePath();
 		if(logPath) {
 			writingToLog = true;
-			fs.appendFile(logPath, logBuffer, function(err) {
+			fileWriteService.appendUtf8StringToFile(logPath, logBuffer, function(err) {
 				writingToLog = false;
 				if(err) {
 					consoleLogProvider.error("Failed to write to log file: " + JSON.stringify(err));
