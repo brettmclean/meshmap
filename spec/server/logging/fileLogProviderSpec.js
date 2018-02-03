@@ -6,6 +6,7 @@ var LogProviderBase = loader.load("logging/LogProviderBase");
 var FileWriteService = loader.load("utils/FileWriteService");
 
 var DEFAULT_LOG_DIRECTORY = "/path/to/log/dir";
+var DEFAULT_LOG_FILE_PATH = "/path/to/log/file.log";
 
 describe("A file log provider", function() {
 
@@ -26,6 +27,41 @@ describe("A file log provider", function() {
 			expect(fws.ensureDirectoryExists).toHaveBeenCalledWith("/my/log/dir");
 		});
 
+	});
+
+	describe("info method", function() {
+
+		it("calls appendUtf8StringToFile on file write service with provided message", function() {
+			var message = "My logged message",
+				fws = createFileWriteService(),
+				flp = createFileLogProvider({ fileWriteService: fws });
+
+			flp.info(DEFAULT_LOG_FILE_PATH, message);
+
+			expect(fws.appendUtf8StringToFile).toHaveBeenCalledWith(jasmine.any(String), message);
+		});
+
+		it("calls appendUtf8StringToFile on file write service with file path containing directory path", function() {
+			var logDir = "/my/log/dir",
+				fws = createFileWriteService(),
+				flp = createFileLogProvider({ fileWriteService: fws }, logDir);
+
+			flp.info("FilenameDoesNotMatter", "MessageDoesNotMatter");
+
+			var callArgs = fws.appendUtf8StringToFile.calls.argsFor(0);
+			expect(callArgs[0].indexOf(logDir)).not.toBe(-1);
+		});
+
+		it("calls appendUtf8StringToFile on file write service with file path containing directory path", function() {
+			var logFilename = "2018-02-03.log",
+				fws = createFileWriteService(),
+				flp = createFileLogProvider({ fileWriteService: fws });
+
+			flp.info(logFilename, "MessageDoesNotMatter");
+
+			var callArgs = fws.appendUtf8StringToFile.calls.argsFor(0);
+			expect(callArgs[0].indexOf(logFilename)).not.toBe(-1);
+		});
 	});
 
 });
