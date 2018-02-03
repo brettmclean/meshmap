@@ -171,12 +171,7 @@ function getLogFilePath() {
 	}
 
 	var now = new Date();
-	var year = now.getFullYear();
-	var month = now.getMonth() + 1;
-	month = month > 9 ? month : "0" + month;
-	var dayOfMonth = now.getDate();
-	dayOfMonth = dayOfMonth > 9 ? dayOfMonth : "0" + dayOfMonth;
-	var filename = year + "-" + month + "-" + dayOfMonth + ".log";
+	var filename = timestampFormatService.formatAsIso8601UtcDate(now) + ".log";
 	return path.join(logDirectory, filename);
 }
 
