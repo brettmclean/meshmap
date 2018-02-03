@@ -4,6 +4,7 @@ var os = require("os");
 var consoleLogProviderFactory = require("./logging/consoleLogProviderFactory");
 var FileWriteService = require("./utils/FileWriteService");
 var LogBufferService = require("./logging/LogBufferService");
+var TimestampFormatService = require("./logging/TimestampFormatService");
 
 var LOG_LEVELS = {
 	"error": 100,
@@ -22,6 +23,7 @@ var logToConsole = true;
 var consoleLogProvider = consoleLogProviderFactory.create();
 var fileWriteService = new FileWriteService();
 var logBufferService = new LogBufferService();
+var timestampFormatService = new TimestampFormatService();
 
 // Batch writes to log file to ensure we don't have several handles
 // to log file open at once.
@@ -158,23 +160,7 @@ function getTimestamp() {
 	"use strict";
 
 	var now = new Date();
-	var year = now.getFullYear();
-	var month = now.getMonth() + 1;
-	month = month > 9 ? month : "0" + month;
-	var dayOfMonth = now.getDate();
-	dayOfMonth = dayOfMonth > 9 ? dayOfMonth : "0" + dayOfMonth;
-	var hour = now.getHours() > 9 ? now.getHours() : "0" + now.getHours();
-	var minutes = now.getMinutes() > 9 ? now.getMinutes() : "0" + now.getMinutes();
-	var seconds = now.getSeconds() > 9 ? now.getSeconds() : "0" + now.getSeconds();
-	var milliseconds = now.getMilliseconds();
-	milliseconds = milliseconds > 99 ? milliseconds :
-		(milliseconds > 9 ? "0" + milliseconds : "00" + milliseconds);
-
-	var dateStr = year + "-" + month + "-" + dayOfMonth +
-		" " + hour + ":" + minutes + ":" + seconds +
-		"." + milliseconds;
-
-	return dateStr;
+	return timestampFormatService.formatDateAsIso8601UtcTimestamp(now);
 }
 
 function getLogFilePath() {
