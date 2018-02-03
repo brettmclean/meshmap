@@ -160,7 +160,7 @@ function getTimestamp() {
 	"use strict";
 
 	var now = new Date();
-	return timestampFormatService.formatDateAsIso8601UtcTimestamp(now);
+	return timestampFormatService.formatAsIso8601UtcTimestamp(now);
 }
 
 function getLogFilePath() {
