@@ -2,6 +2,7 @@ var LogProviderBase = function() {
 
 };
 
+LogProviderBase.prototype.init = function() {};
 LogProviderBase.prototype.error = function() {};
 LogProviderBase.prototype.warn = function() {};
 LogProviderBase.prototype.info = function() {};

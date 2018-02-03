@@ -5,6 +5,14 @@ var LogProviderBase = loader.load("logging/LogProviderBase");
 
 describe("A log provider base", function() {
 
+	describe("init method", function() {
+
+		it("exists", function() {
+			verifyMethodExists("init");
+		});
+
+	});
+
 	describe("error method", function() {
 
 		it("exists", function() {
