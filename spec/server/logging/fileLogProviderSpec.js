@@ -38,7 +38,7 @@ describe("A file log provider", function() {
 
 			flp.info(DEFAULT_LOG_FILE_PATH, message);
 
-			expect(fws.appendUtf8StringToFile).toHaveBeenCalledWith(jasmine.any(String), message);
+			expect(fws.appendUtf8StringToFile).toHaveBeenCalledWith(jasmine.any(String), message, jasmine.any(Function));
 		});
 
 		it("calls appendUtf8StringToFile on file write service with file path containing directory path", function() {
@@ -62,6 +62,18 @@ describe("A file log provider", function() {
 			var callArgs = fws.appendUtf8StringToFile.calls.argsFor(0);
 			expect(callArgs[0].indexOf(logFilename)).not.toBe(-1);
 		});
+
+		it("does not attempt to write to log file until first write has completed", function() {
+			var appendCallback = function() {},
+				fws = createFileWriteServiceWithAppendFake(appendCallback),
+				flp = createFileLogProvider({ fileWriteService: fws });
+
+			flp.info("FilenameDoesNotMatter", "A");
+			flp.info("FilenameDoesNotMatter", "B");
+			flp.info("FilenameDoesNotMatter", "C");
+
+			expect(fws.appendUtf8StringToFile.calls.count()).toBe(1);
+		});
 	});
 
 });
@@ -76,13 +88,17 @@ function createFileLogProvider(deps, directoryPath) {
 }
 
 function createFileWriteService() {
-	var fws = new FileWriteService();
-	spyOn(fws, "ensureDirectoryExists");
-	spyOn(fws, "appendUtf8StringToFile").and.callFake(function(filePath, str, callback) {
+	return createFileWriteServiceWithAppendFake(function(filePath, str, callback) {
 		// jshint unused: false
 		if(callback) {
 			callback(null);
 		}
 	});
+}
+
+function createFileWriteServiceWithAppendFake(fakeFunc) {
+	var fws = new FileWriteService();
+	spyOn(fws, "ensureDirectoryExists");
+	spyOn(fws, "appendUtf8StringToFile").and.callFake(fakeFunc);
 	return fws;
 }
