@@ -1,8 +1,8 @@
 var path = require("path");
-var fs = require("fs");
 var os = require("os");
 var consoleLogProviderFactory = require("./logging/consoleLogProviderFactory");
 var fileLogProviderFactory = require("./logging/fileLogProviderFactory");
+var fileLogLocationServiceFactory = require("./logging/fileLogLocationServiceFactory");
 var LogBufferService = require("./logging/LogBufferService");
 var TimestampFormatService = require("./logging/TimestampFormatService");
 
@@ -21,6 +21,7 @@ var logToConsole = true;
 
 var consoleLogProvider = consoleLogProviderFactory.create();
 var fileLogProvider = null;
+var fileLogLocationService = null;
 var logBufferService = new LogBufferService();
 var timestampFormatService = new TimestampFormatService();
 
@@ -53,14 +54,11 @@ function loadConfig(config) {
 	if(logDirectory) {
 
 		fileLogProvider = fileLogProviderFactory.create(logDirectory);
+		fileLogLocationService = fileLogLocationServiceFactory.create(logDirectory);
 
-		// Create log directory if it doesn't exist
-		if(!fs.existsSync(logDirectory)) {
-			fs.mkdirSync(logDirectory);
-			info("Created log file directory at " + logDirectory);
-		} else {
-			info("Log files will be stored in " + logDirectory);
-		}
+		fileLogProvider.init();
+
+		info("Log files will be stored in " + logDirectory);
 	}
 
 	if(loggingCfg) {
@@ -151,9 +149,7 @@ function getTimestamp() {
 }
 
 function getLogFilename() {
-	var now = new Date();
-	var filename = timestampFormatService.formatAsIso8601UtcDate(now) + ".log";
-	return filename;
+	return fileLogLocationService.getLogFilename();
 }
 
 function logOutputToFile(level, output) {

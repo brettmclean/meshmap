@@ -73,7 +73,7 @@ describe("A file log location service", function() {
 function createFileLogLocationService(deps, logDirectoryConfig) {
 	deps = deps || {};
 
-	deps.timestampFormatService = deps.timestampFormatService || new TimestampFormatService();
+	deps.timestampFormatService = deps.timestampFormatService || createTimestampFormatServiceWhichReturnsArbitraryDateString();
 	deps.dateService = deps.dateService || createDateServiceWhichReturnsArbitraryDate();
 
 	logDirectoryConfig = logDirectoryConfig || DEFAULT_LOG_DIRECTORY_CONFIG;
