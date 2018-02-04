@@ -2,7 +2,7 @@ var path = require("path");
 var fs = require("fs");
 var os = require("os");
 var consoleLogProviderFactory = require("./logging/consoleLogProviderFactory");
-var FileWriteService = require("./utils/FileWriteService");
+var fileLogProviderFactory = require("./logging/fileLogProviderFactory");
 var LogBufferService = require("./logging/LogBufferService");
 var TimestampFormatService = require("./logging/TimestampFormatService");
 
@@ -17,17 +17,12 @@ var LOG_LEVELS = {
 var initialized = false;
 
 var currentLogLevel = "info";
-var logDirectory = null;
 var logToConsole = true;
 
 var consoleLogProvider = consoleLogProviderFactory.create();
-var fileWriteService = new FileWriteService();
+var fileLogProvider = null;
 var logBufferService = new LogBufferService();
 var timestampFormatService = new TimestampFormatService();
-
-// Batch writes to log file to ensure we don't have several handles
-// to log file open at once.
-var writingToLog = false;
 
 function init(config) {
 	"use strict";
@@ -40,7 +35,7 @@ function loadConfig(config) {
 	"use strict";
 
 	var appBase = path.resolve(__dirname, "../");
-	logDirectory = path.resolve(appBase, "logs");
+	var logDirectory = path.resolve(appBase, "logs");
 
 	var loggingCfg = config.logging;
 
@@ -56,6 +51,8 @@ function loadConfig(config) {
 
 	// Check that config didn't override logDirectory with null
 	if(logDirectory) {
+
+		fileLogProvider = fileLogProviderFactory.create(logDirectory);
 
 		// Create log directory if it doesn't exist
 		if(!fs.existsSync(logDirectory)) {
@@ -75,7 +72,7 @@ function shutdown() {
 	"use strict";
 
 	// Flush the last bit to log file
-	if(logDirectory && initialized && logBufferService.hasEntries()) {
+	if(fileLogProvider && initialized && logBufferService.hasEntries()) {
 		flushBufferToFile();
 	}
 
@@ -121,11 +118,11 @@ function log(level, message) {
 			logOutputToConsole(level, output);
 		}
 
-		if(logDirectory || !initialized) {
+		if(fileLogProvider || !initialized) {
 			logBufferService.queueEntry(level, output);
 		}
 
-		if(!writingToLog && logDirectory) {
+		if(fileLogProvider) {
 			flushBufferToFile();
 		}
 	}
@@ -135,22 +132,12 @@ function flushBufferToFile() {
 	"use strict";
 
 	if(logBufferService.hasEntries()) {
-		var logPath = getLogFilePath();
-		if(logPath) {
+		if(fileLogProvider) {
 
 			var logEntries = logBufferService.dequeueAndClearEntries();
-			var logLines = logEntries.map(function(entry) {
-				return entry.message + os.EOL;
-			}).join("");
-
-			writingToLog = true;
-			fileWriteService.appendUtf8StringToFile(logPath, logLines, function(err) {
-				writingToLog = false;
-				if(err) {
-					consoleLogProvider.error("Failed to write to log file: " + JSON.stringify(err));
-				} else if(logBufferService.hasEntries()) {
-					flushBufferToFile();
-				}
+			logEntries.forEach(function(entry) {
+				var logLine = entry.message + os.EOL;
+				logOutputToFile(entry.level, logLine);
 			});
 		}
 	}
@@ -163,16 +150,31 @@ function getTimestamp() {
 	return timestampFormatService.formatAsIso8601UtcTimestamp(now);
 }
 
-function getLogFilePath() {
-	"use strict";
-
-	if(!logDirectory) {
-		return null;
-	}
-
+function getLogFilename() {
 	var now = new Date();
 	var filename = timestampFormatService.formatAsIso8601UtcDate(now) + ".log";
-	return path.join(logDirectory, filename);
+	return filename;
+}
+
+function logOutputToFile(level, output) {
+	var filename = getLogFilename();
+	switch(level) {
+		case "error":
+			fileLogProvider.error(filename, output);
+			break;
+		case "warn":
+			fileLogProvider.warn(filename, output);
+			break;
+		case "info":
+			fileLogProvider.info(filename, output);
+			break;
+		case "debug":
+			fileLogProvider.debug(filename, output);
+			break;
+		case "trace":
+			fileLogProvider.trace(filename, output);
+			break;
+	}
 }
 
 function logOutputToConsole(level, output) {
