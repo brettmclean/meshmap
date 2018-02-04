@@ -1,3 +1,5 @@
+var LogEntry = require("./LogEntry");
+
 var LogBufferService = function() {
 	this._entryQueue = [];
 };
@@ -14,11 +16,6 @@ LogBufferService.prototype.dequeueAndClearEntries = function() {
 
 LogBufferService.prototype.hasEntries = function() {
 	return this._entryQueue.length > 0;
-};
-
-var LogEntry = function(level, message) {
-	this.level = level;
-	this.message = message;
 };
 
 module.exports = LogBufferService;
