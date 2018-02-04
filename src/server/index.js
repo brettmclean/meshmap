@@ -2,6 +2,7 @@
 
 var configLocationManagement = require("./modules/config/configLocationManagement");
 var appConfigServiceFactory = require("./modules/config/appConfigServiceFactory");
+var fileLogLocationServiceFactory = require("./modules/logging/fileLogLocationServiceFactory");
 var version = require("./modules/version");
 var busy = require("./modules/busy");
 var logger = require("./modules/logger");
@@ -12,6 +13,11 @@ logger.info("Reading config from " + configLocationManagement.getConfigDirectory
 var appConfig = appConfigServiceFactory.create().getAppConfig();
 
 /* Start up logger */
+var fileLogLocationService = fileLogLocationServiceFactory.create(appConfig.logging.directory);
+var logDirectory = fileLogLocationService.getAbsoluteLogDirectory();
+if(logDirectory) {
+	logger.info(`Log files will be stored in ${logDirectory}`);
+}
 logger.init(appConfig);
 
 /* Start up Site Manager */

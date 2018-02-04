@@ -57,8 +57,6 @@ function loadConfig(config) {
 		fileLogLocationService = fileLogLocationServiceFactory.create(logDirectory);
 
 		fileLogProvider.init();
-
-		info("Log files will be stored in " + logDirectory);
 	}
 
 	if(loggingCfg) {
