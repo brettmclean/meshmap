@@ -2,7 +2,6 @@ var path = require("path");
 var os = require("os");
 var consoleLogProviderFactory = require("./logging/consoleLogProviderFactory");
 var fileLogProviderFactory = require("./logging/fileLogProviderFactory");
-var fileLogLocationServiceFactory = require("./logging/fileLogLocationServiceFactory");
 var LogBufferService = require("./logging/LogBufferService");
 var TimestampFormatService = require("./logging/TimestampFormatService");
 
@@ -21,7 +20,6 @@ var logToConsole = true;
 
 var consoleLogProvider = consoleLogProviderFactory.create();
 var fileLogProvider = null;
-var fileLogLocationService = null;
 var logBufferService = new LogBufferService();
 var timestampFormatService = new TimestampFormatService();
 
@@ -53,8 +51,7 @@ function loadConfig(config) {
 	// Check that config didn't override logDirectory with null
 	if(logDirectory) {
 
-		fileLogProvider = fileLogProviderFactory.create(logDirectory);
-		fileLogLocationService = fileLogLocationServiceFactory.create(logDirectory);
+		fileLogProvider = fileLogProviderFactory.create(loggingCfg.directory);
 
 		fileLogProvider.init();
 	}
@@ -146,27 +143,22 @@ function getTimestamp() {
 	return timestampFormatService.formatAsIso8601UtcTimestamp(now);
 }
 
-function getLogFilename() {
-	return fileLogLocationService.getLogFilename();
-}
-
 function logOutputToFile(level, output) {
-	var filename = getLogFilename();
 	switch(level) {
 		case "error":
-			fileLogProvider.error(filename, output);
+			fileLogProvider.error(output);
 			break;
 		case "warn":
-			fileLogProvider.warn(filename, output);
+			fileLogProvider.warn(output);
 			break;
 		case "info":
-			fileLogProvider.info(filename, output);
+			fileLogProvider.info(output);
 			break;
 		case "debug":
-			fileLogProvider.debug(filename, output);
+			fileLogProvider.debug(output);
 			break;
 		case "trace":
-			fileLogProvider.trace(filename, output);
+			fileLogProvider.trace(output);
 			break;
 	}
 }
