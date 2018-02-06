@@ -1,4 +1,3 @@
-var path = require("path");
 var os = require("os");
 var consoleLogProviderFactory = require("./logging/consoleLogProviderFactory");
 var fileLogProviderFactory = require("./logging/fileLogProviderFactory");
@@ -33,9 +32,6 @@ function init(config) {
 function loadConfig(config) {
 	"use strict";
 
-	var appBase = path.resolve(__dirname, "../");
-	var logDirectory = path.resolve(appBase, "logs");
-
 	var loggingCfg = config.logging;
 
 	if(loggingCfg) {
@@ -43,21 +39,10 @@ function loadConfig(config) {
 			currentLogLevel = loggingCfg.level;
 		}
 
-		// loggingCfg.directory can be null (in cases where log
-		// files shouldn't be kept at all).
-		logDirectory = !loggingCfg.directory ? null : path.resolve(appBase, loggingCfg.directory);
-	}
-
-	// Check that config didn't override logDirectory with null
-	if(logDirectory) {
+		logToConsole = loggingCfg.logToConsole;
 
 		fileLogProvider = fileLogProviderFactory.create(loggingCfg.directory);
-
 		fileLogProvider.init();
-	}
-
-	if(loggingCfg) {
-		logToConsole = typeof loggingCfg.logToConsole === "boolean" ? loggingCfg.logToConsole : logToConsole;
 	}
 }
 
