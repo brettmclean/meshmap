@@ -9,20 +9,20 @@ var ConsoleLogProvider = function(deps) {
 ConsoleLogProvider.prototype = Object.create(baseProto);
 ConsoleLogProvider.prototype.constructor = ConsoleLogProvider;
 
-ConsoleLogProvider.prototype.error = function(message) {
-	this._consoleOutputService.error(message);
+ConsoleLogProvider.prototype.error = function(logEntry) {
+	this._consoleOutputService.error(logEntry.message);
 };
-ConsoleLogProvider.prototype.warn = function(message) {
-	this._consoleOutputService.warn(message);
+ConsoleLogProvider.prototype.warn = function(logEntry) {
+	this._consoleOutputService.warn(logEntry.message);
 };
-ConsoleLogProvider.prototype.info = function(message) {
-	this._consoleOutputService.info(message);
+ConsoleLogProvider.prototype.info = function(logEntry) {
+	this._consoleOutputService.info(logEntry.message);
 };
-ConsoleLogProvider.prototype.debug = function(message) {
-	this._consoleOutputService.debug(message);
+ConsoleLogProvider.prototype.debug = function(logEntry) {
+	this._consoleOutputService.debug(logEntry.message);
 };
-ConsoleLogProvider.prototype.trace = function(message) {
-	this._consoleOutputService.debug(message);
+ConsoleLogProvider.prototype.trace = function(logEntry) {
+	this._consoleOutputService.debug(logEntry.message);
 };
 
 module.exports = ConsoleLogProvider;

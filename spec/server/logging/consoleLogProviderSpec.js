@@ -4,6 +4,9 @@ var loader = require("../testUtils/loader");
 var ConsoleLogProvider = loader.load("logging/ConsoleLogProvider");
 var ConsoleOutputService = loader.load("utils/ConsoleOutputService");
 var LogProviderBase = loader.load("logging/LogProviderBase");
+var LogEntry = loader.load("logging/LogEntry");
+
+var DEFAULT_LOG_LEVEL = "info";
 
 describe("A console log provider", function() {
 
@@ -16,10 +19,11 @@ describe("A console log provider", function() {
 	describe("error method", function() {
 
 		it("calls the error method on the console output service with provided message", function() {
-			var cos = createConsoleOutputService(),
+			var le = createLogEntryWithMessage("MyErrorMessage"),
+				cos = createConsoleOutputService(),
 				clp = createConsoleLogProvider({ consoleOutputService: cos });
 
-			clp.error("MyErrorMessage");
+			clp.error(le);
 
 			expect(cos.error).toHaveBeenCalledWith("MyErrorMessage");
 		});
@@ -29,10 +33,11 @@ describe("A console log provider", function() {
 	describe("warn method", function() {
 
 		it("calls the warn method on the console output service with provided message", function() {
-			var cos = createConsoleOutputService(),
+			var le = createLogEntryWithMessage("MyWarnMessage"),
+				cos = createConsoleOutputService(),
 				clp = createConsoleLogProvider({ consoleOutputService: cos });
 
-			clp.warn("MyWarnMessage");
+			clp.warn(le);
 
 			expect(cos.warn).toHaveBeenCalledWith("MyWarnMessage");
 		});
@@ -42,10 +47,11 @@ describe("A console log provider", function() {
 	describe("info method", function() {
 
 		it("calls the info method on the console output service with provided message", function() {
-			var cos = createConsoleOutputService(),
+			var le = createLogEntryWithMessage("MyInfoMessage"),
+				cos = createConsoleOutputService(),
 				clp = createConsoleLogProvider({ consoleOutputService: cos });
 
-			clp.info("MyInfoMessage");
+			clp.info(le);
 
 			expect(cos.info).toHaveBeenCalledWith("MyInfoMessage");
 		});
@@ -55,10 +61,11 @@ describe("A console log provider", function() {
 	describe("debug method", function() {
 
 		it("calls the debug method on the console output service with provided message", function() {
-			var cos = createConsoleOutputService(),
+			var le = createLogEntryWithMessage("MyDebugMessage"),
+				cos = createConsoleOutputService(),
 				clp = createConsoleLogProvider({ consoleOutputService: cos });
 
-			clp.debug("MyDebugMessage");
+			clp.debug(le);
 
 			expect(cos.debug).toHaveBeenCalledWith("MyDebugMessage");
 		});
@@ -68,10 +75,11 @@ describe("A console log provider", function() {
 	describe("trace method", function() {
 
 		it("calls the debug method on the console output service with provided message", function() {
-			var cos = createConsoleOutputService(),
+			var le = createLogEntryWithMessage("MyTraceMessage"),
+				cos = createConsoleOutputService(),
 				clp = createConsoleLogProvider({ consoleOutputService: cos });
 
-			clp.trace("MyTraceMessage");
+			clp.trace(le);
 
 			expect(cos.debug).toHaveBeenCalledWith("MyTraceMessage");
 		});
@@ -94,4 +102,8 @@ function createConsoleOutputService() {
 	spyOn(cos, "info");
 	spyOn(cos, "debug");
 	return cos;
+}
+
+function createLogEntryWithMessage(message) {
+	return new LogEntry(DEFAULT_LOG_LEVEL, message);
 }

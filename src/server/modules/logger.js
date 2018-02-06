@@ -3,6 +3,7 @@ var consoleLogProviderFactory = require("./logging/consoleLogProviderFactory");
 var fileLogProviderFactory = require("./logging/fileLogProviderFactory");
 var LogBufferService = require("./logging/LogBufferService");
 var TimestampFormatService = require("./logging/TimestampFormatService");
+var LogEntry = require("./logging/LogEntry");
 
 var LOG_LEVELS = {
 	"error": 100,
@@ -93,7 +94,7 @@ function log(level, message) {
 		var output = "[" + getTimestamp() + "] " + level.toUpperCase() + ": " + message;
 
 		if(logToConsole) {
-			logOutputToConsole(level, output);
+			logOutputToConsole(new LogEntry(level, output));
 		}
 
 		if(fileLogProvider || !initialized) {
@@ -132,8 +133,24 @@ function logOutputToFile(level, output) {
 	logOutputToProvider(fileLogProvider, level, output);
 }
 
-function logOutputToConsole(level, output) {
-	logOutputToProvider(consoleLogProvider, level, output);
+function logOutputToConsole(logEntry) {
+	switch(logEntry.level) {
+		case "error":
+			consoleLogProvider.error(logEntry);
+			break;
+		case "warn":
+			consoleLogProvider.warn(logEntry);
+			break;
+		case "info":
+			consoleLogProvider.info(logEntry);
+			break;
+		case "debug":
+			consoleLogProvider.debug(logEntry);
+			break;
+		case "trace":
+			consoleLogProvider.trace(logEntry);
+			break;
+	}
 }
 
 function logOutputToProvider(logProvider, level, output) {
