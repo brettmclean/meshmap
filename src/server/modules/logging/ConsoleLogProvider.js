@@ -3,26 +3,26 @@ var LogProviderBase = require("./LogProviderBase");
 var baseClass = LogProviderBase,
 	baseProto = baseClass.prototype;
 
-var ConsoleLogProvider = function() {
-
+var ConsoleLogProvider = function(deps) {
+	this._consoleOutputService = deps.consoleOutputService;
 };
 ConsoleLogProvider.prototype = Object.create(baseProto);
 ConsoleLogProvider.prototype.constructor = ConsoleLogProvider;
 
 ConsoleLogProvider.prototype.error = function(message) {
-	console.error(message);
+	this._consoleOutputService.error(message);
 };
 ConsoleLogProvider.prototype.warn = function(message) {
-	console.warn(message);
+	this._consoleOutputService.warn(message);
 };
 ConsoleLogProvider.prototype.info = function(message) {
-	console.info(message);
+	this._consoleOutputService.info(message);
 };
 ConsoleLogProvider.prototype.debug = function(message) {
-	console.debug(message);
+	this._consoleOutputService.debug(message);
 };
 ConsoleLogProvider.prototype.trace = function(message) {
-	this.debug(message);
+	this._consoleOutputService.debug(message);
 };
 
 module.exports = ConsoleLogProvider;

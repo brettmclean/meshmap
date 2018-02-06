@@ -1,7 +1,11 @@
 var ConsoleLogProvider = require("./ConsoleLogProvider");
+var ConsoleOutputService = require("../utils/ConsoleOutputService");
 
 var create = function() {
-	return new ConsoleLogProvider();
+	var deps = {
+		consoleOutputService: new ConsoleOutputService()
+	};
+	return new ConsoleLogProvider(deps);
 };
 
 module.exports.create = create;
