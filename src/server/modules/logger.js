@@ -129,41 +129,29 @@ function getTimestamp() {
 }
 
 function logOutputToFile(level, output) {
-	switch(level) {
-		case "error":
-			fileLogProvider.error(output);
-			break;
-		case "warn":
-			fileLogProvider.warn(output);
-			break;
-		case "info":
-			fileLogProvider.info(output);
-			break;
-		case "debug":
-			fileLogProvider.debug(output);
-			break;
-		case "trace":
-			fileLogProvider.trace(output);
-			break;
-	}
+	logOutputToProvider(fileLogProvider, level, output);
 }
 
 function logOutputToConsole(level, output) {
+	logOutputToProvider(consoleLogProvider, level, output);
+}
+
+function logOutputToProvider(logProvider, level, output) {
 	switch(level) {
 		case "error":
-			consoleLogProvider.error(output);
+			logProvider.error(output);
 			break;
 		case "warn":
-			consoleLogProvider.warn(output);
+			logProvider.warn(output);
 			break;
 		case "info":
-			consoleLogProvider.info(output);
+			logProvider.info(output);
 			break;
 		case "debug":
-			consoleLogProvider.debug(output);
+			logProvider.debug(output);
 			break;
 		case "trace":
-			consoleLogProvider.trace(output);
+			logProvider.trace(output);
 			break;
 	}
 }
