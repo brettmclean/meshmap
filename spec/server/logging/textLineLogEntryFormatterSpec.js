@@ -40,6 +40,34 @@ describe("A text line log entry formatter", function() {
 			expect(tfs.formatAsIso8601UtcTimestamp).toHaveBeenCalledWith(date);
 		});
 
+		it("returns a string containing the timestamp returned by the timestamp format service", function() {
+			var timestampString = "2011-05-23T15:48:52.278Z",
+				tfs = createTimestampFormatServiceWhichReturnsString(timestampString),
+				tllef = createTextLineLogEntryFormatter({ timestampFormatService: tfs });
+
+			var textLine = tllef.format(DEFAULT_LOG_ENTRY);
+
+			expect(stringContainsString(textLine, timestampString)).toBe(true);
+		});
+
+		it("returns a string containing uppercase version of level in the given log entry", function() {
+			var logEntry = new LogEntry("trace", "DoesNotMatter"),
+				tllef = createTextLineLogEntryFormatter();
+
+			var textLine = tllef.format(logEntry);
+
+			expect(stringContainsString(textLine, "TRACE")).toBe(true);
+		});
+
+		it("returns a string containing the message in the given log entry", function() {
+			var logEntry = new LogEntry("info", "My custom message"),
+				tllef = createTextLineLogEntryFormatter();
+
+			var textLine = tllef.format(logEntry);
+
+			expect(stringContainsString(textLine, "My custom message")).toBe(true);
+		});
+
 	});
 
 });
@@ -64,7 +92,15 @@ function createDateServiceWhichReturnsCurrentDate(currentDate) {
 }
 
 function createTimestampFormatService() {
+	return createTimestampFormatServiceWhichReturnsString("2018-02-05T02:23:21.518Z");
+}
+
+function createTimestampFormatServiceWhichReturnsString(timestampString) {
 	var tfs = new TimestampFormatService();
-	spyOn(tfs, "formatAsIso8601UtcTimestamp");
+	spyOn(tfs, "formatAsIso8601UtcTimestamp").and.returnValue(timestampString);
 	return tfs;
+}
+
+function stringContainsString(outerString, innerString) {
+	return outerString.indexOf(innerString) !== -1;
 }
