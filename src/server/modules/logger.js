@@ -84,10 +84,6 @@ function log(level, message) {
 	"use strict";
 	if(LOG_LEVELS[level] && LOG_LEVELS[level] <= LOG_LEVELS[currentLogLevel]) {
 
-		if(typeof message !== "string") {
-			message = JSON.stringify(message);
-		}
-
 		var logEntry = new LogEntry(level, message);
 
 		if(logToConsole) {
