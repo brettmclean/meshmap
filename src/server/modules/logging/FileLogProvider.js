@@ -1,4 +1,5 @@
 var path = require("path");
+var os = require("os");
 
 var LogProviderBase = require("./LogProviderBase");
 
@@ -6,6 +7,7 @@ var baseClass = LogProviderBase,
 	baseProto = baseClass.prototype;
 
 var FileLogProvider = function(deps) {
+	this._textLineLogEntryFormatter = deps.textLineLogEntryFormatter;
 	this._fileLogLocationService = deps.fileLogLocationService;
 	this._fileWriteService = deps.fileWriteService;
 
@@ -20,20 +22,34 @@ FileLogProvider.prototype.init = function() {
 	this._logDirectory = this._fileLogLocationService.getAbsoluteLogDirectory();
 	this._fileWriteService.ensureDirectoryExists(this._logDirectory);
 };
-FileLogProvider.prototype.error = function(message) {
-	logMessageToFile.call(this, message);
+
+FileLogProvider.prototype.error = function(logEntry) {
+	var output = formatLogEntryWithNewLine.call(this, logEntry);
+	logMessageToFile.call(this, output);
 };
-FileLogProvider.prototype.warn = function(message) {
-	logMessageToFile.call(this, message);
+
+FileLogProvider.prototype.warn = function(logEntry) {
+	var output = formatLogEntryWithNewLine.call(this, logEntry);
+	logMessageToFile.call(this, output);
 };
-FileLogProvider.prototype.info = function(message) {
-	logMessageToFile.call(this, message);
+
+FileLogProvider.prototype.info = function(logEntry) {
+	var output = formatLogEntryWithNewLine.call(this, logEntry);
+	logMessageToFile.call(this, output);
 };
-FileLogProvider.prototype.debug = function(message) {
-	logMessageToFile.call(this, message);
+
+FileLogProvider.prototype.debug = function(logEntry) {
+	var output = formatLogEntryWithNewLine.call(this, logEntry);
+	logMessageToFile.call(this, output);
 };
-FileLogProvider.prototype.trace = function(message) {
-	logMessageToFile.call(this, message);
+
+FileLogProvider.prototype.trace = function(logEntry) {
+	var output = formatLogEntryWithNewLine.call(this, logEntry);
+	logMessageToFile.call(this, output);
+};
+
+var formatLogEntryWithNewLine = function(logEntry) {
+	return this._textLineLogEntryFormatter.format(logEntry) + os.EOL;
 };
 
 var logMessageToFile = function(message) {

@@ -1,3 +1,5 @@
+var os = require("os");
+
 require("../testUtils/init");
 var loader = require("../testUtils/loader");
 
@@ -5,9 +7,14 @@ var FileLogProvider = loader.load("logging/FileLogProvider");
 var LogProviderBase = loader.load("logging/LogProviderBase");
 var FileWriteService = loader.load("utils/FileWriteService");
 var FileLogLocationService = loader.load("logging/FileLogLocationService");
+var TextLineLogEntryFormatter = loader.load("logging/TextLineLogEntryFormatter");
+var LogEntry = loader.load("logging/LogEntry");
 
 var DEFAULT_LOG_DIRECTORY = "/path/to/log/dir";
 var DEFAULT_LOG_FILENAME = "2018-02-04.log";
+var DEFAULT_LOG_LEVEL = "info";
+var DEFAULT_LOG_MESSAGE = "Application starting...";
+var DEFAULT_LOG_ENTRY = new LogEntry(DEFAULT_LOG_LEVEL, DEFAULT_LOG_MESSAGE);
 
 describe("A file log provider", function() {
 
@@ -42,25 +49,38 @@ describe("A file log provider", function() {
 
 	describe("info method", function() {
 
+		it("calls format method on text line log entry formatter with given log entry", function() {
+			var le = createLogEntryWithMessage("MyInfoMessage"),
+				tllef = createTextLineLogEntryFormatter(),
+				flp = createFileLogProvider({ textLineLogEntryFormatter: tllef });
+
+			flp.init();
+			flp.info(le);
+
+			expect(tllef.format).toHaveBeenCalledWith(le);
+		});
+
 		it("calls getLogFilename on file log location service", function() {
 			var flls = createFileLogLocationService(),
 				flp = createFileLogProvider({ fileLogLocationService: flls });
 
 			flp.init();
-			flp.info("MessageDoesNotMatter");
+			flp.info(DEFAULT_LOG_ENTRY);
 
 			expect(flls.getLogFilename).toHaveBeenCalled();
 		});
 
-		it("calls appendUtf8StringToFile on file write service with provided message", function() {
-			var message = "My logged message",
+		it("calls appendUtf8StringToFile on file write service with text returned by text line log entry formatter and new line", function() {
+			var output = "FormattedInfoOutput",
+				expectedWrittenOutput = output + os.EOL,
+				tllef = createTextLineLogEntryFormatterWhichReturnsLine(output),
 				fws = createFileWriteService(),
-				flp = createFileLogProvider({ fileWriteService: fws });
+				flp = createFileLogProvider({ textLineLogEntryFormatter: tllef, fileWriteService: fws });
 
 			flp.init();
-			flp.info(message);
+			flp.info(DEFAULT_LOG_ENTRY);
 
-			expect(fws.appendUtf8StringToFile).toHaveBeenCalledWith(jasmine.any(String), message, jasmine.any(Function));
+			expect(fws.appendUtf8StringToFile).toHaveBeenCalledWith(jasmine.any(String), expectedWrittenOutput, jasmine.any(Function));
 		});
 
 		it("calls appendUtf8StringToFile on file write service with file path containing directory path", function() {
@@ -70,7 +90,7 @@ describe("A file log provider", function() {
 				flp = createFileLogProvider({ fileLogLocationService: flls, fileWriteService: fws });
 
 			flp.init();
-			flp.info("MessageDoesNotMatter");
+			flp.info(DEFAULT_LOG_ENTRY);
 
 			var callArgs = fws.appendUtf8StringToFile.calls.argsFor(0);
 			expect(callArgs[0].indexOf(logDir)).not.toBe(-1);
@@ -83,7 +103,7 @@ describe("A file log provider", function() {
 				flp = createFileLogProvider({ fileLogLocationService: flls, fileWriteService: fws });
 
 			flp.init();
-			flp.info("MessageDoesNotMatter");
+			flp.info(DEFAULT_LOG_ENTRY);
 
 			var callArgs = fws.appendUtf8StringToFile.calls.argsFor(0);
 			expect(callArgs[0].indexOf(logFilename)).not.toBe(-1);
@@ -95,9 +115,9 @@ describe("A file log provider", function() {
 				flp = createFileLogProvider({ fileWriteService: fws });
 
 			flp.init();
-			flp.info("A");
-			flp.info("B");
-			flp.info("C");
+			flp.info(new LogEntry(DEFAULT_LOG_LEVEL, "A"));
+			flp.info(new LogEntry(DEFAULT_LOG_LEVEL, "B"));
+			flp.info(new LogEntry(DEFAULT_LOG_LEVEL, "C"));
 
 			expect(fws.appendUtf8StringToFile.calls.count()).toBe(1);
 		});
@@ -110,6 +130,7 @@ function createFileLogProvider(deps) {
 
 	deps.fileWriteService = deps.fileWriteService || createFileWriteService();
 	deps.fileLogLocationService = deps.fileLogLocationService || createFileLogLocationService();
+	deps.textLineLogEntryFormatter = deps.textLineLogEntryFormatter || createTextLineLogEntryFormatter();
 
 	return new FileLogProvider(deps);
 }
@@ -147,4 +168,18 @@ function createFileWriteServiceWithAppendFake(fakeFunc) {
 	spyOn(fws, "ensureDirectoryExists");
 	spyOn(fws, "appendUtf8StringToFile").and.callFake(fakeFunc);
 	return fws;
+}
+
+function createTextLineLogEntryFormatter() {
+	return createTextLineLogEntryFormatterWhichReturnsLine("DefaultFormattedOutput");
+}
+
+function createTextLineLogEntryFormatterWhichReturnsLine(textLine) {
+	var tllef = new TextLineLogEntryFormatter({});
+	spyOn(tllef, "format").and.returnValue(textLine);
+	return tllef;
+}
+
+function createLogEntryWithMessage(message) {
+	return new LogEntry(DEFAULT_LOG_LEVEL, message);
 }

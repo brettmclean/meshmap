@@ -1,8 +1,6 @@
-var os = require("os");
 var consoleLogProviderFactory = require("./logging/consoleLogProviderFactory");
 var fileLogProviderFactory = require("./logging/fileLogProviderFactory");
 var LogBufferService = require("./logging/LogBufferService");
-var TimestampFormatService = require("./logging/TimestampFormatService");
 var LogEntry = require("./logging/LogEntry");
 
 var LOG_LEVELS = {
@@ -21,7 +19,6 @@ var logToConsole = true;
 var consoleLogProvider = consoleLogProviderFactory.create();
 var fileLogProvider = null;
 var logBufferService = new LogBufferService();
-var timestampFormatService = new TimestampFormatService();
 
 function init(config) {
 	"use strict";
@@ -96,8 +93,7 @@ function log(level, message) {
 		}
 
 		if(fileLogProvider || !initialized) {
-			var output = "[" + getTimestamp() + "] " + level.toUpperCase() + ": " + message;
-			logBufferService.queueEntry(level, output);
+			logBufferService.queueEntry(level, message);
 		}
 
 		if(fileLogProvider) {
@@ -113,23 +109,15 @@ function flushBufferToFile() {
 		if(fileLogProvider) {
 
 			var logEntries = logBufferService.dequeueAndClearEntries();
-			logEntries.forEach(function(entry) {
-				var logLine = entry.message + os.EOL;
-				logOutputToFile(entry.level, logLine);
+			logEntries.forEach(function(logEntry) {
+				logOutputToFile(logEntry);
 			});
 		}
 	}
 }
 
-function getTimestamp() {
-	"use strict";
-
-	var now = new Date();
-	return timestampFormatService.formatAsIso8601UtcTimestamp(now);
-}
-
-function logOutputToFile(level, output) {
-	logOutputToProvider(fileLogProvider, level, output);
+function logOutputToFile(logEntry) {
+	logOutputToProvider(fileLogProvider, logEntry);
 }
 
 function logOutputToConsole(logEntry) {
@@ -152,22 +140,22 @@ function logOutputToConsole(logEntry) {
 	}
 }
 
-function logOutputToProvider(logProvider, level, output) {
-	switch(level) {
+function logOutputToProvider(logProvider, logEntry) {
+	switch(logEntry.level) {
 		case "error":
-			logProvider.error(output);
+			logProvider.error(logEntry);
 			break;
 		case "warn":
-			logProvider.warn(output);
+			logProvider.warn(logEntry);
 			break;
 		case "info":
-			logProvider.info(output);
+			logProvider.info(logEntry);
 			break;
 		case "debug":
-			logProvider.debug(output);
+			logProvider.debug(logEntry);
 			break;
 		case "trace":
-			logProvider.trace(output);
+			logProvider.trace(logEntry);
 			break;
 	}
 }
