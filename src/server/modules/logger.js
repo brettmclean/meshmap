@@ -91,13 +91,12 @@ function log(level, message) {
 			message = JSON.stringify(message);
 		}
 
-		var output = "[" + getTimestamp() + "] " + level.toUpperCase() + ": " + message;
-
 		if(logToConsole) {
-			logOutputToConsole(new LogEntry(level, output));
+			logOutputToConsole(new LogEntry(level, message));
 		}
 
 		if(fileLogProvider || !initialized) {
+			var output = "[" + getTimestamp() + "] " + level.toUpperCase() + ": " + message;
 			logBufferService.queueEntry(level, output);
 		}
 
