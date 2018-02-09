@@ -2,6 +2,7 @@ require("../testUtils/init");
 var loader = require("../testUtils/loader");
 
 var LogBufferService = loader.load("logging/LogBufferService");
+var LogEntry = loader.load("logging/LogEntry");
 
 describe("A log buffer service", function() {
 
@@ -25,7 +26,7 @@ describe("A log buffer service", function() {
 			var lbs = new LogBufferService();
 			var expectedLogLevel = "debug";
 
-			lbs.queueEntry(expectedLogLevel, "Application starting...");
+			lbs.queueEntry(createLogEntry(expectedLogLevel, "Application starting..."));
 			var entries = lbs.dequeueAndClearEntries();
 
 			expect(entries[0].level).toBe(expectedLogLevel);
@@ -35,7 +36,7 @@ describe("A log buffer service", function() {
 			var lbs = new LogBufferService();
 			var expectedLogMessage = "Application starting...";
 
-			lbs.queueEntry("debug", expectedLogMessage);
+			lbs.queueEntry(createLogEntry("debug", expectedLogMessage));
 			var entries = lbs.dequeueAndClearEntries();
 
 			expect(entries[0].message).toBe(expectedLogMessage);
@@ -44,9 +45,9 @@ describe("A log buffer service", function() {
 		it("returns count of enqueued messages", function() {
 			var lbs = new LogBufferService();
 
-			lbs.queueEntry("debug", "Message 1");
-			lbs.queueEntry("info", "Message 2");
-			lbs.queueEntry("warn", "Message 3");
+			lbs.queueEntry(createLogEntry("debug", "Message 1"));
+			lbs.queueEntry(createLogEntry("info", "Message 2"));
+			lbs.queueEntry(createLogEntry("warn", "Message 3"));
 			var entries = lbs.dequeueAndClearEntries();
 
 			expect(entries.length).toBe(3);
@@ -55,8 +56,8 @@ describe("A log buffer service", function() {
 		it("retains correct log level for each entry", function() {
 			var lbs = new LogBufferService();
 
-			lbs.queueEntry("debug", "Message 1");
-			lbs.queueEntry("info", "Message 2");
+			lbs.queueEntry(createLogEntry("debug", "Message 1"));
+			lbs.queueEntry(createLogEntry("info", "Message 2"));
 			var entries = lbs.dequeueAndClearEntries();
 
 			expect(entries[0].level).not.toBe(entries[1].level);
@@ -65,7 +66,7 @@ describe("A log buffer service", function() {
 		it("clears entry queue", function() {
 			var lbs = new LogBufferService();
 
-			lbs.queueEntry("trace", "Message 1");
+			lbs.queueEntry(createLogEntry("trace", "Message 1"));
 			lbs.dequeueAndClearEntries();
 			var entries = lbs.dequeueAndClearEntries();
 
@@ -84,7 +85,7 @@ describe("A log buffer service", function() {
 		it("returns true after entries have been queued", function() {
 			var lbs = new LogBufferService();
 
-			lbs.queueEntry("trace", "Message 1");
+			lbs.queueEntry(createLogEntry("trace", "Message 1"));
 			var hasEntries = lbs.hasEntries();
 
 			expect(hasEntries).toBe(true);
@@ -101,7 +102,7 @@ describe("A log buffer service", function() {
 		it("returns false after entries have been dequeued", function() {
 			var lbs = new LogBufferService();
 
-			lbs.queueEntry("trace", "Message 1");
+			lbs.queueEntry(createLogEntry("trace", "Message 1"));
 			lbs.dequeueAndClearEntries();
 			var hasEntries = lbs.hasEntries();
 
@@ -111,3 +112,7 @@ describe("A log buffer service", function() {
 	});
 
 });
+
+function createLogEntry(level, message) {
+	return new LogEntry(level, message);
+}

@@ -1,11 +1,9 @@
-var LogEntry = require("./LogEntry");
-
 var LogBufferService = function() {
 	this._entryQueue = [];
 };
 
-LogBufferService.prototype.queueEntry = function(level, message) {
-	this._entryQueue.push(new LogEntry(level, message));
+LogBufferService.prototype.queueEntry = function(logEntry) {
+	this._entryQueue.push(logEntry);
 };
 
 LogBufferService.prototype.dequeueAndClearEntries = function() {

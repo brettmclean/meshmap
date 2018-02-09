@@ -88,12 +88,14 @@ function log(level, message) {
 			message = JSON.stringify(message);
 		}
 
+		var logEntry = new LogEntry(level, message);
+
 		if(logToConsole) {
-			logOutputToConsole(new LogEntry(level, message));
+			logOutputToConsole(logEntry);
 		}
 
 		if(fileLogProvider || !initialized) {
-			logBufferService.queueEntry(level, message);
+			logBufferService.queueEntry(logEntry);
 		}
 
 		if(fileLogProvider) {
