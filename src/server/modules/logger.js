@@ -121,23 +121,7 @@ function logOutputToFile(logEntry) {
 }
 
 function logOutputToConsole(logEntry) {
-	switch(logEntry.level) {
-		case "error":
-			consoleLogProvider.error(logEntry);
-			break;
-		case "warn":
-			consoleLogProvider.warn(logEntry);
-			break;
-		case "info":
-			consoleLogProvider.info(logEntry);
-			break;
-		case "debug":
-			consoleLogProvider.debug(logEntry);
-			break;
-		case "trace":
-			consoleLogProvider.trace(logEntry);
-			break;
-	}
+	logOutputToProvider(consoleLogProvider, logEntry);
 }
 
 function logOutputToProvider(logProvider, logEntry) {
