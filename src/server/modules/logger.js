@@ -1,5 +1,5 @@
-var consoleLogProviderFactory = require("./logging/consoleLogProviderFactory");
-var fileLogProviderFactory = require("./logging/fileLogProviderFactory");
+var consoleLogProviderFactory = require("./logging/factories/consoleLogProviderFactory");
+var fileLogProviderFactory = require("./logging/factories/fileLogProviderFactory");
 var LogBufferService = require("./logging/LogBufferService");
 var LogEntry = require("./logging/LogEntry");
 

@@ -1,5 +1,5 @@
-var FileLogProvider = require("./FileLogProvider");
-var FileWriteService = require("../utils/FileWriteService");
+var FileLogProvider = require("../FileLogProvider");
+var FileWriteService = require("../../utils/FileWriteService");
 var textLineLogEntryFormatterFactory = require("./textLineLogEntryFormatterFactory");
 var fileLogLocationServiceFactory = require("./fileLogLocationServiceFactory");
 

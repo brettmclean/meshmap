@@ -2,7 +2,7 @@
 
 var configLocationManagement = require("./modules/config/configLocationManagement");
 var appConfigServiceFactory = require("./modules/config/appConfigServiceFactory");
-var fileLogLocationServiceFactory = require("./modules/logging/fileLogLocationServiceFactory");
+var fileLogLocationServiceFactory = require("./modules/logging/factories/fileLogLocationServiceFactory");
 var version = require("./modules/version");
 var busy = require("./modules/busy");
 var logger = require("./modules/logger");

@@ -1,5 +1,5 @@
-var ConsoleLogProvider = require("./ConsoleLogProvider");
-var ConsoleOutputService = require("../utils/ConsoleOutputService");
+var ConsoleLogProvider = require("../ConsoleLogProvider");
+var ConsoleOutputService = require("../../utils/ConsoleOutputService");
 var textLineLogEntryFormatterFactory = require("./textLineLogEntryFormatterFactory");
 
 var create = function() {

@@ -1,6 +1,6 @@
-var FileLogLocationService = require("./FileLogLocationService");
-var DateService = require("../utils/DateService");
-var TimestampFormatService = require("./TimestampFormatService");
+var FileLogLocationService = require("../FileLogLocationService");
+var DateService = require("../../utils/DateService");
+var TimestampFormatService = require("../TimestampFormatService");
 
 var create = function(logDirectoryConfig) {
 	var deps = {

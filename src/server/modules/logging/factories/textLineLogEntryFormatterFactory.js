@@ -1,6 +1,6 @@
-var TextLineLogEntryFormatter = require("./TextLineLogEntryFormatter");
-var DateService = require("../utils/DateService");
-var TimestampFormatService = require("./TimestampFormatService");
+var TextLineLogEntryFormatter = require("../TextLineLogEntryFormatter");
+var DateService = require("../../utils/DateService");
+var TimestampFormatService = require("../TimestampFormatService");
 
 var create = function() {
 	var deps = {
