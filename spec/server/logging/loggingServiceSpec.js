@@ -3,6 +3,7 @@ var loader = require("../testUtils/loader");
 
 var LoggingService = loader.load("logging/LoggingService");
 var ConsoleLogProvider = loader.load("logging/ConsoleLogProvider");
+var LogBufferService = loader.load("logging/LogBufferService");
 var AppLoggingConfig = loader.load("config/AppConfig").AppLoggingConfig;
 
 var DEFAULT_MESSAGE = "Application starting...";
@@ -104,6 +105,21 @@ describe("A logging service", function() {
 
 			expect(clp.info).not.toHaveBeenCalled();
 		});
+
+		it("calls queueEntry on log buffer service with log entry containing message when service is uninitialized", function() {
+			var message = "My message 9874",
+				lbs = createLogBufferService(),
+				ls = createLoggingService({ logBufferService: lbs });
+
+			ls.info(message);
+
+			var providedLogEntry = lbs.queueEntry.calls.mostRecent().args[0];
+			expect(providedLogEntry.message).toBe(message);
+		});
+
+		xit("calls dequeueAndClearEntries on log buffer service when service is initialized and log providers are set", function() {
+
+		});
 	});
 
 	describe("debug method", function() {
@@ -144,6 +160,7 @@ describe("A logging service", function() {
 function createLoggingService(deps) {
 	deps = deps || {};
 	deps.consoleLogProvider = deps.consoleLogProvider || createConsoleLogProvider();
+	deps.logBufferService = deps.logBufferService || createLogBufferService();
 
 	return new LoggingService(deps);
 }
@@ -154,6 +171,12 @@ function createConsoleLogProvider() {
 	spyOn(clp, "info");
 	spyOn(clp, "debug");
 	return clp;
+}
+
+function createLogBufferService() {
+	var lbs = new LogBufferService();
+	spyOn(lbs, "queueEntry");
+	return lbs;
 }
 
 function createAppLoggingConfigWithLevel(level) {

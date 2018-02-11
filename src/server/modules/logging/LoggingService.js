@@ -16,6 +16,7 @@ var LOG_LEVELS = {
 
 var LoggingService = function(deps) {
 	this._consoleLogProvider = deps.consoleLogProvider;
+	this._logBufferService = deps.logBufferService;
 
 	this._logLevel = LOG_LEVEL_INFO;
 	this._logToConsole = true;
@@ -59,6 +60,8 @@ LoggingService.prototype.shutdown = function() {
 LoggingService.prototype._log = function(level, message) {
 	var logEntry = new LogEntry(level, message);
 	if(this._shouldLogAtLevel(level)) {
+		this._logBufferService.queueEntry(logEntry);
+
 		if(this._logToConsole) {
 			this._logToProvider(this._consoleLogProvider, logEntry);
 		}
