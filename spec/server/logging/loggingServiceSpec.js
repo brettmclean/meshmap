@@ -28,6 +28,33 @@ describe("A logging service", function() {
 		});
 	});
 
+	describe("error method", function() {
+		it("exists", function() {
+			var ls = createLoggingService();
+
+			expect(typeof ls.error).toBe("function");
+		});
+	});
+
+	describe("warn method", function() {
+		it("exists", function() {
+			var ls = createLoggingService();
+
+			expect(typeof ls.warn).toBe("function");
+		});
+
+		it("calls warn on console log provider when log level config set to info", function() {
+			var alc = createAppLoggingConfigWithLevel(LOG_LEVEL_INFO),
+				clp = createConsoleLogProvider(),
+				ls = createLoggingService({ consoleLogProvider: clp });
+
+			ls.init(alc);
+			ls.warn(DEFAULT_MESSAGE);
+
+			expect(clp.warn).toHaveBeenCalled();
+		});
+	});
+
 	describe("info method", function() {
 		it("exists", function() {
 			var ls = createLoggingService();
@@ -68,6 +95,22 @@ describe("A logging service", function() {
 		});
 	});
 
+	describe("debug method", function() {
+		it("exists", function() {
+			var ls = createLoggingService();
+
+			expect(typeof ls.debug).toBe("function");
+		});
+	});
+
+	describe("trace method", function() {
+		it("exists", function() {
+			var ls = createLoggingService();
+
+			expect(typeof ls.trace).toBe("function");
+		});
+	});
+
 	describe("shutdown method", function() {
 		it("exists", function() {
 			var ls = createLoggingService();
@@ -87,6 +130,7 @@ function createLoggingService(deps) {
 
 function createConsoleLogProvider() {
 	var clp = new ConsoleLogProvider({});
+	spyOn(clp, "warn");
 	spyOn(clp, "info");
 	return clp;
 }
