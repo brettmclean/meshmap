@@ -46,4 +46,9 @@ var AppLimitsConfig = function() {
 	this.avoidCachingAboveHeapSizeMib = null;
 };
 
+AppConfig.AppStoreConfig = AppStoreConfig;
+AppConfig.AppLoggingConfig = AppLoggingConfig;
+AppConfig.AppSiteDefaultsConfig = AppSiteDefaultsConfig;
+AppConfig.AppLimitsConfig = AppLimitsConfig;
+
 module.exports = AppConfig;
