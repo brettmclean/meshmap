@@ -113,7 +113,13 @@ describe("A logging service", function() {
 			expect(typeof ls.debug).toBe("function");
 		});
 
-		xit("does not call debug on console log provider when service is uninitialized", function() {
+		it("does not call debug on console log provider when service is uninitialized", function() {
+			var clp = createConsoleLogProvider(),
+				ls = createLoggingService({ consoleLogProvider: clp });
+
+			ls.debug(DEFAULT_MESSAGE);
+
+			expect(clp.debug).not.toHaveBeenCalled();
 		});
 	});
 
@@ -146,6 +152,7 @@ function createConsoleLogProvider() {
 	var clp = new ConsoleLogProvider({});
 	spyOn(clp, "warn");
 	spyOn(clp, "info");
+	spyOn(clp, "debug");
 	return clp;
 }
 
