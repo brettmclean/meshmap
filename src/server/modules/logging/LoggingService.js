@@ -18,6 +18,7 @@ var LoggingService = function(deps) {
 	this._consoleLogProvider = deps.consoleLogProvider;
 
 	this._logLevel = LOG_LEVEL_INFO;
+	this._logToConsole = true;
 };
 
 LoggingService.prototype.init = function(loggingConfig) {
@@ -28,6 +29,7 @@ LoggingService.prototype.setConfig = function(loggingConfig) {
 	if(this._isValidLogLevel(loggingConfig.level)) {
 		this._logLevel = loggingConfig.level;
 	}
+	this._logToConsole = loggingConfig.logToConsole;
 };
 
 LoggingService.prototype.error = function(message) {
@@ -57,7 +59,9 @@ LoggingService.prototype.shutdown = function() {
 LoggingService.prototype._log = function(level, message) {
 	var logEntry = new LogEntry(level, message);
 	if(this._shouldLogAtLevel(level)) {
-		this._logToProvider(this._consoleLogProvider, logEntry);
+		if(this._logToConsole) {
+			this._logToProvider(this._consoleLogProvider, logEntry);
+		}
 	}
 };
 

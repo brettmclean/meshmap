@@ -62,7 +62,7 @@ describe("A logging service", function() {
 			expect(typeof ls.info).toBe("function");
 		});
 
-		it("calls info on console log provider with log entry at info level without first initializing logging service", function() {
+		it("calls info on console log provider with log entry at info level when service is uninitialized", function() {
 			var clp = createConsoleLogProvider(),
 				ls = createLoggingService({ consoleLogProvider: clp });
 
@@ -93,6 +93,17 @@ describe("A logging service", function() {
 
 			expect(clp.info).not.toHaveBeenCalled();
 		});
+
+		it("does not call info on console log provider when log to console is set to false", function() {
+			var alc = createAppLoggingConfigWithLogToConsole(false),
+				clp = createConsoleLogProvider(),
+				ls = createLoggingService({ consoleLogProvider: clp });
+
+			ls.init(alc);
+			ls.info(DEFAULT_MESSAGE);
+
+			expect(clp.info).not.toHaveBeenCalled();
+		});
 	});
 
 	describe("debug method", function() {
@@ -100,6 +111,9 @@ describe("A logging service", function() {
 			var ls = createLoggingService();
 
 			expect(typeof ls.debug).toBe("function");
+		});
+
+		xit("does not call debug on console log provider when service is uninitialized", function() {
 		});
 	});
 
@@ -137,6 +151,10 @@ function createConsoleLogProvider() {
 
 function createAppLoggingConfigWithLevel(level) {
 	return createAppLoggingConfigWithLevelAndLogToConsole(level, true);
+}
+
+function createAppLoggingConfigWithLogToConsole(logToConsole) {
+	return createAppLoggingConfigWithLevelAndLogToConsole(LOG_LEVEL_INFO, logToConsole);
 }
 
 function createAppLoggingConfigWithLevelAndLogToConsole(level, logToConsole) {
