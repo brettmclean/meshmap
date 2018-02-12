@@ -2,9 +2,11 @@ require("../testUtils/init");
 var loader = require("../testUtils/loader");
 
 var LoggingService = loader.load("logging/LoggingService");
+var FileLogProvider = loader.load("logging/FileLogProvider");
 var ConsoleLogProvider = loader.load("logging/ConsoleLogProvider");
 var LogBufferService = loader.load("logging/LogBufferService");
 var AppLoggingConfig = loader.load("config/AppConfig").AppLoggingConfig;
+var LogEntry = loader.load("logging/LogEntry");
 
 var DEFAULT_MESSAGE = "Application starting...";
 var LOG_LEVEL_WARN = "warn";
@@ -137,15 +139,43 @@ describe("A logging service", function() {
 		});
 
 		it("calls dequeueAndClearEntries on log buffer service when service is initialized and log providers are set", function() {
-			var alc = createAppLoggingConfig(),
-				lbs = createLogBufferService(),
+			var lbs = createLogBufferService(),
 				ls = createLoggingService({ logBufferService: lbs });
 
-			ls.init(alc);
+			ls.init(createAppLoggingConfig());
+			ls.setLogProviders([createFileLogProvider()]);
+			ls.info(DEFAULT_MESSAGE);
+
+			expect(lbs.dequeueAndClearEntries).toHaveBeenCalled();
+		});
+
+		it("calls dequeueAndClearEntries on log buffer service even when zero log providers are set", function() {
+			var lbs = createLogBufferService(),
+				ls = createLoggingService({ logBufferService: lbs });
+
+			ls.init(createAppLoggingConfig());
 			ls.setLogProviders([]);
 			ls.info(DEFAULT_MESSAGE);
 
 			expect(lbs.dequeueAndClearEntries).toHaveBeenCalled();
+		});
+
+		it("calls info on set log providers with log entry returned by log buffer service", function() {
+			var logEntry1 = createLogEntryWithLevelAndMessage(LOG_LEVEL_INFO, "First message"),
+				logEntry2 = createLogEntryWithLevelAndMessage(LOG_LEVEL_INFO, "Second message"),
+				logProvider1 = createFileLogProvider(),
+				logProvider2 = createFileLogProvider(),
+				lbs = createLogBufferServiceWhichReturnsLogEntries([logEntry1, logEntry2]),
+				ls = createLoggingService({ logBufferService: lbs });
+
+			ls.init(createAppLoggingConfig());
+			ls.setLogProviders([logProvider1, logProvider2]);
+			ls.info(DEFAULT_MESSAGE);
+
+			expect(logProvider1.info).toHaveBeenCalledWith(logEntry1);
+			expect(logProvider1.info).toHaveBeenCalledWith(logEntry2);
+			expect(logProvider2.info).toHaveBeenCalledWith(logEntry1);
+			expect(logProvider2.info).toHaveBeenCalledWith(logEntry2);
 		});
 	});
 
@@ -200,11 +230,25 @@ function createConsoleLogProvider() {
 	return clp;
 }
 
+function createFileLogProvider() {
+	var flp = new FileLogProvider({});
+	spyOn(flp, "info");
+	return flp;
+}
+
 function createLogBufferService() {
+	return createLogBufferServiceWhichReturnsLogEntries([]);
+}
+
+function createLogBufferServiceWhichReturnsLogEntries(logEntries) {
 	var lbs = new LogBufferService();
 	spyOn(lbs, "queueEntry");
-	spyOn(lbs, "dequeueAndClearEntries");
+	spyOn(lbs, "dequeueAndClearEntries").and.returnValue(logEntries);
 	return lbs;
+}
+
+function createLogEntryWithLevelAndMessage(level, message) {
+	return new LogEntry(level, message);
 }
 
 function createAppLoggingConfig() {

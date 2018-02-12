@@ -70,7 +70,7 @@ LoggingService.prototype._log = function(level, message) {
 	if(this._shouldLogAtLevel(level)) {
 		this._logToConsoleLogProvider(logEntry);
 		this._logBufferService.queueEntry(logEntry);
-		this._logToDefinedLogProviders();
+		this._logBufferedEntriesToDefinedLogProviders();
 	}
 };
 
@@ -80,9 +80,24 @@ LoggingService.prototype._logToConsoleLogProvider = function(logEntry) {
 	}
 };
 
-LoggingService.prototype._logToDefinedLogProviders = function() {
+LoggingService.prototype._logBufferedEntriesToDefinedLogProviders = function() {
 	if(this._logProvidersHaveBeenSet) {
-		this._logBufferService.dequeueAndClearEntries();
+		var logEntries = this._logBufferService.dequeueAndClearEntries();
+		this._logEntriesToDefinedLogProviders(logEntries);
+	}
+};
+
+LoggingService.prototype._logEntriesToDefinedLogProviders = function(logEntries) {
+	for(var i = 0; i < logEntries.length; i++) {
+		var logEntry = logEntries[i];
+		this._logEntryToDefinedLogProviders(logEntry);
+	}
+};
+
+LoggingService.prototype._logEntryToDefinedLogProviders = function(logEntry) {
+	for(var i = 0; i < this._logProviders.length; i++) {
+		var logProvider = this._logProviders[i];
+		this._logToProvider(logProvider, logEntry);
 	}
 };
 
