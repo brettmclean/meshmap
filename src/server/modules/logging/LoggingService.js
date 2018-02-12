@@ -20,6 +20,9 @@ var LoggingService = function(deps) {
 
 	this._logLevel = LOG_LEVEL_INFO;
 	this._logToConsole = true;
+	this._logProviders = [];
+
+	this._logProvidersHaveBeenSet = false;
 };
 
 LoggingService.prototype.init = function(loggingConfig) {
@@ -31,6 +34,11 @@ LoggingService.prototype.setConfig = function(loggingConfig) {
 		this._logLevel = loggingConfig.level;
 	}
 	this._logToConsole = loggingConfig.logToConsole;
+};
+
+LoggingService.prototype.setLogProviders = function(logProviders) {
+	this._logProvidersHaveBeenSet = true;
+	this._logProviders = logProviders;
 };
 
 LoggingService.prototype.error = function(message) {
@@ -64,6 +72,10 @@ LoggingService.prototype._log = function(level, message) {
 
 		if(this._logToConsole) {
 			this._logToProvider(this._consoleLogProvider, logEntry);
+		}
+
+		if(this._logProvidersHaveBeenSet) {
+			this._logBufferService.dequeueAndClearEntries();
 		}
 	}
 };

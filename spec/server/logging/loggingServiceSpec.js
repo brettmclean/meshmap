@@ -29,6 +29,14 @@ describe("A logging service", function() {
 		});
 	});
 
+	describe("setLogProviders method", function() {
+		it("exists", function() {
+			var ls = createLoggingService();
+
+			expect(typeof ls.setLogProviders).toBe("function");
+		});
+	});
+
 	describe("error method", function() {
 		it("exists", function() {
 			var ls = createLoggingService();
@@ -117,8 +125,27 @@ describe("A logging service", function() {
 			expect(providedLogEntry.message).toBe(message);
 		});
 
-		xit("calls dequeueAndClearEntries on log buffer service when service is initialized and log providers are set", function() {
+		it("does not call dequeueAndClearEntries on log buffer service when service is initialized but log providers are not set", function() {
+			var alc = createAppLoggingConfig(),
+				lbs = createLogBufferService(),
+				ls = createLoggingService({ logBufferService: lbs });
 
+			ls.init(alc);
+			ls.info(DEFAULT_MESSAGE);
+
+			expect(lbs.dequeueAndClearEntries).not.toHaveBeenCalled();
+		});
+
+		it("calls dequeueAndClearEntries on log buffer service when service is initialized and log providers are set", function() {
+			var alc = createAppLoggingConfig(),
+				lbs = createLogBufferService(),
+				ls = createLoggingService({ logBufferService: lbs });
+
+			ls.init(alc);
+			ls.setLogProviders([]);
+			ls.info(DEFAULT_MESSAGE);
+
+			expect(lbs.dequeueAndClearEntries).toHaveBeenCalled();
 		});
 	});
 
@@ -176,7 +203,12 @@ function createConsoleLogProvider() {
 function createLogBufferService() {
 	var lbs = new LogBufferService();
 	spyOn(lbs, "queueEntry");
+	spyOn(lbs, "dequeueAndClearEntries");
 	return lbs;
+}
+
+function createAppLoggingConfig() {
+	return createAppLoggingConfigWithLevelAndLogToConsole(LOG_LEVEL_INFO, true);
 }
 
 function createAppLoggingConfigWithLevel(level) {
