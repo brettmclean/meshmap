@@ -68,15 +68,21 @@ LoggingService.prototype.shutdown = function() {
 LoggingService.prototype._log = function(level, message) {
 	var logEntry = new LogEntry(level, message);
 	if(this._shouldLogAtLevel(level)) {
+		this._logToConsoleLogProvider(logEntry);
 		this._logBufferService.queueEntry(logEntry);
+		this._logToDefinedLogProviders();
+	}
+};
 
-		if(this._logToConsole) {
-			this._logToProvider(this._consoleLogProvider, logEntry);
-		}
+LoggingService.prototype._logToConsoleLogProvider = function(logEntry) {
+	if(this._logToConsole) {
+		this._logToProvider(this._consoleLogProvider, logEntry);
+	}
+};
 
-		if(this._logProvidersHaveBeenSet) {
-			this._logBufferService.dequeueAndClearEntries();
-		}
+LoggingService.prototype._logToDefinedLogProviders = function() {
+	if(this._logProvidersHaveBeenSet) {
+		this._logBufferService.dequeueAndClearEntries();
 	}
 };
 
