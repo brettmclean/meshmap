@@ -29,6 +29,17 @@ describe("A logging service", function() {
 
 			expect(typeof ls.setConfig).toBe("function");
 		});
+
+		it("can overwrite existing config", function() {
+			var clp = createConsoleLogProvider(),
+				ls = createLoggingService({ consoleLogProvider: clp });
+
+			ls.init(createAppLoggingConfigWithLogToConsole(true));
+			ls.setConfig(createAppLoggingConfigWithLogToConsole(false));
+			ls.info(DEFAULT_MESSAGE);
+
+			expect(clp.info).not.toHaveBeenCalled();
+		});
 	});
 
 	describe("setLogProviders method", function() {
@@ -36,6 +47,20 @@ describe("A logging service", function() {
 			var ls = createLoggingService();
 
 			expect(typeof ls.setLogProviders).toBe("function");
+		});
+
+		it("can overwrite existing log providers", function() {
+			var le = createLogEntryWithLevelAndMessage(LOG_LEVEL_INFO, "First message"),
+				lp = createFileLogProvider(),
+				lbs = createLogBufferServiceWhichReturnsLogEntries([le]),
+				ls = createLoggingService({ logBufferService: lbs });
+
+			ls.init(createAppLoggingConfig());
+			ls.setLogProviders([lp]);
+			ls.setLogProviders([]);
+			ls.info(DEFAULT_MESSAGE);
+
+			expect(lp.info).not.toHaveBeenCalled();
 		});
 	});
 
