@@ -235,6 +235,35 @@ describe("A logging service", function() {
 
 			expect(typeof ls.shutdown).toBe("function");
 		});
+
+		it("calls hasEntries on log buffer service", function() {
+			var lbs = createLogBufferService(),
+				ls = createLoggingService({ logBufferService: lbs });
+
+			ls.shutdown();
+
+			expect(lbs.hasEntries).toHaveBeenCalled();
+		});
+
+		it("calls dequeueAndClearEntries on log buffer service when it has entries even if log providers have not been set", function() {
+			var lbs = createLogBufferServiceWhichReturnsLogEntries([createLogEntry()]),
+				ls = createLoggingService({ logBufferService: lbs });
+
+			ls.init(createAppLoggingConfig());
+			ls.shutdown();
+
+			expect(lbs.dequeueAndClearEntries).toHaveBeenCalled();
+		});
+
+		it("does not call dequeueAndClearEntries on log buffer service when it has no entries", function() {
+			var lbs = createLogBufferServiceWhichReturnsLogEntries([]),
+				ls = createLoggingService({ logBufferService: lbs });
+
+			ls.init(createAppLoggingConfig());
+			ls.shutdown();
+
+			expect(lbs.dequeueAndClearEntries).not.toHaveBeenCalled();
+		});
 	});
 
 });
@@ -269,7 +298,12 @@ function createLogBufferServiceWhichReturnsLogEntries(logEntries) {
 	var lbs = new LogBufferService();
 	spyOn(lbs, "queueEntry");
 	spyOn(lbs, "dequeueAndClearEntries").and.returnValue(logEntries);
+	spyOn(lbs, "hasEntries").and.returnValue(logEntries.length > 0);
 	return lbs;
+}
+
+function createLogEntry() {
+	return createLogEntryWithLevelAndMessage(LOG_LEVEL_INFO, DEFAULT_MESSAGE);
 }
 
 function createLogEntryWithLevelAndMessage(level, message) {
