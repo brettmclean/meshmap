@@ -1,145 +1,55 @@
-var consoleLogProviderFactory = require("./logging/factories/consoleLogProviderFactory");
-var fileLogProviderFactory = require("./logging/factories/fileLogProviderFactory");
-var LogBufferService = require("./logging/LogBufferService");
-var LogEntry = require("./logging/LogEntry");
+var loggingServiceFactory = require("./logging/factories/loggingServiceFactory");
+var logProviderFactory = require("./logging/factories/logProviderFactory");
 
-var LOG_LEVELS = {
-	"error": 100,
-	"warn": 200,
-	"info": 300,
-	"debug": 400,
-	"trace": 500
-};
-
-var initialized = false;
-
-var currentLogLevel = "info";
-var logToConsole = true;
-
-var consoleLogProvider = consoleLogProviderFactory.create();
-var fileLogProvider = null;
-var logBufferService = new LogBufferService();
+var loggingService = loggingServiceFactory.create();
 
 function init(config) {
 	"use strict";
 
 	loadConfig(config);
-	initialized = true;
 }
 
 function loadConfig(config) {
 	"use strict";
 
-	var loggingCfg = config.logging;
+	loggingService.setConfig(config.logging);
 
-	if(loggingCfg) {
-		if(loggingCfg.level && LOG_LEVELS[loggingCfg.level]) {
-			currentLogLevel = loggingCfg.level;
-		}
-
-		logToConsole = loggingCfg.logToConsole;
-
-		fileLogProvider = fileLogProviderFactory.create(loggingCfg.directory);
-		fileLogProvider.init();
+	var providers = logProviderFactory.create(config.logging);
+	for(var i = 0; i < providers.length; i++) {
+		providers[i].init();
 	}
+	loggingService.setLogProviders(providers);
 }
 
 function shutdown() {
 	"use strict";
 
-	// Flush the last bit to log file
-	if(fileLogProvider && initialized && logBufferService.hasEntries()) {
-		flushBufferToFile();
-	}
-
-	initialized = false;
+	loggingService.shutdown();
 }
 
 function error(/* String */ message) {
 	"use strict";
-	log("error", message);
+	loggingService.error(message);
 }
 
 function warn(/* String */ message) {
 	"use strict";
-	log("warn", message);
+	loggingService.warn(message);
 }
 
 function info(/* String */ message) {
 	"use strict";
-	log("info", message);
+	loggingService.info(message);
 }
 
 function debug(/* String */ message) {
 	"use strict";
-	log("debug", message);
+	loggingService.debug(message);
 }
 
 function trace(/* String */ message) {
 	"use strict";
-	log("trace", message);
-}
-
-function log(level, message) {
-	"use strict";
-	if(LOG_LEVELS[level] && LOG_LEVELS[level] <= LOG_LEVELS[currentLogLevel]) {
-
-		var logEntry = new LogEntry(level, message);
-
-		if(logToConsole) {
-			logOutputToConsole(logEntry);
-		}
-
-		if(fileLogProvider || !initialized) {
-			logBufferService.queueEntry(logEntry);
-		}
-
-		if(fileLogProvider) {
-			flushBufferToFile();
-		}
-	}
-}
-
-function flushBufferToFile() {
-	"use strict";
-
-	if(logBufferService.hasEntries()) {
-		if(fileLogProvider) {
-
-			var logEntries = logBufferService.dequeueAndClearEntries();
-			logEntries.forEach(function(logEntry) {
-				logOutputToFile(logEntry);
-			});
-		}
-	}
-}
-
-function logOutputToFile(logEntry) {
-	logOutputToProvider(fileLogProvider, logEntry);
-}
-
-function logOutputToConsole(logEntry) {
-	logOutputToProvider(consoleLogProvider, logEntry);
-}
-
-function logOutputToProvider(logProvider, logEntry) {
-	switch(logEntry.level) {
-		case "error":
-			logProvider.error(logEntry);
-			break;
-		case "warn":
-			logProvider.warn(logEntry);
-			break;
-		case "info":
-			logProvider.info(logEntry);
-			break;
-		case "debug":
-			logProvider.debug(logEntry);
-			break;
-		case "trace":
-			logProvider.trace(logEntry);
-			break;
-	}
+	loggingService.trace(message);
 }
 
 exports.init = init;
