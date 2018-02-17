@@ -1,6 +1,8 @@
-var logger = require("../logger");
 var sw = require("../stopwatch");
 var appConfigServiceFactory = require("../config/appConfigServiceFactory");
+var loggingServiceFactory = require("../logging/factories/loggingServiceFactory");
+
+var loggingService = loggingServiceFactory.create();
 
 function Cache() {
 	"use strict";
@@ -123,7 +125,7 @@ Cache.prototype = {
 					try {
 						canRemove = this.canRemoveItem(entry.data);
 					} catch(err) {
-						logger.error("An error occurred while running cache's canRemoveItem: " + err);
+						loggingService.error("An error occurred while running cache's canRemoveItem: " + err);
 					}
 
 					if(canRemove) {
@@ -139,7 +141,7 @@ Cache.prototype = {
 		var removedItems = clearedItems > 0;
 
 		if(removedItems) {
-			logger.debug("Removed " + clearedItems + " old items from cache.");
+			loggingService.debug("Removed " + clearedItems + " old items from cache.");
 		}
 
 		if(global.gc) { // If node is run with --expose_gc
