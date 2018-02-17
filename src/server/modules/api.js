@@ -1,13 +1,17 @@
 var url = require("url");
 var querystring = require("querystring");
+
+var loggingServiceFactory = require("./logging/factories/loggingServiceFactory");
+var logProviderFactory = require("./logging/factories/logProviderFactory");
 var busy = require("./busy");
-var logger = require("./logger");
 var util = require("./util");
 var sm = require("./sitemanager");
 var store = require("./store");
 
 var appConfigServiceFactory = require("./config/appConfigServiceFactory");
 var appConfigService = appConfigServiceFactory.create();
+
+var loggingService = loggingServiceFactory.create();
 
 function handleApiRequest(
 	/* http.IncomingMessage */ request,
@@ -31,7 +35,7 @@ function handleApiRequest(
 		validKey = true;
 	} else {
 		var ipAddress = util.getIpAddressFromHttpRequest(request);
-		logger.warn("Incorrect or missing API key sent from " + ipAddress + ".");
+		loggingService.warn("Incorrect or missing API key sent from " + ipAddress + ".");
 	}
 
 	if(qs.pretty && qs.pretty.toLowerCase() === "true") {
@@ -46,7 +50,7 @@ function handleApiRequest(
 	} else {
 		var errMsg = "Invalid API endpoint or incorrect/missing API key.";
 		var result = {
-			error: "Invalid API endpoint or incorrect/missing API key."
+			error: errMsg
 		};
 		var resultStr = JSON.stringify(result, null, indent);
 
@@ -281,10 +285,15 @@ function reloadConfig(pathSegments, queryString, callback) {
 
 	var err = null;
 
-	logger.info("Reloading config file.");
+	loggingService.info("Reloading config file.");
 
 	var appConfig = appConfigService.reloadAppConfig();
-	logger.loadConfig(appConfig);
+
+	loggingService.setConfig(appConfig.logging);
+	var providers = logProviderFactory.create(appConfig.logging);
+	providers.forEach((provider) => provider.init());
+	loggingService.setLogProviders(providers);
+
 	sm.loadConfig(appConfig);
 	busy.loadConfig(appConfig);
 
