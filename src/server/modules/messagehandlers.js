@@ -1,11 +1,11 @@
 /* Requires */
-var loggingServiceFactory = require("./logging/factories/loggingServiceFactory");
 var dm = require("./datamodel");
 var mm = require("./meshmap");
 var sm = require("./sitemanager");
 var store = require("./store");
 var ua = require("./useractivity");
 var util = require("./util");
+var loggingServiceFactory = require("./logging/factories/loggingServiceFactory");
 
 var loggingService = loggingServiceFactory.create();
 

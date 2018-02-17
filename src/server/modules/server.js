@@ -2,7 +2,6 @@ var busy = require("./busy");
 var dm = require("./datamodel");
 var http = require("http");
 var httpHandlers = require("./httphandlers");
-var logger = require("./logger");
 var mm = require("./meshmap");
 var sm = require("./sitemanager");
 var socketio = require("socket.io");
@@ -10,6 +9,9 @@ var store = require("./store");
 var sw = require("./stopwatch");
 var util = require("./util");
 var appConfigServiceFactory = require("./config/appConfigServiceFactory");
+var loggingServiceFactory = require("./logging/factories/loggingServiceFactory");
+
+var loggingService = loggingServiceFactory.create();
 
 var httpServer = null;
 var sioServer = null;
@@ -21,7 +23,7 @@ function init() {
 
 	createHttpServer();
 	startSocketIo();
-	logger.info("Server started on port " + appConfig.portNumber + ".");
+	loggingService.info("Server started on port " + appConfig.portNumber + ".");
 }
 
 function shutdown() {
@@ -77,7 +79,7 @@ function handleSocketIoConnection(socket) {
 		subscribeToSocketIoConnectionEvents(socket, ipAddress);
 		checkIpAddressBanned(socket, ipAddress, function() {});
 	} catch(err) {
-		logger.error("An error occurred while handling a new Socket.IO connection: " + err.stack);
+		loggingService.error("An error occurred while handling a new Socket.IO connection: " + err.stack);
 		if(socket) {
 			socket.disconnect();
 		}
@@ -102,14 +104,14 @@ function checkIpAddressBanned(socket, ipAddress, callback) {
 
 	store.getIpAddressBanned(ipAddress, function(err, isBanned) {
 		if(err) {
-			logger.error("Failed to retrieve whether IP address \"" + ipAddress + "\" is banned: " + err);
+			loggingService.error("Failed to retrieve whether IP address \"" + ipAddress + "\" is banned: " + err);
 			mm.sendErrorMessage(socket, "An error occurred while looking up your IP address.");
 			socket.disconnect();
 			return callback(false);
 		}
 
 		if(isBanned) {
-			logger.info("Rejected Socket.IO connection for from banned IP address " + ipAddress + ".");
+			loggingService.info("Rejected Socket.IO connection for from banned IP address " + ipAddress + ".");
 			mm.sendErrorMessage(socket, "You have been banned.");
 			socket.disconnect();
 			return callback(false);
@@ -155,7 +157,7 @@ function handleSocketIoConnectInfoEvent(
 	try {
 		mm.handleConnectInfo(message, context.ipAddress, function(err, user, site, userSiteState) {
 			if(err) {
-				logger.error("Failed to handle connect info from user at " + context.ipAddress + ": " + err);
+				loggingService.error("Failed to handle connect info from user at " + context.ipAddress + ": " + err);
 				mm.sendErrorMessage(context.socket, "Provided connection information is not valid.");
 				context.socket.disconnect();
 				return;
@@ -166,7 +168,7 @@ function handleSocketIoConnectInfoEvent(
 
 			sm.ensureUserIsAssociatedWithSite(context.client, context.site, function(err) {
 				if(err) {
-					logger.error("Failed to associate user ID " + context.client.user.id + " with site " + context.site.siteCode + ": " + err);
+					loggingService.error("Failed to associate user ID " + context.client.user.id + " with site " + context.site.siteCode + ": " + err);
 				}
 			});
 
@@ -180,7 +182,7 @@ function handleSocketIoConnectInfoEvent(
 			mm.handleUserConnect(context.client, context.site, userConnectCallback);
 		});
 	} catch(err) {
-		logger.error("An error occurred while handling connect info from " + context.ipAddress + "." +
+		loggingService.error("An error occurred while handling connect info from " + context.ipAddress + "." +
 			"\nThe connect info was as follows: " + JSON.stringify(message) +
 			"\n" + err.stack);
 	}
@@ -200,7 +202,7 @@ function handleSocketIoMessageEvent(
 			);
 		}
 	} catch(err) {
-		logger.error("An error occurred while handling a user message from " + context.ipAddress + "." +
+		loggingService.error("An error occurred while handling a user message from " + context.ipAddress + "." +
 			"\nThe message was as follows: " + JSON.stringify(message) +
 			"\n" + err.stack);
 	}
@@ -225,7 +227,7 @@ function handleSocketIoDisconnectEvent(
 		delete context.ipAddress;
 
 	} catch(err) {
-		logger.error("An error occurred while handling a user disconnect from " + context.ipAddress + "." +
+		loggingService.error("An error occurred while handling a user disconnect from " + context.ipAddress + "." +
 			"\n" + err.stack);
 	}
 }
