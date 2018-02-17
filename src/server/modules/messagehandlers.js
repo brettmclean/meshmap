@@ -1,11 +1,13 @@
 /* Requires */
+var loggingServiceFactory = require("./logging/factories/loggingServiceFactory");
 var dm = require("./datamodel");
 var mm = require("./meshmap");
 var sm = require("./sitemanager");
 var store = require("./store");
 var ua = require("./useractivity");
-var logger = require("./logger");
 var util = require("./util");
+
+var loggingService = loggingServiceFactory.create();
 
 function handleUserMessage(
 	/* Message */ message,
@@ -41,7 +43,7 @@ function handleMapEvent(
 	/* Site */ site) {
 	"use strict";
 
-	logger.debug("Received " + mapEvent.type + " map event from User ID " + client.user.id + ".");
+	loggingService.debug("Received " + mapEvent.type + " map event from User ID " + client.user.id + ".");
 
 	switch(mapEvent.type) {
 		case "changeExtent":
@@ -57,7 +59,7 @@ function handleMapEvent(
 			handleUpdateMarker(mapEvent, client, site);
 			break;
 		default:
-			logger.warn("Unknown map event type from User ID " + client.user.id + ": " + mapEvent.type);
+			loggingService.warn("Unknown map event type from User ID " + client.user.id + ": " + mapEvent.type);
 			break;
 	}
 }
@@ -92,7 +94,7 @@ function handleAddMarker(
 	store.insertMarker(site, marker, function(err) {
 
 		if(err) {
-			logger.error("Failed to insert new marker from " + client.ipAddress + ": " + err);
+			loggingService.error("Failed to insert new marker from " + client.ipAddress + ": " + err);
 			return;
 		}
 
@@ -108,7 +110,7 @@ function handleAddMarker(
 			marker.id,
 			function(err) {
 				if(err) {
-					logger.error("Failed to log user's create_marker activity: " + err);
+					loggingService.error("Failed to log user's create_marker activity: " + err);
 				}
 			}
 		);
@@ -138,7 +140,7 @@ function handleRemoveMarker(
 		store.deleteMarker(site, markerId, function(err) {
 
 			if(err) {
-				logger.error("Failed to delete marker with ID " + markerId + ": " + err);
+				loggingService.error("Failed to delete marker with ID " + markerId + ": " + err);
 				return;
 			}
 
@@ -155,13 +157,13 @@ function handleRemoveMarker(
 				markerId,
 				function(err) {
 					if(err) {
-						logger.error("Failed to log user's delete_marker activity: " + err);
+						loggingService.error("Failed to log user's delete_marker activity: " + err);
 					}
 				}
 			);
 		});
 	} else {
-		logger.warn("User with ID " + client.user.id + " wants to remove marker but did not provide a marker ID.");
+		loggingService.warn("User with ID " + client.user.id + " wants to remove marker but did not provide a marker ID.");
 	}
 }
 
@@ -175,12 +177,12 @@ function handleUpdateMarker(
 
 	if(eventMarker) {
 		if(!eventMarker.id) {
-			return logger.warn("User with ID " + client.user.id + " wants to update marker but did not provide a marker ID.");
+			return loggingService.warn("User with ID " + client.user.id + " wants to update marker but did not provide a marker ID.");
 		} else if(!eventMarker.name) {
-			return logger.warn("User with ID " + client.user.id + " wants to update marker but did not provide a marker name.");
+			return loggingService.warn("User with ID " + client.user.id + " wants to update marker but did not provide a marker name.");
 		}
 	} else {
-		return logger.warn("User with ID " + client.user.id + " wants to update marker but did not provide one.");
+		return loggingService.warn("User with ID " + client.user.id + " wants to update marker but did not provide one.");
 	}
 
 	var markers = site.markers;
@@ -203,7 +205,7 @@ function handleUpdateMarker(
 		store.updateMarker(site, marker, function(err) {
 
 			if(err) {
-				logger.error("Failed to update marker with ID " + marker.id + ": " + err);
+				loggingService.error("Failed to update marker with ID " + marker.id + ": " + err);
 				return;
 			}
 
@@ -221,13 +223,13 @@ function handleUpdateMarker(
 				marker.id,
 				function(err) {
 					if(err) {
-						logger.error("Failed to log user's edit_marker activity: " + err);
+						loggingService.error("Failed to log user's edit_marker activity: " + err);
 					}
 				}
 			);
 		});
 	} else {
-		logger.warn("User with ID " + client.user.id + " wants to update marker but provided marker could not be found in this site.");
+		loggingService.warn("User with ID " + client.user.id + " wants to update marker but provided marker could not be found in this site.");
 	}
 }
 
@@ -300,7 +302,7 @@ function handleUpdateSiteName(
 
 		store.updateSite(site, function(err) {
 			if(err) {
-				return logger.error("Failed to update siteName from " + client.ipAddress + ": " + err);
+				return loggingService.error("Failed to update siteName from " + client.ipAddress + ": " + err);
 			}
 		});
 	}
@@ -325,7 +327,7 @@ function handleUpdateSiteDescription(
 
 		store.updateSite(site, function(err) {
 			if(err) {
-				return logger.error("Failed to update siteDescription from " + client.ipAddress + ": " + err);
+				return loggingService.error("Failed to update siteDescription from " + client.ipAddress + ": " + err);
 			}
 		});
 	}
@@ -350,7 +352,7 @@ function handleUpdateOnlyOwnerCanEdit(
 
 		store.updateSite(site, function(err) {
 			if(err) {
-				return logger.error("Failed to update onlyOwnerCanEdit from " + client.ipAddress + ": " + err);
+				return loggingService.error("Failed to update onlyOwnerCanEdit from " + client.ipAddress + ": " + err);
 			}
 		});
 	}
@@ -368,7 +370,7 @@ function handleUpdateInitialExtent(
 
 		store.updateSite(site, function(err) {
 			if(err) {
-				return logger.error("Failed to update initialExtent from " + client.ipAddress + ": " + err);
+				return loggingService.error("Failed to update initialExtent from " + client.ipAddress + ": " + err);
 			}
 		});
 	}
@@ -417,7 +419,7 @@ function handleUpdateUsername(
 
 		store.updateUser(client.user, function(err) {
 			if(err) {
-				logger.error("Failed to update user: " + err);
+				loggingService.error("Failed to update user: " + err);
 			}
 		});
 	}
@@ -434,7 +436,7 @@ function handleUpdateConfirmMarkerDeletion(
 
 		store.updateUser(client.user, function(err) {
 			if(err) {
-				return logger.error("Failed to update confirmMarkerDeletion from " + client.ipAddress + ": " + err);
+				return loggingService.error("Failed to update confirmMarkerDeletion from " + client.ipAddress + ": " + err);
 			}
 		});
 	}
