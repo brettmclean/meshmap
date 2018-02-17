@@ -1,6 +1,8 @@
-var logger = require("./logger");
-var appConfigServiceFactory = require("./config/appConfigServiceFactory");
 var path = require("path");
+var loggingServiceFactory = require("./logging/factories/loggingServiceFactory");
+var appConfigServiceFactory = require("./config/appConfigServiceFactory");
+
+var loggingService = loggingServiceFactory.create();
 
 var MEMORY_DATA_STORE = "memory";
 
@@ -18,12 +20,12 @@ if(storeName) {
 	try {
 		dataStore = require(dataStorePath);
 	} catch(err) {
-		logger.error("Failed to import file at: " + path.join(__dirname, dataStorePath) + ": " + err);
+		loggingService.error("Failed to import file at: " + path.join(__dirname, dataStorePath) + ": " + err);
 	}
 }
 
 if(!dataStore) {
-	logger.error("Unable to select data store from configured dataStore property: \"" + storeName + "\"");
+	loggingService.error("Unable to select data store from configured dataStore property: \"" + storeName + "\"");
 	process.exit(1);
 }
 
