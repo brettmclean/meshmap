@@ -1,11 +1,13 @@
 var apiDm = require("../apidatamodel");
 var cache = require("./cache");
 var dm = require("../datamodel");
-var logger = require("../logger");
 var os = require("os");
 var pg = require("pg");
 var copyFrom = require("pg-copy-streams").from;
 var util = require("../util");
+var loggingServiceFactory = require("../logging/factories/loggingServiceFactory");
+
+var loggingService = loggingServiceFactory.create();
 
 var siteCache = new cache.Cache();
 siteCache.canRemoveItem = function(/* Site */ site) {
@@ -171,7 +173,7 @@ function getConnection(/* Function */ callback) {
 
 	pg.connect(connectionString, function(err, client, done) {
 		if(err) {
-			logger.error("Failed to connect to PostgreSQL database: " + err);
+			loggingService.error("Failed to connect to PostgreSQL database: " + err);
 			callback(err, null, null);
 		} else {
 			callback(err, client, done);
@@ -185,7 +187,7 @@ function runQuery(sql, parameters, client, callback) {
 	var exec = function(sql, parameters, client, callback) {
 		client.query(sql, parameters, function(err, result) {
 			if(err) {
-				logger.error("Error running query: " + sql +
+				loggingService.error("Error running query: " + sql +
 					"\n\t" + "with parameters: " + parameters +
 					"\n\t" + "Error message: " + err);
 			}
@@ -193,7 +195,7 @@ function runQuery(sql, parameters, client, callback) {
 			try {
 				callback(err, result);
 			} catch(e) {
-				logger.error("An error occurred in query result handler: " + e);
+				loggingService.error("An error occurred in query result handler: " + e);
 			}
 		});
 	};
@@ -217,7 +219,7 @@ function runQuery(sql, parameters, client, callback) {
 function init(config) {
 	"use strict";
 
-	logger.info("Using PostgreSQL data store.");
+	loggingService.info("Using PostgreSQL data store.");
 
 	loadConfig(config);
 
@@ -231,16 +233,16 @@ function init(config) {
 			if(err) {
 				if(connAttempts < MAX_CONN_ATTEMPTS) {
 					setTimeout(verifyConnection, connAttemptDelay, successCallback);
-					logger.error("Trying PostgreSQL connection again in " + connAttemptDelay + "ms.");
+					loggingService.error("Trying PostgreSQL connection again in " + connAttemptDelay + "ms.");
 					connAttemptDelay *= 2;
 				} else {
-					logger.error("Giving up on PostgreSQL. Application will need to be restarted after PostgreSQL connectivity is resolved.");
+					loggingService.error("Giving up on PostgreSQL. Application will need to be restarted after PostgreSQL connectivity is resolved.");
 				}
 				return;
 			}
 
 			if(connAttempts > 1) {
-				logger.error("Connected to PostgreSQL after " + connAttempts + " attempts.");
+				loggingService.error("Connected to PostgreSQL after " + connAttempts + " attempts.");
 			}
 
 			done(); // Release connection; we only wanted it to test connectivity
@@ -265,7 +267,7 @@ function loadConfig(config) {
 		if(config.store.connectionString) {
 			connectionString = config.store.connectionString;
 		} else {
-			logger.error("The store.connectionString property is not set in config. Application cannot connect to the PostgreSQL database. User data cannot be saved or loaded.");
+			loggingService.error("The store.connectionString property is not set in config. Application cannot connect to the PostgreSQL database. User data cannot be saved or loaded.");
 			process.exit(1);
 		}
 		pg.defaults.poolSize = config.store.maxConnections;
@@ -281,7 +283,7 @@ var populateMarkerSymbols = function() {
 		function(err, iconResults) {
 
 			if(err) {
-				return logger.error("Failed to get marker icons from database: " + err);
+				return loggingService.error("Failed to get marker icons from database: " + err);
 			}
 
 			if(iconResults) {
@@ -301,7 +303,7 @@ var populateMarkerSymbols = function() {
 		function(err, colorResults) {
 
 			if(err) {
-				return logger.error("Failed to get marker colors from database: " + err);
+				return loggingService.error("Failed to get marker colors from database: " + err);
 			}
 
 			if(colorResults) {
@@ -1082,7 +1084,7 @@ function updateUserExtents(userSiteExtents, callback) {
 			dbClient.query("ROLLBACK",
 				function(err) {
 					if(err) {
-						logger.error("Error while rolling back update user extent transaction: " + err);
+						loggingService.error("Error while rolling back update user extent transaction: " + err);
 					}
 				}
 			);

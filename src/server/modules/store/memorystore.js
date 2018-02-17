@@ -1,8 +1,10 @@
 var dm = require("../datamodel");
 var apiDm = require("../apidatamodel");
-var logger = require("../logger");
 var cache = require("./cache");
 var util = require("../util");
+var loggingServiceFactory = require("../logging/factories/loggingServiceFactory");
+
+var loggingService = loggingServiceFactory.create();
 
 var siteCache = new cache.Cache();
 siteCache.maxCacheTime = 7776000000; // 90 days
@@ -86,7 +88,7 @@ var createUserEntry = function(user)
 function init(config) {
 	"use strict";
 
-	logger.warn("IMPORTANT! Using the in-memory data store. All data will be lost the next time this application is stopped. The in-memory data store should only be used for testing purposes.");
+	loggingService.warn("IMPORTANT! Using the in-memory data store. All data will be lost the next time this application is stopped. The in-memory data store should only be used for testing purposes.");
 
 	loadConfig(config);
 }
