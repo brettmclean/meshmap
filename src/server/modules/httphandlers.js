@@ -1,6 +1,7 @@
 var api = require("./api");
 var configLocationManagement = require("./config/configLocationManagement");
-var logger = require("./logger");
+var loggingServiceFactory = require("./logging/factories/loggingServiceFactory");
+var appConfigServiceFactory = require("./config/appConfigServiceFactory");
 var path = require("path");
 var sm = require("./sitemanager");
 var stc = require("node-static");
@@ -11,13 +12,13 @@ var url = require("url");
 var util = require("./util");
 var zlib = require("zlib");
 
-var appConfigServiceFactory = require("./config/appConfigServiceFactory");
-
 var NEW_PATH = "/new";
 var CLIENT_CONFIG_PATH = "/config.json";
 
 var webFileServer = getFileServerForWebDirectory();
 var clientConfigFileServer = getFileServerForDirectory(configLocationManagement.getConfigDirectory());
+
+var loggingService = loggingServiceFactory.create();
 
 function handleHttpRequest(
 	/* http.IncomingMessage */ request,
@@ -57,13 +58,13 @@ function handleHttpRequest(
 		store.getIpAddressBanned(ipAddress, function(err, isBanned) {
 
 			if(err) {
-				logger.error("Failed to retrieve whether IP address \"" + ipAddress + "\" is banned: " + err);
+				loggingService.error("Failed to retrieve whether IP address \"" + ipAddress + "\" is banned: " + err);
 				sendHttpError(request, response, 500);
 				return;
 			}
 
 			if(isBanned) {
-				logger.info("Rejected request for " + url.parse(request.url).pathname + " from banned IP address " + ipAddress + ".");
+				loggingService.info("Rejected request for " + url.parse(request.url).pathname + " from banned IP address " + ipAddress + ".");
 				sendHttpError(request, response, 403);
 				return;
 			}
@@ -72,7 +73,7 @@ function handleHttpRequest(
 		});
 
 	} catch(err) {
-		logger.error("An error occurred while handling an HTTP request: " + err.stack);
+		loggingService.error("An error occurred while handling an HTTP request: " + err.stack);
 		sendHttpError(request, response, 500);
 		return;
 	}
@@ -95,7 +96,7 @@ function serveSite(
 	sm.getSite(siteCode, function(err, site) {
 		if(err) {
 			var ipAddress = util.getIpAddressFromHttpRequest(request);
-			logger.error("Failed to retrieve site with site code \"" + siteCode + "\" for connection from " + ipAddress + ": " + err);
+			loggingService.error("Failed to retrieve site with site code \"" + siteCode + "\" for connection from " + ipAddress + ": " + err);
 			sendHttpError(request, response, 500);
 			return;
 		}
@@ -134,7 +135,7 @@ function serveFile(
 			var promise = fileServer.serveFile(path, statusCode, {}, request, response);
 			promise.on("error", function(err) {
 				if(statusCode === 200) {
-					logger.error("Failed to serve file at " + path + ": " + err.message);
+					loggingService.error("Failed to serve file at " + path + ": " + err.message);
 					fileServer.serveFile(getErrorPageForStatusCode(500), 500, {}, request, response);
 				}
 			});
@@ -216,7 +217,7 @@ function createNewSite(
 	sm.createNewSite(ipAddress, function(err, tooManyNewSites, newSiteCode) {
 
 		if(err) {
-			logger.error("Failed to create new site: " + err);
+			loggingService.error("Failed to create new site: " + err);
 			response.writeHead(500);
 			response.end("An error occurred while creating a new site. Please try again later.");
 		} else if(tooManyNewSites) {
@@ -243,7 +244,7 @@ function serveApiRequest(
 	api.handleApiRequest(request, function(err, json) {
 
 		if(err) {
-			logger.warn("Unable to handle API request to " + pathname + ": " + err);
+			loggingService.warn("Unable to handle API request to " + pathname + ": " + err);
 		}
 
 		var responseHeaders = {
