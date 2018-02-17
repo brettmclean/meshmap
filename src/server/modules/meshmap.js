@@ -1,12 +1,14 @@
 /* Requires */
+var loggingServiceFactory = require("./logging/factories/loggingServiceFactory");
 var dm = require("./datamodel");
-var logger = require("./logger");
 var mmHandlers = require("./messagehandlers");
 var sm = require("./sitemanager");
 var store = require("./store");
 var sw = require("./stopwatch");
 var ua = require("./useractivity");
 var util = require("./util");
+
+var loggingService = loggingServiceFactory.create();
 
 function handleConnectInfo(
 	/* Message */ message,
@@ -33,7 +35,7 @@ function handleConnectInfo(
 		sm.getSite(connectInfo.siteCode, function(err, site) {
 
 			if(err) {
-				logger.error("Failed to get site " + connectInfo.siteCode + ": " + err);
+				loggingService.error("Failed to get site " + connectInfo.siteCode + ": " + err);
 				callback(err, null, null, null);
 				return;
 			}
@@ -46,7 +48,7 @@ function handleConnectInfo(
 			store.getUser(connectInfo.secret, function(err, user) {
 
 				if(err) {
-					logger.error("Failed to get user connecting from " + ipAddress + ": " + err);
+					loggingService.error("Failed to get user connecting from " + ipAddress + ": " + err);
 					callback(err, null, null, null);
 					return;
 				}
@@ -54,7 +56,7 @@ function handleConnectInfo(
 				var getUserSiteState = function(err, user, site) {
 					store.getUserSiteState(user.id, site.id, function(err, userSiteState) {
 						if(err) {
-							logger.error("Failed to get user-site state for site " + site.siteCode + " and user with ID " + user.id + ": " + err);
+							loggingService.error("Failed to get user-site state for site " + site.siteCode + " and user with ID " + user.id + ": " + err);
 							return callback(err, user, site, userSiteState);
 						}
 
@@ -71,7 +73,7 @@ function handleConnectInfo(
 					user.name = "Guest " + Math.floor(Math.random() * 10000);
 					store.insertUser(user, function(err) {
 						if(err) {
-							logger.error("Failed to insert user: " + err);
+							loggingService.error("Failed to insert user: " + err);
 							return callback(err, user, site, null);
 						}
 						getUserSiteState(err, user, site);
@@ -118,7 +120,7 @@ function handleUserConnect(
 	/* Function */ callback) {
 	"use strict";
 
-	logger.debug("User ID " + client.user.id + " has connected to site " + site.siteCode + ".");
+	loggingService.debug("User ID " + client.user.id + " has connected to site " + site.siteCode + ".");
 
 	// First user to connect to a site is the owner
 	if(!site.ownerId) {
@@ -142,14 +144,14 @@ function handleUserConnect(
 		null,
 		function(err) {
 			if(err) {
-				logger.error("Failed to log user's connect_to_site activity: " + err);
+				loggingService.error("Failed to log user's connect_to_site activity: " + err);
 			}
 		}
 	);
 
 	store.insertConnectionLog(client, function(err) {
 		if(err) {
-			logger.error("Failed to log user connection: " + err);
+			loggingService.error("Failed to log user connection: " + err);
 		}
 	});
 }
@@ -159,7 +161,7 @@ function handleUserDisconnect(
 	/* Site */ site) {
 	"use strict";
 
-	logger.debug("User ID " + client.user.id + " has disconnected from site " + site.siteCode + ".");
+	loggingService.debug("User ID " + client.user.id + " has disconnected from site " + site.siteCode + ".");
 
 	// Remove disconnected client from clients list.
 	var clients = site.clients;
@@ -181,7 +183,7 @@ function handleUserDisconnect(
 		null,
 		function(err) {
 			if(err) {
-				logger.error("Failed to log user's disconnect_from_site activity: " + err);
+				loggingService.error("Failed to log user's disconnect_from_site activity: " + err);
 			}
 		}
 	);
