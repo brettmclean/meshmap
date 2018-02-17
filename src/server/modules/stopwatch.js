@@ -1,4 +1,6 @@
-var logger = require("./logger");
+var loggingServiceFactory = require("./logging/factories/loggingServiceFactory");
+
+var loggingService = loggingServiceFactory.create();
 
 var Stopwatch = function(operation) {
 	"use strict";
@@ -14,7 +16,7 @@ var Stopwatch = function(operation) {
 		if(this.startTime) {
 			var time = (new Date()).getTime() - this.startTime;
 			this.startTime = 0;
-			logger.trace(this.operation + " took " + time + "ms.");
+			loggingService.trace(this.operation + " took " + time + "ms.");
 		}
 	};
 
