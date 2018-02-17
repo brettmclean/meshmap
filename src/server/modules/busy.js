@@ -1,6 +1,8 @@
 // A wrapper for toobusy which allows us to control when we start the toobusy module.
 
-var logger = require("./logger");
+var loggingServiceFactory = require("./logging/factories/loggingServiceFactory");
+
+var loggingService = loggingServiceFactory.create();
 
 var toobusy = null;
 
@@ -13,7 +15,7 @@ var tooBusyCount = 0;
 
 function isTooBusy() {
 	"use strict";
-	
+
 	if(toobusy) {
 		var tb = toobusy();
 		if(tb) {
@@ -31,11 +33,11 @@ function init(config) {
 	tooBusyDelayTimer = setTimeout(function() {
 		tooBusyDelayTimer = null;
 		toobusy = require("toobusy-js");
-		
+
 		if(!tooBusyReportTimer) {
 			tooBusyReportTimer = setInterval(reportTooBusyEvents, TOO_BUSY_REPORT_INTERVAL);
 		}
-		
+
 		loadConfig(config);
 	}, STARTUP_DELAY);
 }
@@ -44,7 +46,7 @@ function loadConfig(config) {
 	"use strict";
 
 	if(toobusy) {
-		// Set maximum allowable event loop lag (in ms) before we start rejecting requests		
+		// Set maximum allowable event loop lag (in ms) before we start rejecting requests
 		toobusy.maxLag(config.limits.allowedEventLoopLagMs);
 	}
 }
@@ -68,13 +70,13 @@ function shutdown() {
 
 function started() {
 	"use strict";
-	
+
 	return !!toobusy;
 }
 
 function lag() {
 	"use strict";
-	
+
 	if(toobusy) {
 		return toobusy.lag();
 	} else {
@@ -84,7 +86,7 @@ function lag() {
 
 function maxLag(/* Number */ lag) {
 	"use strict";
-	
+
 	if(toobusy) {
 		toobusy.maxLag(lag);
 	}
@@ -94,7 +96,7 @@ function reportTooBusyEvents() {
 	"use strict";
 
 	if(tooBusyCount > 0) {
-		logger.warn("In the last " + Math.round(TOO_BUSY_REPORT_INTERVAL / 1000) +
+		loggingService.warn("In the last " + Math.round(TOO_BUSY_REPORT_INTERVAL / 1000) +
 			" seconds, the server was forced to reject " + tooBusyCount +
 			" requests/connections because it was too busy.");
 	}
