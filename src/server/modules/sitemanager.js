@@ -1,12 +1,13 @@
 var dm = require("./datamodel");
-var logger = require("./logger");
 var mm = require("./meshmap");
 var store = require("./store");
 var sw = require("./stopwatch");
 var ua = require("./useractivity");
 var util = require("./util");
-
+var loggingServiceFactory = require("./logging/factories/loggingServiceFactory");
 var appConfigServiceFactory = require("./config/appConfigServiceFactory");
+
+var loggingService = loggingServiceFactory.create();
 
 var PRUNE_DISCONNECTED_CLIENTS_INTERVAL = 600000; // Every 10 minutes
 var STORE_EXTENTS_INTERVAL = 10000; // Delay writing extent updates to store by up to 10 seconds
@@ -57,12 +58,12 @@ function shutdown() {
 function pruneDisconnectedClients() {
 	"use strict";
 
-	logger.debug("Pruning disconnected clients from sites.");
+	loggingService.debug("Pruning disconnected clients from sites.");
 	var stopwatch = new sw.Stopwatch("Prune disconnected clients from sites");
 
 	store.getSitesWithClients(function(err, sites) {
 		if(err) {
-			logger.error("Failed to get sites with connected clients: " + err);
+			loggingService.error("Failed to get sites with connected clients: " + err);
 			return;
 		}
 
@@ -79,7 +80,7 @@ function pruneDisconnectedClients() {
 		}
 
 		if(clientsPruned > 0) {
-			logger.info("Pruned " + clientsPruned + " disconnected clients from sites.");
+			loggingService.info("Pruned " + clientsPruned + " disconnected clients from sites.");
 		}
 
 		stopwatch.stop();
@@ -127,12 +128,12 @@ function createNewSite(ipAddress, callback) {
 				null,
 				function(err) {
 					if(err) {
-						logger.error("Failed to log user's create_site activity: " + err);
+						loggingService.error("Failed to log user's create_site activity: " + err);
 					}
 				}
 			);
 
-			logger.debug("Created site " + newSiteCode + " from IP address " + ipAddress);
+			loggingService.debug("Created site " + newSiteCode + " from IP address " + ipAddress);
 		}
 	});
 }
@@ -177,9 +178,9 @@ function writePendingUserExtentsToStore() {
 			var stopwatch = new sw.Stopwatch("Write " + userSiteExtents.length + " user extents to store");
 			store.updateUserExtents(userSiteExtents, function(err) {
 				if(err) {
-					logger.error("Failed to write set of user extents to store: " + err);
+					loggingService.error("Failed to write set of user extents to store: " + err);
 				} else {
-					logger.debug("Wrote " + userSiteExtents.length + " user extents to store.");
+					loggingService.debug("Wrote " + userSiteExtents.length + " user extents to store.");
 					stopwatch.stop();
 				}
 			});
