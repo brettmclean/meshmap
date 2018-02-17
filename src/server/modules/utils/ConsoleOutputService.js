@@ -3,16 +3,16 @@ var ConsoleOutputService = function() {
 };
 
 ConsoleOutputService.prototype.error = function(message) {
-	console.error(message);
+	console.log(message);
 };
 ConsoleOutputService.prototype.warn = function(message) {
-	console.warn(message);
+	console.log(message);
 };
 ConsoleOutputService.prototype.info = function(message) {
-	console.info(message);
+	console.log(message);
 };
 ConsoleOutputService.prototype.debug = function(message) {
-	console.debug(message);
+	console.log(message);
 };
 
 module.exports = ConsoleOutputService;
