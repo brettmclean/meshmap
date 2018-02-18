@@ -26,6 +26,14 @@ describe("A file log location service", function() {
 			expect(resolvedLogDir).toBe(logDirectoryConfig);
 		});
 
+		it("returns null when configured log directory is null", function() {
+			var flls = createFileLogLocationService({}, null);
+
+			var resolvedLogDir = flls.getAbsoluteLogDirectory();
+
+			expect(resolvedLogDir).toBe(null);
+		});
+
 	});
 
 	describe("getLogFilename method", function() {
@@ -76,7 +84,9 @@ function createFileLogLocationService(deps, logDirectoryConfig) {
 	deps.timestampFormatService = deps.timestampFormatService || createTimestampFormatServiceWhichReturnsArbitraryDateString();
 	deps.dateService = deps.dateService || createDateServiceWhichReturnsArbitraryDate();
 
-	logDirectoryConfig = logDirectoryConfig || DEFAULT_LOG_DIRECTORY_CONFIG;
+	if(typeof logDirectoryConfig === "undefined") {
+		logDirectoryConfig = DEFAULT_LOG_DIRECTORY_CONFIG;
+	}
 
 	return new FileLogLocationService(deps, logDirectoryConfig);
 }

@@ -8,6 +8,10 @@ var FileLogLocationService = function(deps, logDirectoryConfig) {
 };
 
 FileLogLocationService.prototype.getAbsoluteLogDirectory = function() {
+	if(!this._logDirectoryConfig) {
+		return null;
+	}
+
 	if(path.isAbsolute(this._logDirectoryConfig)) {
 		return this._logDirectoryConfig;
 	}
