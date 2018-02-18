@@ -1,7 +1,7 @@
 require("../testUtils/init");
 var loader = require("../testUtils/loader");
 
-var EventLoopLagProvider = loader.load("load/EventLoopLagProvider");
+var EventLoopLagProvider = loader.load("appload/EventLoopLagProvider");
 
 describe("An event loop lag provider", function() {
 
