@@ -6,10 +6,8 @@ var loggingService = loggingServiceFactory.create();
 
 var toobusy = null;
 
-var STARTUP_DELAY = 5000; // ms
 var TOO_BUSY_REPORT_INTERVAL = 60000; // ms
 
-var tooBusyDelayTimer = null; // Delay startup by several seconds; seems to avoid false toobusy flags
 var tooBusyReportTimer = null;
 var tooBusyCount = 0;
 
@@ -30,16 +28,13 @@ function isTooBusy() {
 function init(config) {
 	"use strict";
 
-	tooBusyDelayTimer = setTimeout(function() {
-		tooBusyDelayTimer = null;
-		toobusy = require("toobusy-js");
+	toobusy = require("toobusy-js");
 
-		if(!tooBusyReportTimer) {
-			tooBusyReportTimer = setInterval(reportTooBusyEvents, TOO_BUSY_REPORT_INTERVAL);
-		}
+	if(!tooBusyReportTimer) {
+		tooBusyReportTimer = setInterval(reportTooBusyEvents, TOO_BUSY_REPORT_INTERVAL);
+	}
 
-		loadConfig(config);
-	}, STARTUP_DELAY);
+	loadConfig(config);
 }
 
 function loadConfig(config) {
@@ -61,10 +56,6 @@ function shutdown() {
 	if(tooBusyReportTimer) {
 		clearInterval(tooBusyReportTimer);
 		tooBusyReportTimer = null;
-	}
-	if(tooBusyDelayTimer) {
-		clearTimeout(tooBusyDelayTimer);
-		tooBusyDelayTimer = null;
 	}
 }
 
