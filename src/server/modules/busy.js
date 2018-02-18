@@ -74,24 +74,6 @@ function started() {
 	return !!toobusy;
 }
 
-function lag() {
-	"use strict";
-
-	if(toobusy) {
-		return toobusy.lag();
-	} else {
-		return -1;
-	}
-}
-
-function maxLag(/* Number */ lag) {
-	"use strict";
-
-	if(toobusy) {
-		toobusy.maxLag(lag);
-	}
-}
-
 function reportTooBusyEvents() {
 	"use strict";
 
@@ -109,5 +91,3 @@ module.exports.init = init;
 module.exports.loadConfig = loadConfig;
 module.exports.shutdown = shutdown;
 module.exports.started = started;
-module.exports.lag = lag;
-module.exports.maxLag = maxLag;
