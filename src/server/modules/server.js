@@ -23,6 +23,7 @@ function init() {
 
 	createHttpServer();
 	startSocketIo();
+	busy.init(appConfig);
 	loggingService.info("Server started on port " + appConfig.portNumber + ".");
 }
 
@@ -84,14 +85,6 @@ function handleSocketIoConnection(socket) {
 			socket.disconnect();
 		}
 		return;
-	}
-
-	// Don't start toobusy until after first socket.io connection starts.
-	// There appears to be a socket.io bug which takes some time to generate the initial
-	// library response when gzip compression is enabled. This can trigger toobusy.
-	if(!busy.started()) {
-		var appConfig = appConfigServiceFactory.create().getAppConfig();
-		busy.init(appConfig);
 	}
 }
 
