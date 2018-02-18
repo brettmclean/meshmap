@@ -3,6 +3,7 @@ var loader = require("../testUtils/loader");
 
 var ApplicationLoadService = loader.load("appload/ApplicationLoadService");
 var EventLoopLagProvider = loader.load("appload/EventLoopLagProvider");
+var AppLimitsConfig = loader.load("config/AppConfig").AppLimitsConfig;
 
 describe("An application load service", function() {
 
@@ -22,6 +23,17 @@ describe("An application load service", function() {
 			var als = createApplicationLoadService();
 
 			expect(typeof als.setConfig).toBe("function");
+		});
+
+		it("calls setMaxAllowedLag on event loop lag provider with configured value", function() {
+			var maxEventLoopLagMs = 50,
+				appLimitsConfig = createAppLimitsConfigWithAllowedEventLoopLag(maxEventLoopLagMs),
+				ellp = createEventLoopLagProvider(),
+				als = createApplicationLoadService({ eventLoopLagProvider: ellp });
+
+			als.setConfig(appLimitsConfig);
+
+			expect(ellp.setMaxAllowedLag).toHaveBeenCalledWith(maxEventLoopLagMs);
 		});
 
 	});
@@ -71,6 +83,15 @@ describe("An application load service", function() {
 			expect(typeof als.shutdown).toBe("function");
 		});
 
+		it("calls shutdown on event loop lag provider", function() {
+			var ellp = createEventLoopLagProvider(),
+				als = createApplicationLoadService({ eventLoopLagProvider: ellp });
+
+			als.shutdown();
+
+			expect(ellp.shutdown).toHaveBeenCalled();
+		});
+
 	});
 
 });
@@ -90,5 +111,13 @@ function createEventLoopLagProvider() {
 function createEventLoopLagProviderWhichReturnsLagTooHighValue(lagIsTooHigh) {
 	var ellp = new EventLoopLagProvider();
 	spyOn(ellp, "lagIsTooHigh").and.returnValue(lagIsTooHigh);
+	spyOn(ellp, "shutdown");
+	spyOn(ellp, "setMaxAllowedLag");
 	return ellp;
+}
+
+function createAppLimitsConfigWithAllowedEventLoopLag(maxLagMs) {
+	var alc = new AppLimitsConfig();
+	alc.allowedEventLoopLagMs = maxLagMs;
+	return alc;
 }

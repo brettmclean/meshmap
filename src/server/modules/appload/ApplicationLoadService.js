@@ -2,12 +2,12 @@ var ApplicationLoadService = function(deps) {
 	this._eventLoopLagProvider = deps.eventLoopLagProvider;
 };
 
-ApplicationLoadService.prototype.init = function() {
-
+ApplicationLoadService.prototype.init = function(appLimitsConfig) {
+	this.setConfig(appLimitsConfig);
 };
 
-ApplicationLoadService.prototype.setConfig = function() {
-
+ApplicationLoadService.prototype.setConfig = function(appLimitsConfig) {
+	this._eventLoopLagProvider.setMaxAllowedLag(appLimitsConfig.allowedEventLoopLagMs);
 };
 
 ApplicationLoadService.prototype.appIsOverloaded = function() {
@@ -15,7 +15,7 @@ ApplicationLoadService.prototype.appIsOverloaded = function() {
 };
 
 ApplicationLoadService.prototype.shutdown = function() {
-
+	this._eventLoopLagProvider.shutdown();
 };
 
 module.exports = ApplicationLoadService;
