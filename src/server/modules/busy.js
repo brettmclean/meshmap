@@ -1,7 +1,8 @@
-var toobusy = require("toobusy-js");
 var loggingServiceFactory = require("./logging/factories/loggingServiceFactory");
+var applicationLoadServiceFactory = require("./appload/applicationLoadServiceFactory");
 
 var loggingService = loggingServiceFactory.create();
+var applicationLoadService = applicationLoadServiceFactory.create();
 
 var TOO_BUSY_REPORT_INTERVAL = 60000; // ms
 
@@ -11,7 +12,7 @@ var tooBusyCount = 0;
 function isTooBusy() {
 	"use strict";
 
-	var tb = toobusy();
+	var tb = applicationLoadService.appIsOverloaded();
 	if(tb) {
 		tooBusyCount++;
 	}
@@ -20,6 +21,8 @@ function isTooBusy() {
 
 function init(config) {
 	"use strict";
+
+	applicationLoadService.init(config.limits);
 
 	if(!tooBusyReportTimer) {
 		tooBusyReportTimer = setInterval(reportTooBusyEvents, TOO_BUSY_REPORT_INTERVAL);
@@ -31,14 +34,13 @@ function init(config) {
 function loadConfig(config) {
 	"use strict";
 
-	// Set maximum allowable event loop lag (in ms) before we start rejecting requests
-	toobusy.maxLag(config.limits.allowedEventLoopLagMs);
+	applicationLoadService.setConfig(config.limits);
 }
 
 function shutdown() {
 	"use strict";
 
-	toobusy.shutdown();
+	applicationLoadService.shutdown();
 
 	if(tooBusyReportTimer) {
 		clearInterval(tooBusyReportTimer);
