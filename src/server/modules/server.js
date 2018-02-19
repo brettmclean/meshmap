@@ -69,14 +69,16 @@ function handleHttpRequest(request, response) {
 function handleSocketIoConnection(socket) {
 	"use strict";
 
+	var ipAddress = util.getIpAddressFromSocketIoRequest(socket);
+
 	if(busy()) {
+		loggingService.warn(`Rejected socket.io connection from ${ipAddress} because server is too busy`);
 		mm.sendErrorMessage(socket, "Server busy. Please try again later.");
 		socket.disconnect();
 		return;
 	}
 
 	try {
-		var ipAddress = util.getIpAddressFromSocketIoRequest(socket);
 		subscribeToSocketIoConnectionEvents(socket, ipAddress);
 		checkIpAddressBanned(socket, ipAddress, function() {});
 	} catch(err) {
