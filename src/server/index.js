@@ -3,12 +3,13 @@
 var loggingServiceFactory = require("./modules/logging/factories/loggingServiceFactory");
 var logProviderFactory = require("./modules/logging/factories/logProviderFactory");
 var appConfigServiceFactory = require("./modules/config/appConfigServiceFactory");
+var applicationLoadServiceFactory = require("./modules/appload/applicationLoadServiceFactory");
 var configLocationManagement = require("./modules/config/configLocationManagement");
 var fileLogLocationServiceFactory = require("./modules/logging/factories/fileLogLocationServiceFactory");
 var version = require("./modules/version");
-var busy = require("./modules/busy");
 
 var loggingService = loggingServiceFactory.create();
+var applicationLoadService = applicationLoadServiceFactory.create();
 
 loggingService.info("Starting application" + (version ? " v" + version : "") + ".");
 loggingService.info("Reading config from " + configLocationManagement.getConfigDirectory());
@@ -26,6 +27,8 @@ loggingService.init(appConfig.logging);
 var providers = logProviderFactory.create(appConfig.logging);
 providers.forEach((provider) => provider.init());
 loggingService.setLogProviders(providers);
+
+applicationLoadService.init(appConfig.limits);
 
 /* Start up Site Manager */
 var sm = require("./modules/sitemanager");
@@ -46,7 +49,7 @@ process.on("SIGINT", function() {
 
 process.on("exit", function() {
 	loggingService.info("Application is shutting down.");
-	busy.shutdown(); // Shutdown toobusy event loop polling
+	applicationLoadService.shutdown();
 	server.shutdown(); // Shut down HTTP/Socket.IO server
 	sm.shutdown(); // Shutdown site manager
 	store.shutdown(); // Shutdown data store

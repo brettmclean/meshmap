@@ -1,4 +1,3 @@
-var busy = require("./busy");
 var dm = require("./datamodel");
 var http = require("http");
 var httpHandlers = require("./httphandlers");
@@ -10,8 +9,10 @@ var sw = require("./stopwatch");
 var util = require("./util");
 var appConfigServiceFactory = require("./config/appConfigServiceFactory");
 var loggingServiceFactory = require("./logging/factories/loggingServiceFactory");
+var applicationLoadServiceFactory = require("./appload/applicationLoadServiceFactory");
 
 var loggingService = loggingServiceFactory.create();
+var applicationLoadService = applicationLoadServiceFactory.create();
 
 var httpServer = null;
 var sioServer = null;
@@ -23,7 +24,6 @@ function init() {
 
 	createHttpServer();
 	startSocketIo();
-	busy.init(appConfig);
 	loggingService.info("Server started on port " + appConfig.portNumber + ".");
 }
 
@@ -71,7 +71,7 @@ function handleSocketIoConnection(socket) {
 
 	var ipAddress = util.getIpAddressFromSocketIoRequest(socket);
 
-	if(busy()) {
+	if(applicationLoadService.appIsOverloaded()) {
 		loggingService.warn(`Rejected socket.io connection from ${ipAddress} because server is too busy`);
 		mm.sendErrorMessage(socket, "Server busy. Please try again later.");
 		socket.disconnect();

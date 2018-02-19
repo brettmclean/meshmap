@@ -3,15 +3,15 @@ var querystring = require("querystring");
 
 var loggingServiceFactory = require("./logging/factories/loggingServiceFactory");
 var logProviderFactory = require("./logging/factories/logProviderFactory");
-var busy = require("./busy");
+var applicationLoadServiceFactory = require("./appload/applicationLoadServiceFactory");
+var appConfigServiceFactory = require("./config/appConfigServiceFactory");
 var util = require("./util");
 var sm = require("./sitemanager");
 var store = require("./store");
 
-var appConfigServiceFactory = require("./config/appConfigServiceFactory");
 var appConfigService = appConfigServiceFactory.create();
-
 var loggingService = loggingServiceFactory.create();
+var applicationLoadService = applicationLoadServiceFactory.create();
 
 function handleApiRequest(
 	/* http.IncomingMessage */ request,
@@ -295,7 +295,7 @@ function reloadConfig(pathSegments, queryString, callback) {
 	loggingService.setLogProviders(providers);
 
 	sm.loadConfig(appConfig);
-	busy.loadConfig(appConfig);
+	applicationLoadService.setConfig(appConfig.limits);
 
 	var resultObj = {
 		result: "Successfully parsed config file."
