@@ -3,7 +3,7 @@
 
 		<div class="select-marker-type pan" ng-show="ctx.toolDrawerIsOpen() || ctx.panToolIsActive()">
 			<div class="select-marker-button" ng-click="ctx.selectTool(ctx.TOOL_PAN)" ng-class="{active: ctx.panToolIsActive()}">
-				<img src="images/pan.png" />
+				<img src="/images/pan.png" />
 			</div>
 		</div>
 
@@ -21,7 +21,7 @@
 					ng-class="{invisible: ctx.small && ctx.toolDrawerIsOpen()}"
 					ng-style="{'background-color': ctx.activePolylineSymbol.lineColor}">
 				</div>
-				<div class="marker-type-icon"><img src="images/polyline.png" /></div>
+				<div class="marker-type-icon"><img src="/images/polyline.png" /></div>
 			</div>
 			<div class="marker-options-expander glyphicon glyphicon-chevron-right" ng-click="ctx.toggleOptionsForTool(ctx.TOOL_POLYLINE)" ng-class="{active: ctx.polylineToolOptionsAreVisible()}"></div>
 		</div>
@@ -40,7 +40,7 @@
 						ng-style="{'background-color': ctx.activePolygonSymbol.fillColor}">
 					</div>
 				</div>
-				<div class="marker-type-icon"><img src="images/polygon.png" /></div>
+				<div class="marker-type-icon"><img src="/images/polygon.png" /></div>
 			</div>
 			<div class="marker-options-expander glyphicon glyphicon-chevron-right" ng-click="ctx.toggleOptionsForTool(ctx.TOOL_POLYGON)" ng-class="{active: ctx.polygonToolOptionsAreVisible()}"></div>
 		</div>

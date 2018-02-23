@@ -13,6 +13,7 @@ var util = require("./util");
 var zlib = require("zlib");
 
 var NEW_PATH = "/new";
+var MAP_SITE_PATH = "/m";
 var CLIENT_CONFIG_PATH = "/config.json";
 
 var webFileServer = getFileServerForWebDirectory();
@@ -39,20 +40,24 @@ function handleHttpRequest(
 
 			if(firstSegment === CLIENT_CONFIG_PATH) {
 				serveClientConfig(request, response);
+				return;
 			} else if(firstSegment === NEW_PATH) {
 				createNewSite(request, response);
+				return;
 			} else if(firstSegment === appConfig.apiPath) {
 				serveApiRequest(request, response);
-			} else {
-				var siteCode = firstSegment.substring(1); // See if pathname represents site code
-				siteCode = siteCode.toLowerCase();
+				return;
+			} else if(firstSegment === MAP_SITE_PATH) {
+				var secondSegment = segments[1] || "";
+				var siteCode = secondSegment.toLowerCase();
 
 				if(util.isSiteCode(siteCode)) {
 					serveSite(request, response, siteCode);
-				} else {
-					serveFile(webFileServer, request, response);
+					return;
 				}
 			}
+
+			serveFile(webFileServer, request, response);
 		};
 
 		store.getIpAddressBanned(ipAddress, function(err, isBanned) {
@@ -225,7 +230,7 @@ function createNewSite(
 			response.end("You have created too many new sites in the last hour. Please wait a few minutes before trying again.");
 		} else {
 			response.writeHead(302, {
-				"Location": "/" + newSiteCode
+				"Location": "/m/" + newSiteCode
 			});
 			response.end();
 		}

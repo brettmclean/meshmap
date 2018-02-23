@@ -69,7 +69,7 @@ describe("A startup workflow service", function() {
 			sg = new SecretGenerator(),
 			sws = createStartupWorkflowServiceWithCommsServiceAndPageStateServiceAndSecretGenerator(cs, pss, sg);
 
-		spyOn(pss, "getPath").and.returnValue("/" + SITE_CODE);
+		spyOn(pss, "getPath").and.returnValue("/m/" + SITE_CODE);
 		spyOn(cs, "sendConnectInfo");
 		simulateConnected(sws);
 

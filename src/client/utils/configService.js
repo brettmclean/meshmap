@@ -8,7 +8,7 @@ meshmap.utils.configService = (function() {
 	var eventBus = EventBus.instance;
 
 	ajaxService.get(
-		"config.json",
+		"/config.json",
 		function(data) {
 			var config = JSON.parse(data);
 			eventBus.publishSticky("configDownloaded", config);

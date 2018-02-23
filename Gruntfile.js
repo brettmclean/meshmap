@@ -209,9 +209,9 @@ module.exports = function(grunt) {
 		var expandedFilePaths = grunt.file.expand({}, clientJsSrcs);
 
 		var webFilePaths = expandedFilePaths.map(function(filePath) {
-			return filePath.replace(/^(build|src\/client)/, "js");
+			return filePath.replace(/^(build|src\/client)/, "/js");
 		});
-		webFilePaths.push("js/templates.js");
+		webFilePaths.push("/js/templates.js");
 
 		var devLoaderJs = "var files = " + JSON.stringify(webFilePaths) + ";\n\n";
 		devLoaderJs += grunt.file.read("src/client/dev-loader.js");

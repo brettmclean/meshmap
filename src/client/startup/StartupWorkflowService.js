@@ -43,9 +43,13 @@ meshmap.startup.StartupWorkflowService = (function() {
 		var siteId = null;
 		if(this._pageStateService) {
 			var path = this._pageStateService.getPath();
-			siteId = path.substring(1);
+			siteId = extractSiteIdFromPath(path);
 		}
 		return siteId;
+	};
+
+	var extractSiteIdFromPath = function(path) {
+		return path.replace(/^\/m\//, "");
 	};
 
 	var getOrCreateSecret = function() {
