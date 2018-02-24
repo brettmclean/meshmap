@@ -4,40 +4,20 @@ meshmap.utils.logging.Logger = (function() {
 
 	// imports
 	var LogProviderBase = meshmap.utils.logging.LogProviderBase,
-		ConsoleLogProvider = meshmap.utils.logging.ConsoleLogProvider,
 		ValueError = meshmap.errors.ValueError,
 		dateTimeFormatter = meshmap.utils.dateTimeFormatter;
 
-	var Logger = function(logProvider, logLevel) {
-		var logProviderIsString = typeof logProvider === "string";
-		logLevel = logProviderIsString ? logProvider : logLevel;
-		logProvider = logProviderIsString ? null : logProvider;
-
-		validateLogProvider(logProvider);
-		validateLogLevel(logLevel);
-
-		this._logProvider = logProvider || new ConsoleLogProvider();
-		this.setLogLevel(logLevel || Logger.levels.TRACE);
-	};
-
-	var validateLogProvider = function(provider) {
-		if(provider && !(provider instanceof LogProviderBase)) {
-			throw new TypeError("Supplied log provider must be of type LogProviderBase");
-		}
-	};
-
-	var validateLogLevel = function(logLevel) {
-		if(logLevel) {
-			for(var prop in Logger.levels) {
-				if(Logger.levels.hasOwnProperty(prop) && Logger.levels[prop] === logLevel) {
-					return;
-				}
-			}
-			throw new ValueError(logLevel + " is not a valid log level");
-		}
+	var Logger = function(logLevel, logProvider) {
+		this._logLevel = logLevel;
+		this._logProvider = logProvider;
 	};
 
 	Logger.instance = null;
+
+	Logger.prototype.init = function() {
+		validateLogProvider(this._logProvider);
+		validateLogLevel(this._logLevel);
+	};
 
 	Logger.levels = {
 		ERROR: "error",
@@ -97,6 +77,23 @@ meshmap.utils.logging.Logger = (function() {
 	var formatMessage = function(message) {
 		var timestamp = dateTimeFormatter.formatDateAndTime();
 		return "[" + timestamp + "] " + message;
+	};
+
+	var validateLogProvider = function(provider) {
+		if(!(provider instanceof LogProviderBase)) {
+			throw new TypeError("Supplied log provider must be of type LogProviderBase");
+		}
+	};
+
+	var validateLogLevel = function(logLevel) {
+		if(logLevel) {
+			for(var prop in Logger.levels) {
+				if(Logger.levels.hasOwnProperty(prop) && Logger.levels[prop] === logLevel) {
+					return;
+				}
+			}
+			throw new ValueError(logLevel + " is not a valid log level");
+		}
 	};
 
 	return Logger;

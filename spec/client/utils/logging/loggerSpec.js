@@ -37,14 +37,15 @@ var ensureLoggerLogsForLogLevel = function(methodName, logLevel) {
 };
 
 var spyOnLogProviderInteraction = function(methodName, logMsg) {
-	return spyOnLogProviderInteractionWithLogLevel(methodName, null, logMsg);
+	return spyOnLogProviderInteractionWithLogLevel(methodName, Logger.levels.TRACE, logMsg);
 };
 
 var spyOnLogProviderInteractionWithLogLevel = function(methodName, logLevel, logMsg) {
 	var lp = new LogProviderBase();
-	var l = new Logger(lp, logLevel);
-
+	var l = new Logger(logLevel, lp);
 	spyOn(lp, methodName);
+
+	l.init();
 	l[methodName](logMsg);
 
 	return lp;
@@ -59,29 +60,29 @@ describe("A Logger", function() {
 
 	it("throws a TypeError if not provided a valid LogProviderBase", function() {
 		expect(function() {
-			// jshint unused: false
-			var l = new Logger({});
+			var l = new Logger("info", {});
+			l.init();
 		}).toThrowError(TypeError);
 	});
 
 	it("does not throw an Error when provided a valid LogProviderBase", function() {
 		expect(function() {
-			// jshint unused: false
-			var l = new Logger(new LogProviderBase());
+			var l = new Logger("info", new LogProviderBase());
+			l.init();
 		}).not.toThrow();
 	});
 
-	it("does not throw an Error when provided only a log level", function() {
+	it("throws an Error when provided only a log level", function() {
 		expect(function() {
-			// jshint unused: false
 			var l = new Logger(Logger.levels.WARN);
-		}).not.toThrow();
+			l.warn("Hello");
+		}).toThrow();
 	});
 
 	it("throws a ValueError when provided an invalid log level", function() {
 		expect(function() {
-			// jshint unused: false
-			var l = new Logger("invalid");
+			var l = new Logger("invalid", new LogProviderBase());
+			l.init();
 		}).toThrowError(ValueError);
 	});
 
@@ -148,7 +149,7 @@ describe("A Logger", function() {
 
 	it("can change its log level after initialization", function() {
 		var lp = new LogProviderBase();
-		var l = new Logger(lp, Logger.levels.ERROR);
+		var l = new Logger(Logger.levels.ERROR, lp);
 		var logMsg = "Don't care";
 
 		spyOn(lp, "warn");

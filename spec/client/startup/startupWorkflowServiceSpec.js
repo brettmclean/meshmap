@@ -133,7 +133,7 @@ function createSecretGeneratorWhichGeneratesSecret(secret) {
 }
 
 function createLogger() {
-	var logger = new Logger(null, "info");
+	var logger = new Logger("info", null);
 	spyOn(logger, "debug");
 	return logger;
 }

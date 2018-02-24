@@ -14,6 +14,7 @@ meshmap.startup.bootstrappers.loggingBootstrapper = (function() {
 
 	var init = function() {
 		loggerInstance = loggerFactory.create();
+		loggerInstance.init();
 		loggerInstance.setAsSingletonInstance();
 
 		determineLogLevelOverride();

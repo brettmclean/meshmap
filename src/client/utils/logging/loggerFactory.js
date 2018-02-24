@@ -7,7 +7,7 @@ meshmap.utils.logging.loggerFactory = (function() {
 		ConsoleLogProvider = meshmap.utils.logging.ConsoleLogProvider;
 
 	var create = function() {
-		return new Logger(new ConsoleLogProvider(), Logger.levels.TRACE);
+		return new Logger(Logger.levels.TRACE, new ConsoleLogProvider());
 	};
 
 	return {
