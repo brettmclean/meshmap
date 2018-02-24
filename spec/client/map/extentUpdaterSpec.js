@@ -24,7 +24,7 @@ var createStrategy = function() {
 };
 
 var createCommsService = function() {
-	return new CommsService();
+	return new CommsService({});
 };
 
 var createMapExtent = function() {

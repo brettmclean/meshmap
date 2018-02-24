@@ -65,7 +65,7 @@ describe("A Connection Handler", function() {
 
 	it("will ask comms service to reconnect when user attempts reconnect", function() {
 		var ds = new DialogService(),
-			cs = new CommsService(),
+			cs = createCommsService(),
 			ch = createConnectionHandlerWithDialogServiceAndCommsService(ds, cs);
 
 		spyOn(cs, "reconnect");
@@ -144,7 +144,7 @@ describe("A Connection Handler", function() {
 	});
 
 	it("will not throw an error if not provided with dialog service", function() {
-		var cs = new CommsService(),
+		var cs = createCommsService(),
 			ch = createConnectionHandlerWithCommsService(cs);
 
 		expect(function() {
@@ -153,3 +153,7 @@ describe("A Connection Handler", function() {
 	});
 
 });
+
+function createCommsService() {
+	return new CommsService({});
+}

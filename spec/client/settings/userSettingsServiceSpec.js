@@ -19,7 +19,7 @@ var createUserSettingsServiceWithCommsService = function(comms) {
 describe("A User Settings Service", function() {
 
 	it("sends updateUserSetting message when setting is updated", function() {
-		var cs = new CommsService(),
+		var cs = new CommsService({}),
 			us = createUserSettingsServiceWithCommsService(cs);
 
 		us.saveValue(SETTING_NAME, SETTING_VALUE);

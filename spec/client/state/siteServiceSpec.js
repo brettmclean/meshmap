@@ -606,7 +606,7 @@ describe("A Site Service", function() {
 		});
 
 		it("sends mapEvent-removeMarker message when marker is removed", function() {
-			var cs = new CommsService(),
+			var cs = createCommsService(),
 				ss = createSiteServiceWithCommsService(cs);
 
 			ss.addMarker(MARKER1);
@@ -626,7 +626,7 @@ describe("A Site Service", function() {
 		});
 
 		it("does not send comms message when removed marker was not present", function() {
-			var cs = new CommsService(),
+			var cs = createCommsService(),
 				ss = createSiteServiceWithCommsService(cs);
 
 			spyOn(cs, "sendMessage");
@@ -648,7 +648,7 @@ describe("A Site Service", function() {
 			});
 
 			it("sends mapEvent-updateMarker message when marker is updated", function() {
-				var cs = new CommsService(),
+				var cs = createCommsService(),
 					ss = createSiteServiceWithCommsService(cs);
 
 				ss.setMarkers([cloneItem(oldMarker, Marker)]);
@@ -670,7 +670,7 @@ describe("A Site Service", function() {
 			});
 
 			it("does not send comms message when update was made remotely", function() {
-				var cs = new CommsService(),
+				var cs = createCommsService(),
 					ss = createSiteServiceWithCommsService(cs);
 
 				ss.setMarkers([cloneItem(oldMarker, Marker)]);
@@ -685,7 +685,7 @@ describe("A Site Service", function() {
 		}());
 
 		it("does not send comms message when updated marker was not present", function() {
-			var cs = new CommsService(),
+			var cs = createCommsService(),
 				ss = createSiteServiceWithCommsService(cs);
 
 			spyOn(cs, "sendMessage");
@@ -705,3 +705,7 @@ describe("A Site Service", function() {
 	});
 
 });
+
+function createCommsService() {
+	return new CommsService({});
+}

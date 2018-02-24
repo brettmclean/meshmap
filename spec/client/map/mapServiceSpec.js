@@ -392,7 +392,7 @@ function createMapService(deps) {
 		deps.eventBus = new EventBus();
 	}
 	if(!deps.commsService) {
-		deps.commsService = new CommsService();
+		deps.commsService = createCommsService();
 	}
 	if(!deps.markerPermissionsService) {
 		deps.markerPermissionsService = new MarkerPermissionsService();
@@ -449,6 +449,10 @@ function createMap() {
 	spyOn(map, "setLayout");
 
 	return map;
+}
+
+function createCommsService() {
+	return new CommsService({});
 }
 
 function setupMapAndEventBusInMapService(callback) {
@@ -612,7 +616,7 @@ function testInteractionWithSiteServiceWhenMarkerEdited(testOpts, callback) {
 function testInteractionWithCommsServiceWhenPointMarkerCreated(testOpts, callback) {
 	// jshint unused: false
 	var map = new MapBase(),
-		commsService = new CommsService(),
+		commsService = createCommsService(),
 		mapServiceDeps = {
 			map: map,
 			commsService: commsService
@@ -628,7 +632,7 @@ function testInteractionWithCommsServiceWhenPointMarkerCreated(testOpts, callbac
 function testInteractionWithCommsServiceWhenPolylineMarkerCreated(testOpts, callback) {
 	// jshint unused: false
 	var map = new MapBase(),
-		commsService = new CommsService(),
+		commsService = createCommsService(),
 		mapServiceDeps = {
 			map: map,
 			commsService: commsService
@@ -644,7 +648,7 @@ function testInteractionWithCommsServiceWhenPolylineMarkerCreated(testOpts, call
 function testInteractionWithCommsServiceWhenPolygonMarkerCreated(testOpts, callback) {
 	// jshint unused: false
 	var map = new MapBase(),
-		commsService = new CommsService(),
+		commsService = createCommsService(),
 		mapServiceDeps = {
 			map: map,
 			commsService: commsService

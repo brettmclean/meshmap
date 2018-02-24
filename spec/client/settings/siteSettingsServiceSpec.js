@@ -19,7 +19,7 @@ var createSiteSettingsServiceWithCommsService = function(comms) {
 describe("A Site Settings Service", function() {
 
 	it("sends updateSiteSetting message when setting is updated", function() {
-		var cs = new CommsService(),
+		var cs = new CommsService({}),
 			ss = createSiteSettingsServiceWithCommsService(cs);
 
 		ss.saveValue(SETTING_NAME, SETTING_VALUE);

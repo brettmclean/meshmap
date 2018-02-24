@@ -8,7 +8,6 @@ meshmap.utils.comms.CommsService = (function() {
 	var CommsService = function(deps) {
 		this._messageQueue = [];
 
-		deps = deps || /* istanbul ignore next */ {};
 		this._logger = deps.logger;
 		this._eventBus = deps.eventBus;
 

@@ -211,7 +211,7 @@ describe("A Comms Service", function() {
 		var msg1 = { type: "type1", data: "data1" };
 		var msg2 = { type: "type2", data: "data2" };
 
-		var cs = new CommsService();
+		var cs = new CommsService({});
 		cs.sendMessage(msg1.type, msg1.data);
 		cs.sendMessage(msg2.type, msg2.data);
 

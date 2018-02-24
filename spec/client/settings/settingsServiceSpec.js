@@ -49,7 +49,7 @@ describe("A Settings Service", function() {
 	});
 
 	it("sends updateSetting message when setting is updated", function() {
-		var cs = new CommsService(),
+		var cs = createCommsService(),
 			ss = createSettingsServiceWithCommsService(cs);
 
 		ss.saveValue(SETTING_NAME, SETTING_VALUE);
@@ -62,7 +62,7 @@ describe("A Settings Service", function() {
 	});
 
 	it("does not send updateSetting message when updated setting is unchanged", function() {
-		var cs = new CommsService(),
+		var cs = createCommsService(),
 			ss = createSettingsServiceWithCommsService(cs);
 
 		ss.saveValue(SETTING_NAME, SETTING_VALUE);
@@ -73,7 +73,7 @@ describe("A Settings Service", function() {
 	});
 
 	it("does not send updateSetting message when setting is first set", function() {
-		var cs = new CommsService(),
+		var cs = createCommsService(),
 			ss = createSettingsServiceWithCommsService(cs);
 
 		spyOn(cs, "sendMessage");
@@ -116,3 +116,7 @@ describe("A Settings Service", function() {
 	});
 
 });
+
+function createCommsService() {
+	return new CommsService({});
+}
