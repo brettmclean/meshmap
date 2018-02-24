@@ -10,10 +10,6 @@ meshmap.utils.comms.CommsService = (function() {
 
 		this._logger = deps.logger;
 		this._eventBus = deps.eventBus;
-
-		if(deps.provider) {
-			this.setProvider(deps.provider);
-		}
 	};
 
 	var validateLogProvider = function(provider) {

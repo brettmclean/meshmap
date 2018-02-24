@@ -10,14 +10,12 @@ var DUMMY_CONN_STR = "localhost:1234";
 var DUMMY_SITE_CODE = "abcdef";
 var DUMMY_USER_SECRET = "0123456789abcdefghijklmnopqrstuvwxyz";
 
-var createService = function(provider) {
-	return new CommsService({
-		provider: provider
-	});
+var createService = function() {
+	return new CommsService({});
 };
 
 var verifyMethodExists = function(methodName) {
-	var cs = createService(new CommsProviderBase(DUMMY_CONN_STR));
+	var cs = createService();
 	expect(typeof cs[methodName]).toBe("function");
 };
 
@@ -44,13 +42,15 @@ describe("A Comms Service", function() {
 
 	it("throws a TypeError if not provided a valid CommsProviderBase", function() {
 		expect(function() {
-			createService({});
+			var cs = createService();
+			cs.setProvider({});
 		}).toThrowError(TypeError);
 	});
 
 	it("does not throw an Error when provided a valid CommsProviderBase", function() {
 		expect(function() {
-			createService(new CommsProviderBase(DUMMY_CONN_STR));
+			var cs = createService();
+			cs.setProvider(new CommsProviderBase(DUMMY_CONN_STR));
 		}).not.toThrow();
 	});
 
@@ -58,7 +58,8 @@ describe("A Comms Service", function() {
 		var cp = new CommsProviderBase(DUMMY_CONN_STR);
 		spyOn(cp, "connect");
 
-		var cs = createService(cp); // jshint ignore:line
+		var cs = createService();
+		cs.setProvider(cp);
 
 		expect(cp.connect.calls.count()).toBe(1);
 	});
@@ -72,7 +73,8 @@ describe("A Comms Service", function() {
 		spyOn(cp, "connect").and.callThrough();
 		var funcCalls = cp.connect.calls;
 
-		var cs = createService(cp);
+		var cs = createService();
+		cs.setProvider(cp);
 		expect(funcCalls.count()).toBe(1);
 
 		cp.disconnect();
@@ -84,7 +86,8 @@ describe("A Comms Service", function() {
 		var cp = new CommsProviderBase(DUMMY_CONN_STR);
 		spyOn(cp, "connect").and.callThrough();
 
-		var cs = createService(cp);
+		var cs = createService();
+		cs.setProvider(cp);
 		cp.bind("connected", function() {
 			var funcCalls = cp.connect.calls;
 			expect(funcCalls.count()).toBe(1);
@@ -101,7 +104,8 @@ describe("A Comms Service", function() {
 		var cp = new CommsProviderBase(DUMMY_CONN_STR);
 		spyOn(cp, "send");
 
-		var cs = createService(cp);
+		var cs = createService();
+		cs.setProvider(cp);
 		cp.bind("connected", function() {
 			var funcCalls = cp.send.calls;
 			cs.sendMessage("typeArg", "dataArg");
@@ -122,7 +126,8 @@ describe("A Comms Service", function() {
 		var cp = new CommsProviderBase(DUMMY_CONN_STR);
 		var connectInfo = new dm.ConnectInfo(DUMMY_SITE_CODE, DUMMY_USER_SECRET);
 
-		var cs = createService(cp);
+		var cs = createService();
+		cs.setProvider(cp);
 		cp.bind("connected", function() {
 			spyOn(cp, "sendWithType");
 			cs.sendConnectInfo(connectInfo);
@@ -144,7 +149,8 @@ describe("A Comms Service", function() {
 		var cp = new CommsProviderBase(DUMMY_CONN_STR);
 		var connectInfo = new dm.ConnectInfo(DUMMY_SITE_CODE, DUMMY_USER_SECRET);
 
-		var cs = createService(cp);
+		var cs = createService();
+		cs.setProvider(cp);
 		cp.bind("connected", function() {
 			cs.sendConnectInfo(connectInfo, function() {
 				done();
@@ -157,10 +163,10 @@ describe("A Comms Service", function() {
 		var cp = new CommsProviderBase(DUMMY_CONN_STR);
 
 		eb.subscribe("connected", done);
-		var cs = new CommsService({ // jshint ignore:line
-			provider: cp,
+		var cs = new CommsService({
 			eventBus: eb
 		});
+		cs.setProvider(cp);
 	});
 
 	it("fires a disconnected event on the event bus when provider is disconnected", function(done) {
@@ -168,10 +174,10 @@ describe("A Comms Service", function() {
 		var cp = new CommsProviderBase(DUMMY_CONN_STR);
 
 		eb.subscribe("disconnected", done);
-		var cs = new CommsService({ // jshint ignore:line
-			provider: cp,
+		var cs = new CommsService({
 			eventBus: eb
 		});
+		cs.setProvider(cp);
 		cp.disconnect();
 	});
 
@@ -185,23 +191,24 @@ describe("A Comms Service", function() {
 			expect(msg.data).toBe("msgData");
 			done();
 		});
-		var cs = new CommsService({ // jshint ignore:line
-			provider: cp,
+		var cs = new CommsService({
 			eventBus: eb
 		});
+		cs.setProvider(cp);
 		simulateReceivedMessage(cp, msg);
 	});
 
 	it("can send connection info", function(done) {
 		var cp = new CommsProviderBase(DUMMY_CONN_STR);
-		var cs = createService(cp);
+		var cs = createService();
+		cs.setProvider(cp);
 		var connectInfo = new dm.ConnectInfo(DUMMY_SITE_CODE, DUMMY_USER_SECRET);
 
 		cs.sendConnectInfo(connectInfo, done);
 	});
 
 	it("can share singleton instance", function() {
-		var cs = createService(new CommsProviderBase(DUMMY_CONN_STR));
+		var cs = createService();
 		cs.setAsSingletonInstance();
 
 		expect(CommsService.instance).toBe(cs);
@@ -233,9 +240,8 @@ describe("A Comms Service", function() {
 		var cp = new CommsProviderBase(DUMMY_CONN_STR);
 		spyOn(cp, "send");
 
-		var cs = new CommsService({
-			provider: cp
-		});
+		var cs = new CommsService({});
+		cs.setProvider(cp);
 
 		var firstConnectedEvent = true;
 		cp.bind("connected", function() {
