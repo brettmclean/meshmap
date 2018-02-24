@@ -12,6 +12,7 @@ meshmap.startup.bootstrappers.pageStateBootstrapper = (function() {
 		var pageStateService = new PageStateService({
 			eventBus: eventBus
 		});
+		pageStateService.init();
 		pageStateService.setAsSingletonInstance();
 	};
 
