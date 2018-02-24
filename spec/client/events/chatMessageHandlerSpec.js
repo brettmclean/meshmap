@@ -8,16 +8,6 @@ var ChatMessageHandler = loader.load("events/messageHandlers/ChatMessageHandler"
 
 var CHAT_MESSAGE1 = new ChatMessage("Hello there");
 
-var createChatMessageHandler = function() {
-	return new ChatMessageHandler();
-};
-
-var createChatMessageHandlerWithEventBus = function(eventBus) {
-	return new ChatMessageHandler({
-		eventBus: eventBus
-	});
-};
-
 describe("A chat message handler", function() {
 
 	it("does not throw error if event bus is not provided", function() {
@@ -29,8 +19,8 @@ describe("A chat message handler", function() {
 	});
 
 	it("fires a chatMessageReceived event when a chat message is received", function(done) {
-		var eb = new EventBus(),
-			cmh = createChatMessageHandlerWithEventBus(eb);
+		var eb = createEventBus(),
+			cmh = createChatMessageHandler({ eventBus: eb });
 
 		eb.subscribe("chatMessageReceived", function(chatMessage) {
 			expect(chatMessage).toBe(CHAT_MESSAGE1);
@@ -41,3 +31,15 @@ describe("A chat message handler", function() {
 	});
 
 });
+
+function createChatMessageHandler(deps) {
+	deps = deps || {};
+
+	deps.eventBus = deps.eventBus || createEventBus();
+
+	return new ChatMessageHandler(deps);
+}
+
+function createEventBus() {
+	return new EventBus();
+}

@@ -3,9 +3,11 @@ meshmap.namespace("meshmap.events.messageHandlers");
 meshmap.events.messageHandlers.ChatMessageHandler = (function() {
 
 	var ChatMessageHandler = function(deps) {
-		deps = deps || {};
+		this._eventBus = deps.eventBus;
+	};
 
-		this._eventBus = deps.eventBus || null;
+	ChatMessageHandler.prototype.handle = function(chatMessage) {
+		fireEventWithArg.call(this, "chatMessageReceived", chatMessage);
 	};
 
 	var fireEventWithArg = function(eventName, eventArg) {
@@ -13,13 +15,7 @@ meshmap.events.messageHandlers.ChatMessageHandler = (function() {
 	};
 
 	var callEventBusPublish = function(publishArgs) {
-		if(this._eventBus) {
-			this._eventBus.publish.apply(this._eventBus, publishArgs);
-		}
-	};
-
-	ChatMessageHandler.prototype.handle = function(chatMessage) {
-		fireEventWithArg.call(this, "chatMessageReceived", chatMessage);
+		this._eventBus.publish.apply(this._eventBus, publishArgs);
 	};
 
 	return ChatMessageHandler;

@@ -218,7 +218,7 @@ describe("A Message Handling Service", function() {
 	it("defers chat message events to chat message handler", function() {
 		// jshint unused: false
 		var eb = new EventBus(),
-			cmh = new ChatMessageHandler(),
+			cmh = new ChatMessageHandler({}),
 			mhs = createMessageHandlingServiceWithEventBusAndChatMessageHandler(eb, cmh),
 			chatMessage = new ChatMessage("Hello!"),
 			message = new Message(Message.CHAT_MESSAGE, chatMessage);
