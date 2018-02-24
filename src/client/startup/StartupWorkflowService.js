@@ -10,42 +10,32 @@ meshmap.startup.StartupWorkflowService = (function() {
 	var SECRET_STORAGE_LENGTH_SECONDS = 10 * 365 * 24 * 60 * 60;
 
 	var StartupWorkflowService = function(deps) {
-		deps = deps || /* istanbul ignore next */ {};
-
-		this._eventBus = deps.eventBus || null;
-		this._commsService = deps.commsService || null;
-		this._pageStateService = deps.pageStateService || null;
-		this._storageService = deps.storageService || null;
-		this._secretGenerator = deps.secretGenerator || null;
-		this._logger = deps.logger || null;
+		this._eventBus = deps.eventBus;
+		this._commsService = deps.commsService;
+		this._pageStateService = deps.pageStateService;
+		this._storageService = deps.storageService;
+		this._secretGenerator = deps.secretGenerator;
+		this._logger = deps.logger;
 
 		this._subscribeToEvents();
 	};
 
 	StartupWorkflowService.prototype._subscribeToEvents = function() {
-		if(this._eventBus) {
-			this._eventBus.subscribe("connected", this._onConnected.bind(this));
-		}
+		this._eventBus.subscribe("connected", this._onConnected.bind(this));
 	};
 
 	StartupWorkflowService.prototype._onConnected = function() {
-		if(this._commsService) {
-			var siteId = getSiteId.call(this);
-			var secret = getOrCreateSecret.call(this);
+		var siteId = getSiteId.call(this);
+		var secret = getOrCreateSecret.call(this);
 
-			var connectInfo = new ConnectInfo(siteId, secret);
-			this._commsService.sendConnectInfo(connectInfo, onConnectInfoAccepted.bind(this));
-			logDebug.call(this, "Sent connect info.");
-		}
+		var connectInfo = new ConnectInfo(siteId, secret);
+		this._commsService.sendConnectInfo(connectInfo, onConnectInfoAccepted.bind(this));
+		logDebug.call(this, "Sent connect info.");
 	};
 
 	var getSiteId = function() {
-		var siteId = null;
-		if(this._pageStateService) {
-			var path = this._pageStateService.getPath();
-			siteId = extractSiteIdFromPath(path);
-		}
-		return siteId;
+		var path = this._pageStateService.getPath();
+		return extractSiteIdFromPath(path);
 	};
 
 	var extractSiteIdFromPath = function(path) {
@@ -64,17 +54,15 @@ meshmap.startup.StartupWorkflowService = (function() {
 	};
 
 	var getSecretFromStorage = function() {
-		return this._storageService ? this._storageService.get(SECRET_STORAGE_KEY) : null;
+		return this._storageService.get(SECRET_STORAGE_KEY);
 	};
 
 	var setSecretInStorage = function(secret) {
-		if(this._storageService) {
-			this._storageService.set(SECRET_STORAGE_KEY, secret, SECRET_STORAGE_LENGTH_SECONDS);
-		}
+		this._storageService.set(SECRET_STORAGE_KEY, secret, SECRET_STORAGE_LENGTH_SECONDS);
 	};
 
 	var generateSecret = function() {
-		return this._secretGenerator ? this._secretGenerator.generate() : null;
+		return this._secretGenerator.generate();
 	};
 
 	var onConnectInfoAccepted = function(startupData) {
@@ -84,9 +72,7 @@ meshmap.startup.StartupWorkflowService = (function() {
 	};
 
 	var logDebug = function(msg) {
-		if(this._logger) {
-			this._logger.debug(msg);
-		}
+		this._logger.debug(msg);
 	};
 
 	return StartupWorkflowService;
