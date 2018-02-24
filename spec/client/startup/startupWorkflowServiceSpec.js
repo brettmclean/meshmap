@@ -25,6 +25,7 @@ describe("A startup workflow service", function() {
 				commsService: cs
 			});
 
+		sws.init();
 		eb.publish("connected");
 
 		expect(cs.sendConnectInfo).toHaveBeenCalledWith(jasmine.any(ConnectInfo), jasmine.any(Function));

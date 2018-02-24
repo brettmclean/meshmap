@@ -16,7 +16,9 @@ meshmap.startup.StartupWorkflowService = (function() {
 		this._storageService = deps.storageService;
 		this._secretGenerator = deps.secretGenerator;
 		this._logger = deps.logger;
+	};
 
+	StartupWorkflowService.prototype.init = function() {
 		this._subscribeToEvents();
 	};
 

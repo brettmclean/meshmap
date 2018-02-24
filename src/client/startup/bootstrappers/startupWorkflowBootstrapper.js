@@ -19,7 +19,7 @@ meshmap.startup.bootstrappers.startupWorkflowBootstrapper = (function() {
 			storageService = new StorageService(),
 			secretGenerator = new SecretGenerator();
 
-		var sws = new StartupWorkflowService({ // jshint ignore:line
+		var sws = new StartupWorkflowService({
 			eventBus: eventBus,
 			commsService: commsService,
 			pageStateService: pageStateService,
@@ -27,6 +27,7 @@ meshmap.startup.bootstrappers.startupWorkflowBootstrapper = (function() {
 			secretGenerator: secretGenerator,
 			logger: logger
 		});
+		sws.init();
 	};
 
 	return {
