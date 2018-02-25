@@ -189,12 +189,11 @@ describe("A Message Handling Service", function() {
 	it("defers map events to map event handler", function() {
 		// jshint unused: false
 		var eb = new EventBus(),
-			meh = new MapEventHandler(),
+			meh = createMapEventHandler(),
 			mhs = createMessageHandlingServiceWithEventBusAndMapEventHandler(eb, meh),
 			mapEvent = new MapEvent(MapEvent.REMOVE_MARKER, 87),
 			message = new Message(Message.MAP_EVENT, mapEvent);
 
-		spyOn(meh, "handle");
 		eb.publish("messageReceived", message);
 
 		expect(meh.handle).toHaveBeenCalledWith(mapEvent);
@@ -262,4 +261,10 @@ function createErrorMessageHandler() {
 	var emh = new ErrorMessageHandler({});
 	spyOn(emh, "handle");
 	return emh;
+}
+
+function createMapEventHandler() {
+	var meh = new MapEventHandler({});
+	spyOn(meh, "handle");
+	return meh;
 }

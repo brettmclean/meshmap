@@ -8,20 +8,6 @@ var SiteService = loader.load("state/SiteService"),
 	Location = dm.Location,
 	PointMarker = dm.PointMarker;
 
-var createMapEventHandler = function() {
-	return new MapEventHandler();
-};
-
-var createMapEventHandlerWithSiteService = function(siteService) {
-	return new MapEventHandler({
-		siteService: siteService
-	});
-};
-
-var toUntypedObj = function(o) {
-	return JSON.parse(JSON.stringify(o));
-};
-
 var LOCATION1 = new Location(1, 1);
 var LOCATION2 = new Location(2, 2);
 
@@ -36,21 +22,9 @@ var UPDATE_MARKER_MAP_EVENT = toUntypedObj(new MapEvent(MapEvent.UPDATE_MARKER, 
 
 describe("A map event handler", function() {
 
-	it("does not throw error if site service is not provided", function() {
-		var meh = createMapEventHandler();
-
-		expect(function() {
-			meh.handle(ADD_MARKER_MAP_EVENT);
-			meh.handle(REMOVE_MARKER_MAP_EVENT);
-			meh.handle(UPDATE_MARKER_MAP_EVENT);
-		}).not.toThrow();
-	});
-
 	it("passes added markers to site service", function() {
-		var ss = new SiteService(),
-			meh = createMapEventHandlerWithSiteService(ss);
-
-		spyOn(ss, "addMarker");
+		var ss = createSiteService(),
+			meh = createMapEventHandler({ siteService: ss });
 
 		meh.handle(ADD_MARKER_MAP_EVENT);
 
@@ -61,20 +35,18 @@ describe("A map event handler", function() {
 	});
 
 	it("passes removed marker IDs to site service", function() {
-		var ss = new SiteService(),
-			meh = createMapEventHandlerWithSiteService(ss);
+		var ss = createSiteService(),
+			meh = createMapEventHandler({ siteService: ss });
 
-		spyOn(ss, "removeMarker");
 		meh.handle(REMOVE_MARKER_MAP_EVENT);
 
 		expect(ss.removeMarker).toHaveBeenCalledWith(REMOVE_MARKER_MAP_EVENT.data);
 	});
 
 	it("passes updated markers to site service", function() {
-		var ss = new SiteService(),
-			meh = createMapEventHandlerWithSiteService(ss);
+		var ss = createSiteService(),
+			meh = createMapEventHandler({ siteService: ss });
 
-		spyOn(ss, "updateMarkerFromRemoteChange");
 		meh.handle(UPDATE_MARKER_MAP_EVENT);
 
 		expect(ss.updateMarkerFromRemoteChange).toHaveBeenCalled();
@@ -84,7 +56,7 @@ describe("A map event handler", function() {
 	});
 
 	it("does not throw error when given invalid map event", function() {
-		var meh = createMapEventHandlerWithSiteService(new SiteService());
+		var meh = createMapEventHandler();
 
 		expect(function() {
 			meh.handle(new MapEvent("notAValidEventType", null));
@@ -92,3 +64,23 @@ describe("A map event handler", function() {
 	});
 
 });
+
+function createMapEventHandler(deps) {
+	deps = deps || {};
+
+	deps.siteService = deps.siteService || createSiteService();
+
+	return new MapEventHandler(deps);
+}
+
+function createSiteService() {
+	var ss = new SiteService();
+	spyOn(ss, "addMarker");
+	spyOn(ss, "removeMarker");
+	spyOn(ss, "updateMarkerFromRemoteChange");
+	return ss;
+}
+
+function toUntypedObj(o) {
+	return JSON.parse(JSON.stringify(o));
+}
