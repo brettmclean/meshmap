@@ -12,86 +12,60 @@ var ConnectionHandler = loader.load("events/messageHandlers/ConnectionHandler"),
 	AlertDialog = loader.load("ui/dialogs/AlertDialog"),
 	CommsService = loader.load("utils/comms/CommsService");
 
-var simulateAttemptReconnect = function(connectionHandler) {
-	connectionHandler._attemptReconnect();
-};
-
-var createConnectionHandlerWithDialogService = function(dialogService) {
-	return new ConnectionHandler({
-		dialogService: dialogService
-	});
-};
-
-var createConnectionHandlerWithCommsService = function(commsService) {
-	return new ConnectionHandler({
-		commsService: commsService
-	});
-};
-
-var createConnectionHandlerWithDialogServiceAndCommsService = function(dialogService, commsService) {
-	return new ConnectionHandler({
-		dialogService: dialogService,
-		commsService: commsService
-	});
-};
-
 describe("A Connection Handler", function() {
 
 	it("shows an alert dialog when disconnected from server", function() {
-		var ds = new DialogService(),
-			ch = createConnectionHandlerWithDialogService(ds);
+		var ds = createDialogService(),
+			ch = createConnectionHandler({ dialogService: ds });
 
-		spyOn(ds, "showDialog");
 		ch.handleDisconnect();
 
 		expect(ds.showDialog).toHaveBeenCalledWith(jasmine.any(AlertDialog));
 	});
 
 	it("will attempt to reconnect when user accepts disconnection dialog", function(done) {
-		var ds = new DialogService(),
-			ch = createConnectionHandlerWithDialogService(ds);
-
-		spyOn(ch, "_attemptReconnect");
-
-		spyOn(ds, "showDialog").and.callFake(function(dialog) {
+		var showDialogFake = function(dialog) {
 			dialog.accept();
 			expect(dialog.title).toBe("Connection lost");
 			expect(ch._attemptReconnect).toHaveBeenCalled();
 			done();
-		});
+		};
+
+		var ds = createDialogServiceWithShowDialogFake(showDialogFake),
+			ch = createConnectionHandler({ dialogService: ds });
+
+		spyOn(ch, "_attemptReconnect");
 
 		ch.handleDisconnect();
 	});
 
 	it("will ask comms service to reconnect when user attempts reconnect", function() {
-		var ds = new DialogService(),
-			cs = createCommsService(),
-			ch = createConnectionHandlerWithDialogServiceAndCommsService(ds, cs);
-
-		spyOn(cs, "reconnect");
+		var cs = createCommsService(),
+			ch = createConnectionHandler({
+				commsService: cs
+			});
 
 		simulateAttemptReconnect(ch);
 		expect(cs.reconnect).toHaveBeenCalled();
 	});
 
 	it("will show a text dialog when user attempts reconnect", function(done) {
-		var ds = new DialogService(),
-			ch = createConnectionHandlerWithDialogService(ds);
-
-		spyOn(ds, "showDialog").and.callFake(function(dialog) {
+		var showDialogFake = function(dialog) {
 			expect(dialog.title).toBe("Attempting to reconnect");
 			expect(dialog).toEqual(jasmine.any(TextDialog));
 			done();
-		});
+		};
+
+		var ds = createDialogServiceWithShowDialogFake(showDialogFake),
+			ch = createConnectionHandler({ dialogService: ds });
 
 		simulateAttemptReconnect(ch);
 	});
 
 	it("does not show connection lost dialog if page is unloading", function() {
-		var ds = new DialogService(),
-			ch = createConnectionHandlerWithDialogService(ds);
+		var ds = createDialogService(),
+			ch = createConnectionHandler({ dialogService: ds });
 
-		spyOn(ds, "showDialog");
 		ch.setPageUnloading();
 		ch.handleDisconnect();
 
@@ -99,44 +73,42 @@ describe("A Connection Handler", function() {
 	});
 
 	it("dismisses the connection lost dialog when connection is established", function(done) {
-		var ds = new DialogService(),
-			ch = createConnectionHandlerWithDialogService(ds),
-			connectionLostDialogHandle = null;
-
-		spyOn(ds, "showDialog").and.callFake(function(dialog) {
+		var showDialogFake = function(dialog) {
 			connectionLostDialogHandle = dialog.handle;
 			ch.handleConnect();
-		});
-
-		spyOn(ds, "dismissDialog").and.callFake(function(dialogHandle) {
+		};
+		var dismissDialogFake = function(dialogHandle) {
 			expect(dialogHandle).toBe(connectionLostDialogHandle);
 			done();
-		});
+		};
+
+		var ds = createDialogServiceWithShowDialogFakeAndDismissDialogFake(showDialogFake, dismissDialogFake),
+			ch = createConnectionHandler({ dialogService: ds }),
+			connectionLostDialogHandle = null;
 
 		ch.handleDisconnect();
 	});
 
 	it("dismisses the reconnecting dialog when connection is established", function(done) {
-		var ds = new DialogService(),
-			ch = createConnectionHandlerWithDialogService(ds),
-			reconnectingDialogHandle = null;
-
-		spyOn(ds, "showDialog").and.callFake(function(dialog) {
+		var showDialogFake = function(dialog) {
 			reconnectingDialogHandle = dialog.handle;
 			ch.handleConnect();
-		});
-
-		spyOn(ds, "dismissDialog").and.callFake(function(dialogHandle) {
+		};
+		var dismissDialogFake = function(dialogHandle) {
 			expect(dialogHandle).toBe(reconnectingDialogHandle);
 			done();
-		});
+		};
+
+		var ds = createDialogServiceWithShowDialogFakeAndDismissDialogFake(showDialogFake, dismissDialogFake),
+			ch = createConnectionHandler({ dialogService: ds }),
+			reconnectingDialogHandle = null;
 
 		simulateAttemptReconnect(ch);
 	});
 
 	it("will not throw an error if not provided with comms service", function() {
-		var ds = new DialogService(),
-			ch = createConnectionHandlerWithDialogService(ds);
+		var ds = createDialogService(),
+			ch = createConnectionHandler({ dialogService: ds });
 
 		expect(function() {
 			simulateAttemptReconnect(ch);
@@ -145,7 +117,7 @@ describe("A Connection Handler", function() {
 
 	it("will not throw an error if not provided with dialog service", function() {
 		var cs = createCommsService(),
-			ch = createConnectionHandlerWithCommsService(cs);
+			ch = createConnectionHandler({ commsService: cs });
 
 		expect(function() {
 			ch.handleDisconnect();
@@ -154,6 +126,36 @@ describe("A Connection Handler", function() {
 
 });
 
+function simulateAttemptReconnect(connectionHandler) {
+	connectionHandler._attemptReconnect();
+}
+
+function createConnectionHandler(deps) {
+	deps = deps || {};
+
+	deps.dialogService = deps.dialogService || createDialogService();
+	deps.commsService = deps.commsService || createCommsService();
+
+	return new ConnectionHandler(deps);
+}
+
 function createCommsService() {
-	return new CommsService({});
+	var cs = new CommsService({});
+	spyOn(cs, "reconnect");
+	return cs;
+}
+
+function createDialogService() {
+	return createDialogServiceWithShowDialogFake(function() {});
+}
+
+function createDialogServiceWithShowDialogFake(showDialogFake) {
+	return createDialogServiceWithShowDialogFakeAndDismissDialogFake(showDialogFake, function() {});
+}
+
+function createDialogServiceWithShowDialogFakeAndDismissDialogFake(showDialogFake, dismissDialogFake) {
+	var ds = new DialogService();
+	spyOn(ds, "showDialog").and.callFake(showDialogFake);
+	spyOn(ds, "dismissDialog").and.callFake(dismissDialogFake);
+	return ds;
 }

@@ -7,10 +7,8 @@ meshmap.events.messageHandlers.ConnectionHandler = (function() {
 		AlertDialog = meshmap.ui.dialogs.AlertDialog;
 
 	var ConnectionHandler = function(deps) {
-		deps = deps || {};
-
-		this._dialogService = deps.dialogService || null;
-		this._commsService = deps.commsService || null;
+		this._dialogService = deps.dialogService;
+		this._commsService = deps.commsService;
 
 		this._dialogHandle = null;
 		this._reconnectTimer = null;
@@ -21,16 +19,11 @@ meshmap.events.messageHandlers.ConnectionHandler = (function() {
 	var RECONNECTING_DIALOG_SHOWN_MS = 2000;
 
 	var showDialog = function(dialog) {
-		if(this._dialogService) {
-			this._dialogService.showDialog(dialog);
-		}
+		this._dialogService.showDialog(dialog);
 	};
 
 	var dismissDialog = function(dialogHandle) {
-		/* istanbul ignore else  */
-		if(this._dialogService) {
-			this._dialogService.dismissDialog(dialogHandle);
-		}
+		this._dialogService.dismissDialog(dialogHandle);
 	};
 
 	var dismissConnectionDialog = function() {
@@ -67,9 +60,7 @@ meshmap.events.messageHandlers.ConnectionHandler = (function() {
 	};
 
 	ConnectionHandler.prototype._attemptReconnect = function() {
-		if(this._commsService) {
-			this._commsService.reconnect();
-		}
+		this._commsService.reconnect();
 
 		showReconnectingDialog.call(this);
 	};

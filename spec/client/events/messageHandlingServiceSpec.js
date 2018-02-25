@@ -141,7 +141,7 @@ describe("A Message Handling Service", function() {
 	it("defers handling a disconnection to the connection handler", function() {
 		// jshint unused: false
 		var eb = new EventBus(),
-			ch = new ConnectionHandler(),
+			ch = new ConnectionHandler({}),
 			mhs = createMessageHandlingServiceWithEventBusAndConnectionHandler(eb, ch);
 
 		spyOn(ch, "handleDisconnect");
@@ -153,7 +153,7 @@ describe("A Message Handling Service", function() {
 	it("defers handling a connection to the connection handler", function() {
 		// jshint unused: false
 		var eb = new EventBus(),
-			ch = new ConnectionHandler(),
+			ch = new ConnectionHandler({}),
 			mhs = createMessageHandlingServiceWithEventBusAndConnectionHandler(eb, ch);
 
 		spyOn(ch, "handleConnect");
@@ -177,7 +177,7 @@ describe("A Message Handling Service", function() {
 	it("informs the connection handler when the page is unloading", function() {
 		// jshint unused: false
 		var eb = new EventBus(),
-			ch = new ConnectionHandler(),
+			ch = new ConnectionHandler({}),
 			mhs = createMessageHandlingServiceWithEventBusAndConnectionHandler(eb, ch);
 
 		spyOn(ch, "setPageUnloading");
