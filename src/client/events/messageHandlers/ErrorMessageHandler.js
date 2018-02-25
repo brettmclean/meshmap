@@ -6,27 +6,21 @@ meshmap.events.messageHandlers.ErrorMessageHandler = (function() {
 	var AlertDialog = meshmap.ui.dialogs.AlertDialog;
 
 	var ErrorMessageHandler = function(deps) {
-		deps = deps || {};
-
-		this._logger = deps.logger || null;
-		this._dialogService = deps.dialogService || null;
+		this._logger = deps.logger;
+		this._dialogService = deps.dialogService;
 	};
 
 	ErrorMessageHandler.prototype.handle = function(errorMsg) {
-		if(this._logger) {
-			this._logger.error("Error from server: " + errorMsg);
-		}
+		this._logger.error("Error from server: " + errorMsg);
 
-		if(this._dialogService) {
-			var dialog = new AlertDialog(
-				"An error has occurred",
-				errorMsg,
-				null,
-				null
-			);
+		var dialog = new AlertDialog(
+			"An error has occurred",
+			errorMsg,
+			null,
+			null
+		);
 
-			this._dialogService.showDialog(dialog);
-		}
+		this._dialogService.showDialog(dialog);
 	};
 
 	return ErrorMessageHandler;

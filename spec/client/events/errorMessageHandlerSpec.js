@@ -12,22 +12,6 @@ var ErrorMessageHandler = loader.load("events/messageHandlers/ErrorMessageHandle
 
 var ERROR_MSG = "CPU is on fire";
 
-var createErrorMessageHandler = function() {
-	return new ErrorMessageHandler();
-};
-
-var createErrorMessageHandlerWithLogger = function(logger) {
-	return new ErrorMessageHandler({
-		logger: logger
-	});
-};
-
-var createErrorMessageHandlerWithDialogService = function(dialogService) {
-	return new ErrorMessageHandler({
-		dialogService: dialogService
-	});
-};
-
 describe("An error message handler", function() {
 
 	it("does not throw error if logger and dialog service are not provided", function() {
@@ -40,29 +24,56 @@ describe("An error message handler", function() {
 	});
 
 	it("passes the error message to a logger", function(done) {
-		var logger = new Logger(),
-			emh = createErrorMessageHandlerWithLogger(logger);
-
-		spyOn(logger, "error").and.callFake(function(errorMsg) {
+		var errorFake = function(errorMsg) {
 			expect(errorMsg).toContain(ERROR_MSG);
 			done();
-		});
+		};
+		var logger = createLoggerWithErrorFake(errorFake),
+			emh = createErrorMessageHandler({ logger: logger });
 
 		emh.handle(ERROR_MSG);
 	});
 
 	it("displays error message in an alert dialog", function(done) {
-		var ds = new DialogService(),
-			emh = createErrorMessageHandlerWithDialogService(ds);
-
-		spyOn(ds, "showDialog").and.callFake(function(dialog) {
+		var showDialogFake = function(dialog) {
 			expect(dialog).toEqual(jasmine.any(AlertDialog));
 			expect(dialog.title).toContain("error");
 			expect(dialog.message).toBe(ERROR_MSG);
 			done();
-		});
+		};
+		var ds = createDialogServiceWithShowDialogFake(showDialogFake),
+			emh = createErrorMessageHandler({ dialogService: ds });
 
 		emh.handle(ERROR_MSG);
 	});
 
 });
+
+function createErrorMessageHandler(deps) {
+	deps = deps || {};
+
+	deps.logger = deps.logger || createLogger();
+	deps.dialogService = deps.dialogService || createDialogService();
+
+	return new ErrorMessageHandler(deps);
+}
+
+function createLogger() {
+	return createLoggerWithErrorFake(function() {});
+}
+
+function createLoggerWithErrorFake(errorFake) {
+	var logger = new Logger();
+	spyOn(logger, "error").and.callFake(errorFake);
+	return logger;
+}
+
+function createDialogService() {
+	return createDialogServiceWithShowDialogFake(function() {});
+}
+
+function createDialogServiceWithShowDialogFake(showDialogFake) {
+	var ds = new DialogService();
+	spyOn(ds, "showDialog").and.callFake(showDialogFake);
+	return ds;
+}

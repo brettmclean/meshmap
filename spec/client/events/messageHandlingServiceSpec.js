@@ -232,12 +232,11 @@ describe("A Message Handling Service", function() {
 	it("defers error message events to error message handler", function() {
 		// jshint unused: false
 		var eb = new EventBus(),
-			emh = new ErrorMessageHandler(),
+			emh = createErrorMessageHandler(),
 			mhs = createMessageHandlingServiceWithEventBusAndErrorMessageHandler(eb, emh),
 			errorMessage = "Network cable severed by honey badger",
 			message = new Message(Message.ERROR, errorMessage);
 
-		spyOn(emh, "handle");
 		eb.publish("messageReceived", message);
 
 		expect(emh.handle).toHaveBeenCalledWith(errorMessage);
@@ -258,3 +257,9 @@ describe("A Message Handling Service", function() {
 	});
 
 });
+
+function createErrorMessageHandler() {
+	var emh = new ErrorMessageHandler({});
+	spyOn(emh, "handle");
+	return emh;
+}
