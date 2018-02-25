@@ -2,6 +2,7 @@ require("../testUtils/init");
 var loader = require("../testUtils/loader");
 
 var StartupDataHandler = loader.load("events/messageHandlers/StartupDataHandler"),
+	SiteService = loader.load("state/SiteService"),
 	dm = loader.load("model/datamodel"),
 	StartupData = dm.StartupData,
 	Location = dm.Location,
@@ -78,41 +79,6 @@ var STARTUP_DATA = (function() {
 	return sd;
 }());
 
-var createStartupDataHandler = function() {
-	return new StartupDataHandler();
-};
-
-var createStartupDataHandlerWithSiteService = function(siteService) {
-	return new StartupDataHandler({
-		siteService: siteService
-	});
-};
-
-var verifySiteServiceSetterIsCalled = function(setterName, expectedValue) {
-	var ss = new MockSiteService(),
-		sdh = createStartupDataHandlerWithSiteService(ss);
-
-	spyOn(ss, setterName);
-	sdh.handle(STARTUP_DATA);
-
-	expect(ss[setterName]).toHaveBeenCalledWith(expectedValue);
-};
-
-var MockSiteService = function() {};
-MockSiteService.prototype = {
-	setName: function() {},
-	setDescription: function() {},
-	setMarkers: function() {},
-	setUsers: function() {},
-	setCurrentUserId: function() {},
-	setOwnerUserId: function() {},
-	setMarkerIcons: function() {},
-	setMarkerColors: function() {},
-	setInitialExtent: function() {},
-	setSiteSettings: function() {},
-	setUserSettings: function() {}
-};
-
 describe("A Startup Data Handler", function() {
 
 	it("does not throw an error if site service is not provided", function() {
@@ -145,12 +111,11 @@ describe("A Startup Data Handler", function() {
 		verifySiteServiceSetterIsCalled.bind(this, "setInitialExtent", EXTENT2));
 
 	it("sets site initial extent as initial extent on site service user-site state extent is unavailable", function() {
-		var ss = new MockSiteService(),
-			sdh = createStartupDataHandlerWithSiteService(ss);
+		var ss = createSiteService(),
+			sdh = createStartupDataHandler({ siteService: ss });
 
 		var sd = new StartupData(null, null, null,	null,	null,	null,	SITE_SETTINGS, null, null);
 
-		spyOn(ss, "setInitialExtent");
 		sdh.handle(sd);
 
 		expect(ss.setInitialExtent).toHaveBeenCalledWith(EXTENT1);
@@ -169,3 +134,37 @@ describe("A Startup Data Handler", function() {
 		verifySiteServiceSetterIsCalled.bind(this, "setUserSettings", USER_SETTINGS));
 
 });
+
+function verifySiteServiceSetterIsCalled(setterName, expectedValue) {
+	var ss = createSiteService(),
+		sdh = createStartupDataHandler({ siteService: ss });
+
+	sdh.handle(STARTUP_DATA);
+
+	expect(ss[setterName]).toHaveBeenCalledWith(expectedValue);
+}
+
+function createStartupDataHandler(deps) {
+	deps = deps || {};
+	deps.siteService = deps.siteService || createSiteService();
+
+	return new StartupDataHandler(deps);
+}
+
+function createSiteService() {
+	var ss = new SiteService();
+
+	spyOn(ss, "setName");
+	spyOn(ss, "setDescription");
+	spyOn(ss, "setMarkers");
+	spyOn(ss, "setUsers");
+	spyOn(ss, "setCurrentUserId");
+	spyOn(ss, "setOwnerUserId");
+	spyOn(ss, "setMarkerIcons");
+	spyOn(ss, "setMarkerColors");
+	spyOn(ss, "setInitialExtent");
+	spyOn(ss, "setSiteSettings");
+	spyOn(ss, "setUserSettings");
+
+	return ss;
+}

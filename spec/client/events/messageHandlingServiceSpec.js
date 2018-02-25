@@ -125,10 +125,8 @@ describe("A Message Handling Service", function() {
 	it("provides a parsed StartupData object to the startup data handler", function() {
 		// jshint unused: false
 		var eb = new EventBus(),
-			sdh = new StartupDataHandler(),
+			sdh = createStartupDataHandler(),
 			mhs = createMessageHandlingServiceWithEventBusAndStartupDataHandler(eb, sdh);
-
-		spyOn(sdh, "handle");
 
 		eb.publish("startupDataReceived", STARTUP_DATA_OBJ);
 
@@ -277,4 +275,10 @@ function createSiteSettingHandler() {
 	var ssh = new SiteSettingHandler({});
 	spyOn(ssh, "handle");
 	return ssh;
+}
+
+function createStartupDataHandler() {
+	var sdh = new StartupDataHandler({});
+	spyOn(sdh, "handle");
+	return sdh;
 }
