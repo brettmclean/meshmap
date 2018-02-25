@@ -165,10 +165,9 @@ describe("A Message Handling Service", function() {
 	it("defers page unloading to page unload handler", function() {
 		// jshint unused: false
 		var eb = new EventBus(),
-			puh = new PageUnloadHandler(),
+			puh = createPageUnloadHandler(),
 			mhs = createMessageHandlingServiceWithEventBusAndPageUnloadHandler(eb, puh);
 
-		spyOn(puh, "handle");
 		eb.publish("pageUnloading");
 
 		expect(puh.handle).toHaveBeenCalled();
@@ -267,4 +266,10 @@ function createMapEventHandler() {
 	var meh = new MapEventHandler({});
 	spyOn(meh, "handle");
 	return meh;
+}
+
+function createPageUnloadHandler() {
+	var puh = new PageUnloadHandler({});
+	spyOn(puh, "handle");
+	return puh;
 }

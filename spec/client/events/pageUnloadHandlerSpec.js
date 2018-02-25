@@ -4,38 +4,29 @@ var loader = require("../testUtils/loader");
 var PageUnloadHandler = loader.load("events/messageHandlers/PageUnloadHandler"),
 	ExtentUpdater = loader.load("map/ExtentUpdater");
 
-var createExtentUpdater = function() {
-	return new ExtentUpdater();
-};
-
-var createPageUnloadHandler = function() {
-	return new PageUnloadHandler();
-};
-
-var createPageUnloadHandlerWithExtentUpdater = function(extentUpdater) {
-	return new PageUnloadHandler({
-		extentUpdater: extentUpdater
-	});
-};
-
 describe("A Page Unload Handler", function() {
 
 	it("attempts to push a final map extent when page is unloading", function() {
 		var eu = createExtentUpdater(),
-			puh = createPageUnloadHandlerWithExtentUpdater(eu);
+			puh = createPageUnloadHandler({ extentUpdater: eu });
 
-		spyOn(eu, "push");
 		puh.handle();
 
 		expect(eu.push).toHaveBeenCalled();
 	});
 
-	it("does not throw an error if extent updater is not provided", function() {
-		var puh = createPageUnloadHandler();
-
-		expect(function() {
-			puh.handle();
-		}).not.toThrow();
-	});
-
 });
+
+function createPageUnloadHandler(deps) {
+	deps = deps || {};
+
+	deps.extentUpdater = deps.extentUpdater || createExtentUpdater();
+
+	return new PageUnloadHandler(deps);
+}
+
+function createExtentUpdater() {
+	var eu = new ExtentUpdater();
+	spyOn(eu, "push");
+	return eu;
+}

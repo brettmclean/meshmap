@@ -3,9 +3,7 @@ meshmap.namespace("meshmap.events.messageHandlers");
 meshmap.events.messageHandlers.PageUnloadHandler = (function() {
 
 	var PageUnloadHandler = function(deps) {
-		deps = deps || {};
-
-		this._extentUpdater = deps.extentUpdater || null;
+		this._extentUpdater = deps.extentUpdater;
 	};
 
 	PageUnloadHandler.prototype.handle = function() {
@@ -13,9 +11,7 @@ meshmap.events.messageHandlers.PageUnloadHandler = (function() {
 	};
 
 	var attemptFinalMapExtentPush = function() {
-		if(this._extentUpdater) {
-			this._extentUpdater.push();
-		}
+		this._extentUpdater.push();
 	};
 
 	return PageUnloadHandler;
