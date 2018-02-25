@@ -7,32 +7,24 @@ meshmap.events.messageHandlers.SiteSettingHandler = (function() {
 		SettingUpdate = dm.SettingUpdate;
 
 	var SiteSettingHandler = function(deps) {
-		deps = deps || {};
-
 		this._siteService = deps.siteService || null;
 	};
 
 	var UPDATE_KEY_HANDLER_MAPPINGS = {};
 
 	UPDATE_KEY_HANDLER_MAPPINGS[SettingUpdate.SITE_NAME] = function(settingUpdate) {
-		if(this._siteService) {
-			var siteName = settingUpdate.value;
-			this._siteService.setName(siteName);
-		}
+		var siteName = settingUpdate.value;
+		this._siteService.setName(siteName);
 	};
 
 	UPDATE_KEY_HANDLER_MAPPINGS[SettingUpdate.SITE_DESCRIPTION] = function(settingUpdate) {
-		if(this._siteService) {
-			var siteDescription = settingUpdate.value;
-			this._siteService.setDescription(siteDescription);
-		}
+		var siteDescription = settingUpdate.value;
+		this._siteService.setDescription(siteDescription);
 	};
 
 	UPDATE_KEY_HANDLER_MAPPINGS[SettingUpdate.ONLY_OWNER_CAN_EDIT] = function(settingUpdate) {
-		if(this._siteService) {
-			var onlyOwnerCanEdit = settingUpdate.value;
-			this._siteService.setOnlyOwnerCanEdit(onlyOwnerCanEdit);
-		}
+		var onlyOwnerCanEdit = settingUpdate.value;
+		this._siteService.setOnlyOwnerCanEdit(onlyOwnerCanEdit);
 	};
 
 	SiteSettingHandler.prototype.handle = function(settingUpdate) {

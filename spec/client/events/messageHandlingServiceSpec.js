@@ -243,12 +243,11 @@ describe("A Message Handling Service", function() {
 	it("defers site setting update events to site setting handler", function() {
 		// jshint unused: false
 		var eb = new EventBus(),
-			ssh = new SiteSettingHandler(),
+			ssh = createSiteSettingHandler(),
 			mhs = createMessageHandlingServiceWithEventBusAndSiteSettingHandler(eb, ssh),
 			su = new SettingUpdate(SettingUpdate.SITE_NAME, SITE_NAME),
 			message = new Message(Message.UPDATE_SITE_SETTING, su);
 
-		spyOn(ssh, "handle");
 		eb.publish("messageReceived", message);
 
 		expect(ssh.handle).toHaveBeenCalledWith(su);
@@ -272,4 +271,10 @@ function createPageUnloadHandler() {
 	var puh = new PageUnloadHandler({});
 	spyOn(puh, "handle");
 	return puh;
+}
+
+function createSiteSettingHandler() {
+	var ssh = new SiteSettingHandler({});
+	spyOn(ssh, "handle");
+	return ssh;
 }
