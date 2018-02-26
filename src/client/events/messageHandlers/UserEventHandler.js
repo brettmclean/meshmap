@@ -7,10 +7,8 @@ meshmap.events.messageHandlers.UserEventHandler = (function() {
 		UserEvent = dm.UserEvent;
 
 	var UserEventHandler = function(deps) {
-		deps = deps || {};
-
-		this._siteService = deps.siteService || null;
-		this._eventBus = deps.eventBus || null;
+		this._siteService = deps.siteService;
+		this._eventBus = deps.eventBus;
 	};
 
 	var fireEventWithArg = function(eventName, eventArg) {
@@ -31,9 +29,7 @@ meshmap.events.messageHandlers.UserEventHandler = (function() {
 		var sysMsg = userInfo.name + " has joined.";
 		fireEventWithArg.call(this, "systemMessageRequested", sysMsg);
 
-		if(this._siteService) {
-			this._siteService.addUser(userInfo);
-		}
+		this._siteService.addUser(userInfo);
 	};
 
 	EVENT_TYPE_HANDLER_MAPPINGS[UserEvent.USER_DISCONNECT] = function(userEvent) {
@@ -42,17 +38,13 @@ meshmap.events.messageHandlers.UserEventHandler = (function() {
 		var sysMsg = userInfo.name + " has left.";
 		fireEventWithArg.call(this, "systemMessageRequested", sysMsg);
 
-		if(this._siteService) {
-			this._siteService.removeUser(userInfo.id);
-		}
+		this._siteService.removeUser(userInfo.id);
 	};
 
 	EVENT_TYPE_HANDLER_MAPPINGS[UserEvent.USER_UPDATE] = function(userEvent) {
 		var userInfo = userEvent.data;
 
-		if(this._siteService) {
-			this._siteService.updateUser(userInfo);
-		}
+		this._siteService.updateUser(userInfo);
 	};
 
 	UserEventHandler.prototype.handle = function(userEvent) {

@@ -8,22 +8,6 @@ var SiteService = loader.load("state/SiteService"),
 	UserEvent = dm.UserEvent,
 	UserInfo = dm.UserInfo;
 
-var createUserEventHandler = function() {
-	return new UserEventHandler();
-};
-
-var createUserEventHandlerWithSiteService = function(siteService) {
-	return new UserEventHandler({
-		siteService: siteService
-	});
-};
-
-var createUserEventHandlerWithEventBus = function(eventBus) {
-	return new UserEventHandler({
-		eventBus: eventBus
-	});
-};
-
 var USER_INFO1 = new UserInfo(8, "John");
 var USER_INFO2 = new UserInfo(9, "Jane");
 
@@ -35,30 +19,18 @@ var UPDATE_USER_EVENT = new UserEvent(UserEvent.USER_UPDATE, USER_INFO1);
 
 describe("A user event handler", function() {
 
-	it("does not throw error if site service and event bus are not provided", function() {
-		var ueh = createUserEventHandler();
-
-		expect(function() {
-			ueh.handle(CONNECTION_USER_EVENT);
-			ueh.handle(DISCONNECTION_USER_EVENT);
-			ueh.handle(UPDATE_USER_EVENT);
-		}).not.toThrow();
-
-	});
-
 	it("adds newly connected user to site service", function() {
-		var ss = new SiteService(),
-			ueh = createUserEventHandlerWithSiteService(ss);
+		var ss = createSiteService(),
+			ueh = createUserEventHandler({ siteService: ss });
 
-		spyOn(ss, "addUser");
 		ueh.handle(CONNECTION_USER_EVENT);
 
 		expect(ss.addUser).toHaveBeenCalledWith(USER_INFO1);
 	});
 
 	it("generates system message when new user connects", function(done) {
-		var eb = new EventBus(),
-			ueh = createUserEventHandlerWithEventBus(eb);
+		var eb = createEventBus(),
+			ueh = createUserEventHandler({ eventBus: eb });
 
 		eb.subscribe("systemMessageRequested", function(sysMsg) {
 			expect(sysMsg).toContain(USER_INFO1.name);
@@ -70,18 +42,17 @@ describe("A user event handler", function() {
 	});
 
 	it("removes recently disconnected user from site service", function() {
-		var ss = new SiteService(),
-			ueh = createUserEventHandlerWithSiteService(ss);
+		var ss = createSiteService(),
+			ueh = createUserEventHandler({ siteService: ss });
 
-		spyOn(ss, "removeUser");
 		ueh.handle(DISCONNECTION_USER_EVENT);
 
 		expect(ss.removeUser).toHaveBeenCalledWith(USER_INFO2.id);
 	});
 
 	it("generates system message when new user disconnects", function(done) {
-		var eb = new EventBus(),
-			ueh = createUserEventHandlerWithEventBus(eb);
+		var eb = createEventBus(),
+			ueh = createUserEventHandler({ eventBus: eb });
 
 		eb.subscribe("systemMessageRequested", function(sysMsg) {
 			expect(sysMsg).toContain(USER_INFO2.name);
@@ -93,17 +64,16 @@ describe("A user event handler", function() {
 	});
 
 	it("defers updated user to site service", function() {
-		var ss = new SiteService(),
-			ueh = createUserEventHandlerWithSiteService(ss);
+		var ss = createSiteService(),
+			ueh = createUserEventHandler({ siteService: ss });
 
-		spyOn(ss, "updateUser");
 		ueh.handle(UPDATE_USER_EVENT);
 
 		expect(ss.updateUser).toHaveBeenCalledWith(USER_INFO1);
 	});
 
 	it("does not throw error when given invalid user event", function() {
-		var ueh = createUserEventHandlerWithSiteService(new SiteService());
+		var ueh = createUserEventHandler();
 
 		expect(function() {
 			ueh.handle(new UserEvent("notAValidEventType", null));
@@ -111,3 +81,25 @@ describe("A user event handler", function() {
 	});
 
 });
+
+function createUserEventHandler(deps) {
+	deps = deps || {};
+
+	deps.siteService = deps.siteService || createSiteService();
+	deps.eventBus = deps.eventBus || createEventBus();
+
+	return new UserEventHandler(deps);
+}
+
+function createSiteService() {
+	var ss = new SiteService();
+	spyOn(ss, "updateUser");
+	spyOn(ss, "removeUser");
+	spyOn(ss, "addUser");
+	return ss;
+}
+
+function createEventBus() {
+	var eb = new EventBus();
+	return eb;
+}

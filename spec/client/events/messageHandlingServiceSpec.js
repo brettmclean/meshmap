@@ -199,13 +199,12 @@ describe("A Message Handling Service", function() {
 	it("defers user events to user event handler", function() {
 		// jshint unused: false
 		var eb = new EventBus(),
-			ueh = new UserEventHandler(),
+			ueh = createUserEventHandler(),
 			mhs = createMessageHandlingServiceWithEventBusAndUserEventHandler(eb, ueh),
 			userInfo = new UserInfo(14, "Jennifer"),
 			userEvent = new UserEvent(UserEvent.USER_CONNECT, userInfo),
 			message = new Message(Message.USER_EVENT, userEvent);
 
-		spyOn(ueh, "handle");
 		eb.publish("messageReceived", message);
 
 		expect(ueh.handle).toHaveBeenCalledWith(userEvent);
@@ -281,4 +280,10 @@ function createStartupDataHandler() {
 	var sdh = new StartupDataHandler({});
 	spyOn(sdh, "handle");
 	return sdh;
+}
+
+function createUserEventHandler() {
+	var ueh = new UserEventHandler({});
+	spyOn(ueh, "handle");
+	return ueh;
 }
