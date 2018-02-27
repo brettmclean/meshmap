@@ -41,5 +41,5 @@ var getMapConfig = function(mapType) {
 };
 
 var createMapApiProvider = function() {
-	return MapApiProviderBase();
+	return MapApiProviderBase({});
 };

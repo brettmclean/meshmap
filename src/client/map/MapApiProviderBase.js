@@ -10,12 +10,11 @@ meshmap.map.MapApiProviderBase = (function() {
 	var DRAWING_POLYGON = "polygon";
 
 	var MapApiProviderBase = function(deps) {
-		deps = deps || {};
+		this._containerEl = deps.containerEl;
 
 		this._markerIcons = null;
 		this._markerColors = null;
 
-		this._containerEl = deps.containerEl || null;
 		this._markerSelectorContainerEl = null;
 
 		this._currPointSymbol = null;

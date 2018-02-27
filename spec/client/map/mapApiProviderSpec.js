@@ -17,7 +17,7 @@ var POINT_SYMBOL = new symbols.PointSymbol(3);
 var POLYLINE_SYMBOL = new symbols.PolylineSymbol(3, 5);
 
 var createMapApiProvider = function() {
-	return new MapApiProviderBase();
+	return new MapApiProviderBase({});
 };
 
 var simulateMapReady = function(apiProvider) {

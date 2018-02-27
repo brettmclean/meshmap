@@ -55,7 +55,7 @@ var createMapBase = function(deps) {
 	var opts = {};
 	deps = deps || {};
 
-	deps.apiProvider = deps.apiProvider || new MapApiProviderBase();
+	deps.apiProvider = deps.apiProvider || createMapApiProviderBase();
 	deps.markerSelectionContext = deps.markerSelectionContext || new MarkerSelectionContext();
 
 	if(!deps.viewInjectionService) {
@@ -125,7 +125,7 @@ var verifyMethodExists = function(methodName) {
 };
 
 var verifyImmediatelyInformsApiProvider = function(mapMethod, apiMethod, apiArgs) {
-	var api = new MapApiProviderBase(),
+	var api = createMapApiProviderBase(),
 		mb = createMapBaseWithApiProvider(api);
 
 	spyOn(api, apiMethod);
@@ -137,7 +137,7 @@ var verifyImmediatelyInformsApiProvider = function(mapMethod, apiMethod, apiArgs
 };
 
 var verifyInformsApiProviderWhenReady = function(mapMethod, apiMethod, apiArgs) {
-	var api = new MapApiProviderBase(),
+	var api = createMapApiProviderBase(),
 		mb = createMapBaseWithApiProvider(api);
 
 	spyOn(api, apiMethod);
@@ -212,7 +212,7 @@ describe("A map", function() {
 		verifyMethodExists.bind(this, "notifyApiAvailable"));
 
 	it("asks API provider to init map when provider dependencies met", function() {
-		var api = new MapApiProviderBase(),
+		var api = createMapApiProviderBase(),
 			mb = createMapBaseWithApiProvider(api);
 
 		spyOn(api, "initMap");
@@ -222,7 +222,7 @@ describe("A map", function() {
 	});
 
 	it("only asks API provider to init map once", function() {
-		var api = new MapApiProviderBase(),
+		var api = createMapApiProviderBase(),
 			mb = createMapBaseWithApiProvider(api);
 
 		spyOn(api, "initMap");
@@ -255,7 +255,7 @@ describe("A map", function() {
 		verifyMethodExists.bind(this, "clearMarkers"));
 
 	it("informs map API provider of cleared markers when provider is ready", function() {
-		var api = new MapApiProviderBase(),
+		var api = createMapApiProviderBase(),
 			mb = createMapBaseWithApiProvider(api);
 
 		spyOn(api, "clearMarkers");
@@ -320,7 +320,7 @@ describe("A map", function() {
 		verifyInformsApiProviderWhenReady.bind(this, "showMarkerInfo", "showMarkerInfo", [MARKER_INFO_CONTEXT, LOCATION1]));
 
 	it("informs map API provider of change regardless of dependency resolution order", function() {
-		var api = new MapApiProviderBase(),
+		var api = createMapApiProviderBase(),
 			mb = createMapBaseWithApiProvider(api);
 
 		spyOn(api, "addPointMarker");
@@ -336,7 +336,7 @@ describe("A map", function() {
 	});
 
 	it("immediately informs map API provider of change if provider was already ready", function() {
-		var api = new MapApiProviderBase(),
+		var api = createMapApiProviderBase(),
 			mb = createMapBaseWithApiProvider(api);
 
 		spyOn(api, "addPointMarker");
@@ -347,7 +347,7 @@ describe("A map", function() {
 	});
 
 	it("can queue multiple changes of same type and execute them when provider is ready", function() {
-		var api = new MapApiProviderBase(),
+		var api = createMapApiProviderBase(),
 			mb = createMapBaseWithApiProvider(api);
 
 		spyOn(api, "addPointMarker");
@@ -362,7 +362,7 @@ describe("A map", function() {
 	});
 
 	it("can queue multiple changes of different types and execute them when provider is ready", function() {
-		var api = new MapApiProviderBase(),
+		var api = createMapApiProviderBase(),
 			mb = createMapBaseWithApiProvider(api);
 
 		spyOn(api, "addPointMarker");
@@ -381,7 +381,7 @@ describe("A map", function() {
 
 	it("asks map API provider for marker selection container when map is ready", function() {
 		// jshint unused: false
-		var api = new MapApiProviderBase(),
+		var api = createMapApiProviderBase(),
 			deps = {
 				apiProvider: api
 			},
@@ -396,7 +396,7 @@ describe("A map", function() {
 
 	it("calls view injection service with API-provided marker selector element when map is ready", function() {
 		// jshint unused: false
-		var api = new MapApiProviderBase(),
+		var api = createMapApiProviderBase(),
 			vis = new ViewInjectionService(),
 			domElement = {},
 			deps = {
@@ -418,7 +418,7 @@ describe("A map", function() {
 
 	it("calls view injection service with a MarkerSelectionContext when map is ready", function() {
 		// jshint unused: false
-		var api = new MapApiProviderBase(),
+		var api = createMapApiProviderBase(),
 			vis = new ViewInjectionService(),
 			deps = {
 				viewInjectionService: vis,
@@ -441,7 +441,7 @@ describe("A map", function() {
 		verifyMethodExists.bind(this, "bind"));
 
 	it("repeats mapMoved events received from API provider", function(done) {
-		var api = new MapApiProviderBase(),
+		var api = createMapApiProviderBase(),
 			mb = createMapBaseWithApiProvider(api);
 
 		mb.bind("mapMoved", function(newMapExtent) {
@@ -454,7 +454,7 @@ describe("A map", function() {
 	});
 
 	it("repeats markerClicked events received from API provider", function(done) {
-		var api = new MapApiProviderBase(),
+		var api = createMapApiProviderBase(),
 			mb = createMapBaseWithApiProvider(api);
 
 		mb.bind("markerClicked", function(marker, clickedLocation) {
@@ -468,7 +468,7 @@ describe("A map", function() {
 	});
 
 	it("repeats pointMarkerCreated events received from API provider", function(done) {
-		var api = new MapApiProviderBase(),
+		var api = createMapApiProviderBase(),
 			mb = createMapBaseWithApiProvider(api);
 
 		mb.bind("pointMarkerCreated", function(location, pointSymbol) {
@@ -484,7 +484,7 @@ describe("A map", function() {
 	});
 
 	it("repeats polylineMarkerCreated events received from API provider", function(done) {
-		var api = new MapApiProviderBase(),
+		var api = createMapApiProviderBase(),
 			mb = createMapBaseWithApiProvider(api);
 
 		mb.bind("polylineMarkerCreated", function(locations, polylineSymbol) {
@@ -500,7 +500,7 @@ describe("A map", function() {
 	});
 
 	it("repeats polygonMarkerCreated events received from API provider", function(done) {
-		var api = new MapApiProviderBase(),
+		var api = createMapApiProviderBase(),
 			mb = createMapBaseWithApiProvider(api);
 
 		mb.bind("polygonMarkerCreated", function(locations, polygonSymbol) {
@@ -517,7 +517,7 @@ describe("A map", function() {
 
 	describe("addMarker method", function() {
 		it("calls addPointMarker on API provider when given a PointMarker", function() {
-			var api = new MapApiProviderBase(),
+			var api = createMapApiProviderBase(),
 				mb = createMapBaseWithApiProvider(api);
 			spyOn(api, "addPointMarker");
 
@@ -528,7 +528,7 @@ describe("A map", function() {
 		});
 
 		it("calls addPolylineMarker on API provider when given a PolylineMarker", function() {
-			var api = new MapApiProviderBase(),
+			var api = createMapApiProviderBase(),
 				mb = createMapBaseWithApiProvider(api);
 			spyOn(api, "addPolylineMarker");
 
@@ -539,7 +539,7 @@ describe("A map", function() {
 		});
 
 		it("calls addPolygonMarker on API provider when given a PolygonMarker", function() {
-			var api = new MapApiProviderBase(),
+			var api = createMapApiProviderBase(),
 				mb = createMapBaseWithApiProvider(api);
 			spyOn(api, "addPolygonMarker");
 
@@ -550,7 +550,7 @@ describe("A map", function() {
 		});
 
 		it("does not call addPointMarker on API provider when given a PolylineMarker", function() {
-			var api = new MapApiProviderBase(),
+			var api = createMapApiProviderBase(),
 				mb = createMapBaseWithApiProvider(api);
 			spyOn(api, "addPointMarker");
 
@@ -561,7 +561,7 @@ describe("A map", function() {
 		});
 
 		it("does not call addPolylineMarker on API provider when given a PolygonMarker", function() {
-			var api = new MapApiProviderBase(),
+			var api = createMapApiProviderBase(),
 				mb = createMapBaseWithApiProvider(api);
 			spyOn(api, "addPolylineMarker");
 
@@ -572,7 +572,7 @@ describe("A map", function() {
 		});
 
 		it("does not throw an error when given invalid marker", function() {
-			var api = new MapApiProviderBase(),
+			var api = createMapApiProviderBase(),
 				mb = createMapBaseWithApiProvider(api);
 
 			satisfyApiProviderDependencies(mb);
@@ -584,7 +584,7 @@ describe("A map", function() {
 
 		it("tells API provider to change drawing mode when marker selector has tool changed", function() {
 			// jshint unused: false
-			var api = new MapApiProviderBase(),
+			var api = createMapApiProviderBase(),
 				msc = new MarkerSelectionContext(),
 				mb = createMapBase({
 					markerSelectionContext: msc,
@@ -600,7 +600,7 @@ describe("A map", function() {
 
 		it("tells API provider to disable drawing mode when marker selector changes to pan tool", function() {
 			// jshint unused: false
-			var api = new MapApiProviderBase(),
+			var api = createMapApiProviderBase(),
 				msc = new MarkerSelectionContext(),
 				mb = createMapBase({
 					markerSelectionContext: msc,
@@ -615,7 +615,7 @@ describe("A map", function() {
 		});
 
 		it("tells API provider to set point symbol when marker selector changes point symbol", function() {
-			var api = new MapApiProviderBase(),
+			var api = createMapApiProviderBase(),
 				msc = new MarkerSelectionContext(),
 				mb = createMapBase({
 					markerSelectionContext: msc,
@@ -630,7 +630,7 @@ describe("A map", function() {
 		});
 
 		it("tells API provider to set polyline symbol when marker selector changes polyline symbol", function() {
-			var api = new MapApiProviderBase(),
+			var api = createMapApiProviderBase(),
 				msc = new MarkerSelectionContext(),
 				mb = createMapBase({
 					markerSelectionContext: msc,
@@ -645,7 +645,7 @@ describe("A map", function() {
 		});
 
 		it("tells API provider to set polygon symbol when marker selector changes polygon symbol", function() {
-			var api = new MapApiProviderBase(),
+			var api = createMapApiProviderBase(),
 				msc = new MarkerSelectionContext(),
 				mb = createMapBase({
 					markerSelectionContext: msc,
@@ -661,3 +661,9 @@ describe("A map", function() {
 	});
 
 });
+
+function createMapApiProviderBase() {
+	var api = new MapApiProviderBase({});
+
+	return api;
+}
