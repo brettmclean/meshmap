@@ -56,7 +56,7 @@ describe("A map service", function() {
 	});
 
 	it("does not throw an Error if provided map is a MapBase", function() {
-		var map = new MapBase();
+		var map = createMap();
 
 		expect(function() {
 			createMapServiceWithMap(map);
@@ -94,7 +94,7 @@ describe("A map service", function() {
 		verifyPassthroughOfArgumentToMapOnEvent.bind(this, "polygonSymbolSet", POLYGON_SYMBOL, "setPolygonSymbol"));
 
 	it("informs the map when API scripts are finished downloading", function(done) {
-		var map = new MapBase(),
+		var map = createMap(),
 			scriptInjectionService = new MockScriptInjectionService(),
 			mapService = createMapService({
 				map: map,
@@ -112,7 +112,7 @@ describe("A map service", function() {
 	it("informs extent updater when map is moved", function() {
 		// jshint unused: false
 		var eu = new ExtentUpdater(),
-			map = new MapBase(),
+			map = createMap(),
 			mapService = createMapService({
 				map: map,
 				extentUpdater: eu
@@ -127,7 +127,7 @@ describe("A map service", function() {
 
 	it("informs map when map height has changed", function() {
 		// jshint unused: false
-		var map = new MapBase(),
+		var map = createMap(),
 			eb = new EventBus(),
 			mapService = createMapServiceWithMapAndEventBus(map, eb);
 
@@ -139,11 +139,10 @@ describe("A map service", function() {
 
 	it("informs map when layout has changed", function() {
 		// jshint unused: false
-		var map = new MapBase(),
+		var map = createMap(),
 			eb = new EventBus(),
 			mapService = createMapServiceWithMapAndEventBus(map, eb);
 
-		spyOn(map, "setLayout");
 		eb.publish("layoutChanged", LAYOUT_LARGE);
 
 		expect(map.setLayout).toHaveBeenCalledWith(LAYOUT_LARGE);
@@ -386,7 +385,7 @@ describe("A map service", function() {
 
 function createMapService(deps) {
 	if(!deps.map) {
-		deps.map = new MapBase();
+		deps.map = createMap();
 	}
 	if(!deps.eventBus) {
 		deps.eventBus = new EventBus();
@@ -445,7 +444,7 @@ function createMapServiceWithMapAndEventBusAndMarkerPermissionsServiceAndMarkerD
 }
 
 function createMap() {
-	var map = new MapBase();
+	var map = new MapBase({}, {});
 	spyOn(map, "setLayout");
 
 	return map;
@@ -457,7 +456,7 @@ function createCommsService() {
 
 function setupMapAndEventBusInMapService(callback) {
 	// jshint unused: false
-	var map = new MapBase(),
+	var map = createMap(),
 		eb = new EventBus(),
 		mapService = createMapServiceWithMapAndEventBus(map, eb);
 
@@ -615,7 +614,7 @@ function testInteractionWithSiteServiceWhenMarkerEdited(testOpts, callback) {
 
 function testInteractionWithCommsServiceWhenPointMarkerCreated(testOpts, callback) {
 	// jshint unused: false
-	var map = new MapBase(),
+	var map = createMap(),
 		commsService = createCommsService(),
 		mapServiceDeps = {
 			map: map,
@@ -631,7 +630,7 @@ function testInteractionWithCommsServiceWhenPointMarkerCreated(testOpts, callbac
 
 function testInteractionWithCommsServiceWhenPolylineMarkerCreated(testOpts, callback) {
 	// jshint unused: false
-	var map = new MapBase(),
+	var map = createMap(),
 		commsService = createCommsService(),
 		mapServiceDeps = {
 			map: map,
@@ -647,7 +646,7 @@ function testInteractionWithCommsServiceWhenPolylineMarkerCreated(testOpts, call
 
 function testInteractionWithCommsServiceWhenPolygonMarkerCreated(testOpts, callback) {
 	// jshint unused: false
-	var map = new MapBase(),
+	var map = createMap(),
 		commsService = createCommsService(),
 		mapServiceDeps = {
 			map: map,

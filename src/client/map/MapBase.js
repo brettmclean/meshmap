@@ -10,13 +10,11 @@ meshmap.map.MapBase = (function() {
 		PolygonMarker = dm.PolygonMarker;
 
 	var MapBase = function(opts, deps) {
-		opts = opts || {};
-		deps = deps || {};
-
-		this._key = opts.key || null;
 		this._apiProvider = deps.apiProvider;
 		this._viewInjectionService = deps.viewInjectionService;
 		this._markerSelectionContext = deps.markerSelectionContext;
+
+		this._key = opts.key;
 
 		this._apiAvailable = false;
 		this._markerIconsSet = false;

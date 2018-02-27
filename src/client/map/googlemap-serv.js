@@ -27,7 +27,7 @@
 				var MIN_EXTENT_CHANGE_IDLE_TIME = 300; // ms
 				var MARKER_TYPES = MapBase.MARKER_TYPES;
 
-				var googleMap = new GoogleMap();
+				var googleMap = new GoogleMap({}, {});
 
 				var layout = {
 					small: false,

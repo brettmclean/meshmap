@@ -4,14 +4,11 @@ var loader = require("../testUtils/loader");
 var MapBase = loader.load("map/MapBase"),
 	GoogleMap = loader.load("map/google/GoogleMap");
 
-var createGoogleMap = function() {
-	return new GoogleMap();
-};
+var createGoogleMap = function(opts) {
+	opts = opts || {};
+	var deps = {};
 
-var createGoogleMapWithApiKey = function(key) {
-	return new GoogleMap({
-		key: key
-	});
+	return new GoogleMap(opts, deps);
 };
 
 var API_KEY = "api-key-123";
@@ -24,7 +21,7 @@ describe("A Google map", function() {
 	});
 
 	it("contains API key in script URL", function() {
-		var gm = createGoogleMapWithApiKey(API_KEY);
+		var gm = createGoogleMap({ key: API_KEY });
 
 		var scriptUrls = gm.getScriptUrls();
 		expect(scriptUrls.length).toBe(1);
