@@ -5,10 +5,10 @@ var MapBase = loader.load("map/MapBase"),
 	GoogleMap = loader.load("map/google/GoogleMap");
 
 var createGoogleMap = function(opts) {
-	opts = opts || {};
 	var deps = {};
+	opts = opts || {};
 
-	return new GoogleMap(opts, deps);
+	return new GoogleMap(deps, opts);
 };
 
 var API_KEY = "api-key-123";

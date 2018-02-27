@@ -9,7 +9,7 @@ meshmap.map.MapBase = (function() {
 		PolylineMarker = dm.PolylineMarker,
 		PolygonMarker = dm.PolygonMarker;
 
-	var MapBase = function(opts, deps) {
+	var MapBase = function(deps, opts) {
 		this._apiProvider = deps.apiProvider;
 		this._viewInjectionService = deps.viewInjectionService;
 		this._markerSelectionContext = deps.markerSelectionContext;

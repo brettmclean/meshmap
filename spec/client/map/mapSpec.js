@@ -63,7 +63,7 @@ var createMapBase = function(deps) {
 		spyOn(deps.viewInjectionService, "injectAndCreate");
 	}
 
-	return new MapBase(opts, deps);
+	return new MapBase(deps, opts);
 };
 
 var createMapBaseWithApiProvider = function(apiProvider) {

@@ -26,7 +26,7 @@ meshmap.map.mapFactory = (function() {
 			viewInjectionService: viewInjectionService
 		};
 
-		return new MapCtor(mapOptions, mapDeps);
+		return new MapCtor(mapDeps, mapOptions);
 	};
 
 	var getMapConstructor = function(mapType) {
