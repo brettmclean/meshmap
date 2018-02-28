@@ -11,12 +11,10 @@ meshmap.map.mapFactory = (function() {
 	};
 
 	var create = function(deps) {
-		deps = deps || {};
-
-		var mapConfig = deps.mapConfig || {};
-		var apiProvider = deps.apiProvider || null;
-		var markerSelectionContext = deps.markerSelectionContext || null;
-		var viewInjectionService = deps.viewInjectionService || null;
+		var mapConfig = deps.mapConfig;
+		var apiProvider = deps.apiProvider;
+		var markerSelectionContext = deps.markerSelectionContext;
+		var viewInjectionService = deps.viewInjectionService;
 
 		var MapCtor = getMapConstructor(mapConfig.type);
 		var mapOptions = getMapOptions(mapConfig);
