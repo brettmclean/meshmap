@@ -8,18 +8,15 @@ meshmap.settings.SettingsService = (function() {
 		observable = MicroEvent.mixin;
 
 	var SettingsService = function(deps) {
-		deps = deps || /* istanbul ignore next */ {};
 
-		this._comms = deps.comms || null;
+		this._commsService = deps.commsService;
 
 		this._fieldValues = {};
 		this._settingsType = "";
 	};
 
 	var callCommsSendMessage = function(msgType, msgData) {
-		if(this._comms) {
-			this._comms.sendMessage(msgType, msgData);
-		}
+		this._commsService.sendMessage(msgType, msgData);
 	};
 
 	SettingsService.prototype.saveValue = function(settingName, settingValue) {

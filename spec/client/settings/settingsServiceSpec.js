@@ -10,21 +10,6 @@ var SETTING_NAME = "siteName";
 var SETTING_VALUE = "My Map";
 var DIFFERENT_SETTING_VALUE = "Owl Sightings";
 
-var createSettingsService = function() {
-	return new SettingsService();
-};
-
-var createSettingsServiceWithCommsService = function(comms) {
-	return new SettingsService({
-		comms: comms
-	});
-};
-
-var verifyMethodExists = function(methodName) {
-	var ss = createSettingsService();
-	expect(typeof ss[methodName]).toBe("function");
-};
-
 describe("A Settings Service", function() {
 
 	it("has a saveValue method",
@@ -50,7 +35,7 @@ describe("A Settings Service", function() {
 
 	it("sends updateSetting message when setting is updated", function() {
 		var cs = createCommsService(),
-			ss = createSettingsServiceWithCommsService(cs);
+			ss = createSettingsService({ commsService: cs });
 
 		ss.saveValue(SETTING_NAME, SETTING_VALUE);
 		spyOn(cs, "sendMessage");
@@ -63,7 +48,7 @@ describe("A Settings Service", function() {
 
 	it("does not send updateSetting message when updated setting is unchanged", function() {
 		var cs = createCommsService(),
-			ss = createSettingsServiceWithCommsService(cs);
+			ss = createSettingsService({ commsService: cs });
 
 		ss.saveValue(SETTING_NAME, SETTING_VALUE);
 		spyOn(cs, "sendMessage");
@@ -74,7 +59,7 @@ describe("A Settings Service", function() {
 
 	it("does not send updateSetting message when setting is first set", function() {
 		var cs = createCommsService(),
-			ss = createSettingsServiceWithCommsService(cs);
+			ss = createSettingsService({ commsService: cs });
 
 		spyOn(cs, "sendMessage");
 		ss.saveValue(SETTING_NAME, SETTING_VALUE);
@@ -117,6 +102,19 @@ describe("A Settings Service", function() {
 
 });
 
+function createSettingsService(deps) {
+	deps = deps || {};
+
+	deps.commsService = deps.commsService || createCommsService();
+
+	return new SettingsService(deps);
+}
+
 function createCommsService() {
 	return new CommsService({});
+}
+
+function verifyMethodExists(methodName) {
+	var ss = createSettingsService();
+	expect(typeof ss[methodName]).toBe("function");
 }

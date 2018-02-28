@@ -30,7 +30,7 @@ meshmap.angular.controllers.controller("UserSettingsCtrl",
 
 			var myUserInfo = null;
 			var settingsService = new UserSettingsService({
-				comms: commsService
+				commsService: commsService
 			});
 
 			$scope.onInputKeyPress = function(e, settingName) {

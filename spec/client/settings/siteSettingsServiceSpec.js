@@ -12,7 +12,7 @@ var DIFFERENT_SETTING_VALUE = "Owl Sightings";
 
 var createSiteSettingsServiceWithCommsService = function(comms) {
 	return new SiteSettingsService({
-		comms: comms
+		commsService: comms
 	});
 };
 

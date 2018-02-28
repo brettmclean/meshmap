@@ -34,7 +34,7 @@ meshmap.angular.controllers.controller("SiteSettingsCtrl",
 
 			var lastKnownMapExtent = null;
 			var settingsService = new SiteSettingsService({
-				comms: commsService
+				commsService: commsService
 			});
 
 			$scope.onInputKeyPress = function(e, settingName) {

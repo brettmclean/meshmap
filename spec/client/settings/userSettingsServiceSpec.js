@@ -12,7 +12,7 @@ var DIFFERENT_SETTING_VALUE = "Jane Smorsh";
 
 var createUserSettingsServiceWithCommsService = function(comms) {
 	return new UserSettingsService({
-		comms: comms
+		commsService: comms
 	});
 };
 
