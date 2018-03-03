@@ -398,7 +398,7 @@ function createMapService(deps) {
 		spyOn(deps.markerPermissionsService, "getUserCanEditMarker").and.returnValue(true);
 	}
 	if(!deps.markerDialogService) {
-		deps.markerDialogService = new MarkerDialogService();
+		deps.markerDialogService = new MarkerDialogService({});
 	}
 	if(!deps.scriptInjectionService) {
 		deps.scriptInjectionService = new MockScriptInjectionService();
@@ -508,7 +508,7 @@ function testInteractionWithMapWhenMarkerClicked(layout, marker, clickedLocation
 	var map = createMap(),
 		eb = new EventBus(),
 		mps = new MarkerPermissionsService(),
-		mds = new MarkerDialogService(),
+		mds = new MarkerDialogService({}),
 		mapService = createMapServiceWithMapAndEventBusAndMarkerPermissionsServiceAndMarkerDialogService(map, eb, mps, mds);
 
 	spyOn(mps, "getUserCanEditMarker").and.returnValue(true);
@@ -525,7 +525,7 @@ function testInteractionWithMarkerDialogServiceWhenMarkerClicked(layout, marker,
 	var map = createMap(),
 		eb = new EventBus(),
 		mps = new MarkerPermissionsService(),
-		mds = new MarkerDialogService(),
+		mds = new MarkerDialogService({}),
 		mapService = createMapServiceWithMapAndEventBusAndMarkerPermissionsServiceAndMarkerDialogService(map, eb, mps, mds);
 
 	spyOn(mps, "getUserCanEditMarker").and.returnValue(true);
@@ -557,7 +557,7 @@ function testMapIsProvidedWithCorrectUserCanEditMarkerValue(userCanEditMarkerVal
 function testLogicWhenDeleteMarkerRequested(testOpts, callback) {
 	var markerInfoContext = new MarkerInfoContext(testOpts.marker),
 		siteService = new SiteService({}),
-		markerDialogService = new MarkerDialogService(),
+		markerDialogService = new MarkerDialogService({}),
 		mapServiceDeps = {
 			markerDialogService: markerDialogService,
 			siteService: siteService
@@ -576,7 +576,7 @@ function testLogicWhenDeleteMarkerRequested(testOpts, callback) {
 
 function testLogicWhenEditMarkerRequested(testOpts, callback) {
 	var markerInfoContext = new MarkerInfoContext(testOpts.marker),
-		markerDialogService = new MarkerDialogService(),
+		markerDialogService = new MarkerDialogService({}),
 		mapServiceDeps = {
 			markerDialogService: markerDialogService
 		},
@@ -593,7 +593,7 @@ function testLogicWhenEditMarkerRequested(testOpts, callback) {
 function testInteractionWithSiteServiceWhenMarkerEdited(testOpts, callback) {
 	var marker = testOpts.marker,
 		markerInfoContext = new MarkerInfoContext(marker),
-		markerDialogService = new MarkerDialogService(),
+		markerDialogService = new MarkerDialogService({}),
 		siteService = new SiteService({}),
 		mapServiceDeps = {
 			markerDialogService: markerDialogService,

@@ -26,17 +26,9 @@ describe("A marker dialog service", function() {
 
 	describe("showConfirmDeletionDialog method", function() {
 
-		it("throws a TypeError if called without providing a DialogService dependency", function() {
-			var mds = new MarkerDialogService();
-
-			expect(function() {
-				mds.showConfirmDeletionDialog(MARKER1);
-			}).toThrowError(TypeError);
-		});
-
 		it("calls showDialog on DialogService and provides ConfirmDialog", function() {
 			var dialogService = createDialogService(),
-				mds = new MarkerDialogService({
+				mds = createMarkerDialogService({
 					dialogService: dialogService
 				});
 
@@ -47,7 +39,7 @@ describe("A marker dialog service", function() {
 
 		it("includes provide marker's name in dialog text", function() {
 			var dialogService = createDialogService(),
-				mds = new MarkerDialogService({
+				mds = createMarkerDialogService({
 					dialogService: dialogService
 				}),
 				markerName = "Unique marker #384743",
@@ -62,7 +54,7 @@ describe("A marker dialog service", function() {
 
 		it("calls provided callback function when user confirms deletion", function(done) {
 			var dialogService = createDialogService(),
-				mds = new MarkerDialogService({
+				mds = createMarkerDialogService({
 					dialogService: dialogService
 				});
 
@@ -74,17 +66,10 @@ describe("A marker dialog service", function() {
 	});
 
 	describe("showEditMarkerDialog method", function() {
-		it("throws a TypeError if called without providing a DialogService dependency", function() {
-			var mds = new MarkerDialogService();
-
-			expect(function() {
-				mds.showEditMarkerDialog(MARKER1);
-			}).toThrowError(TypeError);
-		});
 
 		it("calls showDialog on DialogService and provides ViewDialog", function() {
 			var dialogService = createDialogService(),
-				mds = new MarkerDialogService({
+				mds = createMarkerDialogService({
 					dialogService: dialogService
 				});
 
@@ -95,7 +80,7 @@ describe("A marker dialog service", function() {
 
 		it("calls showDialog on DialogService and provides EditMarkerContext as ViewDialog scope", function() {
 			var dialogService = createDialogService(),
-				mds = new MarkerDialogService({
+				mds = createMarkerDialogService({
 					dialogService: dialogService
 				});
 
@@ -107,7 +92,7 @@ describe("A marker dialog service", function() {
 
 		it("calls showDialog on DialogService and passes provided marker via EditMarkerContext", function() {
 			var dialogService = createDialogService(),
-				mds = new MarkerDialogService({
+				mds = createMarkerDialogService({
 					dialogService: dialogService
 				});
 
@@ -120,7 +105,7 @@ describe("A marker dialog service", function() {
 
 		it("calls provided callback function when user finishes edit", function(done) {
 			var dialogService = createDialogService(),
-				mds = new MarkerDialogService({
+				mds = createMarkerDialogService({
 					dialogService: dialogService
 				});
 
@@ -133,17 +118,9 @@ describe("A marker dialog service", function() {
 
 	describe("showMarkerInfoDialog method", function() {
 
-		it("throws a TypeError if called without providing a DialogService dependency", function() {
-			var mds = new MarkerDialogService();
-
-			expect(function() {
-				mds.showMarkerInfoDialog(MARKER1);
-			}).toThrowError(TypeError);
-		});
-
 		it("calls showDialog on DialogService and provides ViewDialog", function() {
 			var dialogService = createDialogService(),
-				mds = new MarkerDialogService({
+				mds = createMarkerDialogService({
 					dialogService: dialogService
 				});
 
@@ -154,7 +131,7 @@ describe("A marker dialog service", function() {
 
 		it("calls showDialog on DialogService and passes provided MarkerInfoContext as ViewDialog scope", function() {
 			var dialogService = createDialogService(),
-				mds = new MarkerDialogService({
+				mds = createMarkerDialogService({
 					dialogService: dialogService
 				}),
 				markerInfoContext = createMarkerInfoContext(MARKER1);
@@ -171,7 +148,7 @@ describe("A marker dialog service", function() {
 
 		it("passes most recent marker info dialog handle to dismissDialog on DialogService", function() {
 			var dialogService = createDialogService(),
-				mds = new MarkerDialogService({
+				mds = createMarkerDialogService({
 					dialogService: dialogService
 				}),
 				markerInfoContext = createMarkerInfoContext(MARKER1);
@@ -189,7 +166,7 @@ describe("A marker dialog service", function() {
 
 		it("does not call dismissDialog on DialogService if marker info dialog has not been shown", function() {
 			var dialogService = createDialogService(),
-				mds = new MarkerDialogService({
+				mds = createMarkerDialogService({
 					dialogService: dialogService
 				});
 
@@ -200,7 +177,7 @@ describe("A marker dialog service", function() {
 
 		it("does not call dismissDialog on DialogService multiple times if called multiple times in a row", function() {
 			var dialogService = createDialogService(),
-				mds = new MarkerDialogService({
+				mds = createMarkerDialogService({
 					dialogService: dialogService
 				}),
 				markerInfoContext = createMarkerInfoContext(MARKER1);
@@ -216,15 +193,19 @@ describe("A marker dialog service", function() {
 
 });
 
+function createMarkerDialogService(deps) {
+	deps = deps || {};
+
+	deps.dialogService = deps.dialogService || createDialogService();
+
+	return new MarkerDialogService(deps);
+}
+
 function createDialogService() {
 	var dialogService = new DialogService({});
 	spyOn(dialogService, "showDialog");
 	spyOn(dialogService, "dismissDialog");
 	return dialogService;
-}
-
-function createMarkerDialogService() {
-	return new MarkerDialogService();
 }
 
 function createMarkerInfoContext(marker) {

@@ -9,9 +9,8 @@ meshmap.ui.MarkerDialogService = (function() {
 		EditMarkerContext = meshmap.map.EditMarkerContext;
 
 	function MarkerDialogService(deps) {
-		deps = deps || {};
+		this._dialogService = deps.dialogService;
 
-		this._dialogService = deps.dialogService || null;
 		this._lastMarkerInfoDialogHandle = null;
 	}
 
