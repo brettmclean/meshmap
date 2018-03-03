@@ -407,7 +407,7 @@ function createMapService(deps) {
 		deps.extentUpdater = new ExtentUpdater();
 	}
 	if(!deps.siteService) {
-		deps.siteService = new SiteService();
+		deps.siteService = new SiteService({});
 	}
 
 	return new MapService(deps);
@@ -556,7 +556,7 @@ function testMapIsProvidedWithCorrectUserCanEditMarkerValue(userCanEditMarkerVal
 
 function testLogicWhenDeleteMarkerRequested(testOpts, callback) {
 	var markerInfoContext = new MarkerInfoContext(testOpts.marker),
-		siteService = new SiteService(),
+		siteService = new SiteService({}),
 		markerDialogService = new MarkerDialogService(),
 		mapServiceDeps = {
 			markerDialogService: markerDialogService,
@@ -594,7 +594,7 @@ function testInteractionWithSiteServiceWhenMarkerEdited(testOpts, callback) {
 	var marker = testOpts.marker,
 		markerInfoContext = new MarkerInfoContext(marker),
 		markerDialogService = new MarkerDialogService(),
-		siteService = new SiteService(),
+		siteService = new SiteService({}),
 		mapServiceDeps = {
 			markerDialogService: markerDialogService,
 			siteService: siteService

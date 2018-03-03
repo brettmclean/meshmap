@@ -92,7 +92,7 @@ function createUserEventHandler(deps) {
 }
 
 function createSiteService() {
-	var ss = new SiteService();
+	var ss = new SiteService({});
 	spyOn(ss, "updateUser");
 	spyOn(ss, "removeUser");
 	spyOn(ss, "addUser");

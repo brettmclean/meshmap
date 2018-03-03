@@ -13,7 +13,7 @@ var MARKER1 = new PointMarker(6, LOCATION1);
 var USER_ID1 = 12;
 var USER_ID2 = 13;
 
-describe("A Marker Permissions Service", function() {
+describe("A marker permissions service", function() {
 
 	it("has an userCanEditMarker method",
 		verifyMethodExists.bind(this, "getUserCanEditMarker"));
@@ -120,7 +120,7 @@ function createMarkerPermissionsServiceWithSiteService(siteService) {
 }
 
 function createSiteService(onlyOwnerCanEditValue, currentUserId) {
-	var siteService = new SiteService();
+	var siteService = new SiteService({});
 	spyOn(siteService, "getOnlyOwnerCanEdit").and.returnValue(onlyOwnerCanEditValue);
 	spyOn(siteService, "getCurrentUserId").and.returnValue(currentUserId);
 	return siteService;

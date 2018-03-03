@@ -52,7 +52,7 @@ function createSiteSettingHandler(deps) {
 }
 
 function createSiteService() {
-	var ss = new SiteService();
+	var ss = new SiteService({});
 	spyOn(ss, "setName");
 	spyOn(ss, "setDescription");
 	spyOn(ss, "setOnlyOwnerCanEdit");

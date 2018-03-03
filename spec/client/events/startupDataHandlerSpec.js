@@ -79,7 +79,7 @@ var STARTUP_DATA = (function() {
 	return sd;
 }());
 
-describe("A Startup Data Handler", function() {
+describe("A startup data handler", function() {
 
 	it("does not throw an error if site service is not provided", function() {
 		var sdh = createStartupDataHandler();
@@ -152,7 +152,7 @@ function createStartupDataHandler(deps) {
 }
 
 function createSiteService() {
-	var ss = new SiteService();
+	var ss = new SiteService({});
 
 	spyOn(ss, "setName");
 	spyOn(ss, "setDescription");

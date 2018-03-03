@@ -3,19 +3,16 @@ meshmap.namespace("meshmap.state");
 meshmap.state.SiteService = (function() {
 
 	// imports
-	var StateService = meshmap.state.StateService,
-		dm = meshmap.models,
+	var dm = meshmap.models,
 		MapEvent = dm.MapEvent,
 		MapExtent = dm.MapExtent,
 		Location = dm.Location;
 
 	var SiteService = function(deps) {
-		deps = deps || /* istanbul ignore next */ {};
-
-		this._state = deps.state || new StateService();
-		this._eventBus = deps.eventBus || null;
-		this._extentUpdater = deps.extentUpdater || null;
-		this._comms = deps.comms || null;
+		this._state = deps.state;
+		this._eventBus = deps.eventBus;
+		this._extentUpdater = deps.extentUpdater;
+		this._comms = deps.comms;
 	};
 
 	var fireEvent = function(eventName) {
@@ -27,21 +24,15 @@ meshmap.state.SiteService = (function() {
 	};
 
 	var callEventBusPublish = function(publishArgs) {
-		if(this._eventBus) {
-			this._eventBus.publish.apply(this._eventBus, publishArgs);
-		}
+		this._eventBus.publish.apply(this._eventBus, publishArgs);
 	};
 
 	var callExtentUpdaterSetExtent = function(extent) {
-		if(this._extentUpdater) {
-			this._extentUpdater.setExtent(extent);
-		}
+		this._extentUpdater.setExtent(extent);
 	};
 
 	var callCommsSendMessage = function(msgType, msgData) {
-		if(this._comms) {
-			this._comms.sendMessage(msgType, msgData);
-		}
+		this._comms.sendMessage(msgType, msgData);
 	};
 
 	SiteService.instance = null;

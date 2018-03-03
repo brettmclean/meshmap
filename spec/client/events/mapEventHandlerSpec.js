@@ -74,7 +74,7 @@ function createMapEventHandler(deps) {
 }
 
 function createSiteService() {
-	var ss = new SiteService();
+	var ss = new SiteService({});
 	spyOn(ss, "addMarker");
 	spyOn(ss, "removeMarker");
 	spyOn(ss, "updateMarkerFromRemoteChange");

@@ -44,292 +44,6 @@ var MARKER3 = new PolygonMarker(3, [LOCATION1, LOCATION2, LOCATION3]);
 var EXTENT1 = new MapExtent(LOCATION1, LOCATION2);
 var EXTENT2 = new MapExtent(LOCATION2, LOCATION3);
 
-var getGetterMethodName = function(propName) {
-	return "get" + propName;
-};
-
-var getSetterMethodName = function(propName) {
-	return "set" + propName;
-};
-
-var verifyCanSetAndGetProperty = function(propName, storedValue) {
-	var ss = createSiteService();
-
-	var setter = getSetterMethodName(propName);
-	var getter = getGetterMethodName(propName);
-
-	ss[setter](storedValue);
-	var returnedValue = ss[getter]();
-
-	expect(returnedValue).toBe(storedValue);
-};
-
-var verifyStateServiceCalledOnSetProperty = function(sitePropName, statePropName, storedValue) {
-	var state = new StateService(),
-		ss = createSiteServiceWithStateService(state),
-		stateSetter = getSetterMethodName(statePropName),
-		siteSetter = getSetterMethodName(sitePropName);
-
-	spyOn(state, stateSetter);
-	ss[siteSetter](storedValue);
-
-	expect(state[stateSetter].calls.count()).toBeGreaterThan(0);
-};
-
-var verifyStateServiceCalledOnSetAndGetProperty = function(sitePropName, statePropName, storedValue) {
-	var state = new StateService(),
-		ss = createSiteServiceWithStateService(state),
-		stateSetter = getSetterMethodName(statePropName),
-		stateGetter = getGetterMethodName(statePropName),
-		siteSetter = getSetterMethodName(sitePropName),
-		siteGetter = getGetterMethodName(sitePropName);
-
-	spyOn(state, stateSetter);
-	spyOn(state, stateGetter);
-	ss[siteSetter](storedValue);
-	ss[siteGetter]();
-
-	expect(state[stateSetter].calls.count()).toBeGreaterThan(0);
-	expect(state[stateGetter].calls.count()).toBeGreaterThan(0);
-};
-
-var verifyEventFiredWhenPropertySet = function(propName, propValue, eventName, done) {
-	var eb = new EventBus(),
-		ss = createSiteServiceWithEventBus(eb);
-
-	eb.subscribe(eventName, function(eventArg) {
-		expect(eventArg).toBe(propValue);
-		done();
-	});
-
-	ss["set" + propName](propValue);
-};
-
-var verifyEventNotFiredWhenPropertySetWithUnchangedValue = function(propName, propValue, eventName) {
-	var eb = new EventBus(),
-		ss = createSiteServiceWithEventBus(eb),
-		setterMethod = "set" + propName;
-
-	ss[setterMethod](propValue);
-	eb.subscribe(eventName, function() {
-		fail(eventName + " event should not fire if new value is identical");
-	});
-
-	ss[setterMethod](propValue);
-};
-
-var verifyCanAddAndGetItems = function(propName, values) {
-	var ss = createSiteService();
-
-	var addMethod = "add" + propName;
-	for(var i = 0; i < values.length; i++) {
-		ss[addMethod](values[i]);
-	}
-
-	var getMethod = "get" + propName + "s";
-	var returnedValues = ss[getMethod]();
-	verifyArraysAreSimilar(returnedValues, values);
-};
-
-var verifyEventFiredWhenItemAdded = function(propName, propValue, eventName, done) {
-	var eb = new EventBus(),
-		ss = createSiteServiceWithEventBus(eb);
-
-	eb.subscribe(eventName, function(eventArg) {
-		expect(eventArg).toBe(propValue);
-		done();
-	});
-
-	var addMethod = "add" + propName;
-	ss[addMethod](propValue);
-};
-
-var verifyCanSetItemList = function(propName, values) {
-	var ss = createSiteService(),
-		setMethod = "set" + propName + "s",
-		getMethod = "get" + propName + "s";
-
-	ss[setMethod](values);
-	var returnedValues = ss[getMethod]();
-
-	verifyArraysAreSimilar(values, returnedValues);
-};
-
-var verifyEventFiredWhenItemListSet = function(propName, propList, eventName, done) {
-	var eb = new EventBus(),
-		ss = createSiteServiceWithEventBus(eb);
-
-	eb.subscribe(eventName, done);
-
-	var setMethod = "set" + propName + "s";
-	ss[setMethod](propList);
-};
-
-var verifyEventFiredForEachItemWhenItemListSet = function(propName, propList, eventName, done) {
-	var eb = new EventBus(),
-		ss = createSiteServiceWithEventBus(eb);
-
-	var eventCount = 0;
-	eb.subscribe(eventName, function(eventArg) {
-		expect(eventArg).toBe(propList[eventCount]);
-
-		eventCount++;
-		if(eventCount === propList.length) {
-			done();
-		}
-	});
-
-	var setMethod = "set" + propName + "s";
-	ss[setMethod](propList);
-};
-
-var verifyCanRemoveItems = function(propName, values, removedItem) {
-	var ss = createSiteService();
-	var setMethod = "set" + propName + "s";
-	var removeMethod = "remove" + propName;
-	var getMethod = "get" + propName + "s";
-
-	ss[setMethod](values);
-	ss[removeMethod](removedItem.id);
-	var returnedValues = ss[getMethod]();
-
-	expect(returnedValues.length).toBe(values.length - 1);
-
-	values.splice(values.indexOf(removedItem), 1);
-	verifyArraysAreSimilar(values, returnedValues);
-};
-
-var verifyEventFiredWhenItemRemoved = function(propName, propValue, eventName, done) {
-	var eb = new EventBus(),
-		ss = createSiteServiceWithEventBus(eb),
-		setMethod = "set" + propName + "s",
-		removeMethod = "remove" + propName;
-
-	ss[setMethod]([propValue]);
-
-	eb.subscribe(eventName, function(eventArg) {
-		expect(eventArg).toBe(propValue);
-		done();
-	});
-
-	ss[removeMethod](propValue.id);
-};
-
-var verifyEventNotFiredWhenRemovedItemNotPresent = function(propName, propValue, eventName) {
-	var eb = new EventBus(),
-		ss = createSiteServiceWithEventBus(eb),
-		removeMethod = "remove" + propName;
-
-	eb.subscribe(eventName, function() {
-		fail(eventName + " event should not fire if removed value was not present");
-	});
-
-	ss[removeMethod](propValue);
-};
-
-var verifyPropertyIsUpdated = function(itemName, itemType, oldItem, newItem, propName, newPropValue) {
-	var ss = createSiteService(),
-		setMethod = "set" + itemName + "s",
-		updateMethod = "update" + itemName,
-		getMethod = "get" + itemName + "s";
-
-	oldItem = cloneItem(oldItem, itemType);
-	ss[setMethod]([oldItem]);
-	ss[updateMethod](newItem);
-
-	var allItems = ss[getMethod]();
-	expect(allItems.length).toBe(1);
-	expect(allItems[0][propName]).toBe(newPropValue);
-};
-
-var verifyEventFiredWhenItemUpdated = function(
-	eventName, itemName, itemType, oldItem,
-	newItem, itemProp, itemPropValue, done) {
-
-	var eb = new EventBus(),
-		ss = createSiteServiceWithEventBus(eb),
-		setMethod = "set" + itemName + "s",
-		updateMethod = "update" + itemName;
-
-	oldItem = cloneItem(oldItem, itemType);
-	ss[setMethod]([oldItem]);
-
-	eb.subscribe(eventName, function(updatedItem) {
-		expect(updatedItem[itemProp]).toBe(itemPropValue);
-		done();
-	});
-
-	ss[updateMethod](newItem);
-};
-
-var verifyEventNotFiredWhenUpdatedItemNotPresent = function(
-	eventName, itemName, item, differentItem) {
-
-	var eb = new EventBus(),
-		ss = createSiteServiceWithEventBus(eb),
-		setMethod = "set" + itemName + "s",
-		updateMethod = "update" + itemName;
-
-	ss[setMethod]([item]);
-
-	eb.subscribe(eventName, function() {
-		fail(eventName + " event should not fire if updated value was not present");
-	});
-
-	ss[updateMethod](differentItem);
-};
-
-var verifyArraysAreSimilar = function(first, second) {
-	expect(first.length).toBe(second.length);
-	verifyArrayContainsContentsOfArray(first, second);
-};
-
-var verifyArrayContainsContentsOfArray = function(supersetArray, subsetArray) {
-	for(var i = 0; i < subsetArray.length; i++) {
-		verifyArrayContainsObject(supersetArray, subsetArray[i]);
-	}
-};
-
-var verifyArrayContainsObject = function(array, obj) {
-	expect(array).toContain(obj);
-};
-
-var createSiteService = function() {
-	return createSiteServiceWithStateService(new StateService());
-};
-
-var createExtentUpdater = function() {
-	return new ExtentUpdater();
-};
-
-var createSiteServiceWithStateService = function(state) {
-	return new SiteService({
-		state: state
-	});
-};
-
-var createSiteServiceWithEventBus = function(eventBus) {
-	return new SiteService({
-		eventBus: eventBus
-	});
-};
-
-var createSiteServiceWithExtentUpdater = function(extentUpdater) {
-	return new SiteService({
-		extentUpdater: extentUpdater
-	});
-};
-
-var createSiteServiceWithCommsService = function(comms) {
-	return new SiteService({
-		comms: comms
-	});
-};
-
-var cloneItem = function(item, type) {
-	return type.parse(item);
-};
-
 describe("A Site Service", function() {
 
 	describe("setName method", function() {
@@ -402,7 +116,7 @@ describe("A Site Service", function() {
 
 		it("fires systemMessageRequested event when user is updated", function(done) {
 			var eb = new EventBus(),
-				ss = createSiteServiceWithEventBus(eb),
+				ss = createSiteService({ eventBus: eb }),
 				originalUser = cloneItem(USER_INFO1, UserInfo),
 				oldName = originalUser.name,
 				newName = "Melinda";
@@ -456,7 +170,7 @@ describe("A Site Service", function() {
 		it("get whether a marker can only be edited by its owner from state service", function() {
 			var siteSettings = new SiteSettings(),
 				state = new StateService(),
-				ss = createSiteServiceWithStateService(state);
+				ss = createSiteService({ state: state });
 
 			state.setSiteSettings(siteSettings);
 			spyOn(state, "getSiteSettings").and.callThrough();
@@ -469,7 +183,7 @@ describe("A Site Service", function() {
 			var expected = true,
 				siteSettings = new SiteSettings(),
 				state = new StateService(),
-				ss = createSiteServiceWithStateService(state);
+				ss = createSiteService({ state: state });
 
 			state.setSiteSettings(siteSettings);
 			spyOn(state, "getSiteSettings").and.callThrough();
@@ -539,7 +253,7 @@ describe("A Site Service", function() {
 
 		it("does not call setExtent if an extent is already set", function() {
 			var state = new StateService(),
-				ss = createSiteServiceWithStateService(state);
+				ss = createSiteService({ state: state });
 
 			ss.setInitialExtent(EXTENT1);
 			spyOn(ss, "setExtent");
@@ -559,7 +273,7 @@ describe("A Site Service", function() {
 
 		it("calls setExtent on the ExtentUpdater when extent is set", function() {
 			var eu = createExtentUpdater(),
-				ss = createSiteServiceWithExtentUpdater(eu);
+				ss = createSiteService({ extentUpdater: eu });
 
 			spyOn(eu, "setExtent");
 			ss.setExtent(EXTENT1);
@@ -607,7 +321,7 @@ describe("A Site Service", function() {
 
 		it("sends mapEvent-removeMarker message when marker is removed", function() {
 			var cs = createCommsService(),
-				ss = createSiteServiceWithCommsService(cs);
+				ss = createSiteService({ comms: cs });
 
 			ss.addMarker(MARKER1);
 			spyOn(cs, "sendMessage");
@@ -627,7 +341,7 @@ describe("A Site Service", function() {
 
 		it("does not send comms message when removed marker was not present", function() {
 			var cs = createCommsService(),
-				ss = createSiteServiceWithCommsService(cs);
+				ss = createSiteService({ comms: cs });
 
 			spyOn(cs, "sendMessage");
 			ss.removeMarker(MARKER1);
@@ -649,7 +363,7 @@ describe("A Site Service", function() {
 
 			it("sends mapEvent-updateMarker message when marker is updated", function() {
 				var cs = createCommsService(),
-					ss = createSiteServiceWithCommsService(cs);
+					ss = createSiteService({ comms: cs });
 
 				ss.setMarkers([cloneItem(oldMarker, Marker)]);
 
@@ -671,7 +385,7 @@ describe("A Site Service", function() {
 
 			it("does not send comms message when update was made remotely", function() {
 				var cs = createCommsService(),
-					ss = createSiteServiceWithCommsService(cs);
+					ss = createSiteService({ comms: cs });
 
 				ss.setMarkers([cloneItem(oldMarker, Marker)]);
 
@@ -686,7 +400,7 @@ describe("A Site Service", function() {
 
 		it("does not send comms message when updated marker was not present", function() {
 			var cs = createCommsService(),
-				ss = createSiteServiceWithCommsService(cs);
+				ss = createSiteService({ comms: cs });
 
 			spyOn(cs, "sendMessage");
 			ss.updateMarker(MARKER2);
@@ -706,6 +420,282 @@ describe("A Site Service", function() {
 
 });
 
+function createSiteService(deps) {
+	deps = deps || {};
+
+	deps.state = deps.state || createStateService();
+	deps.eventBus = deps.eventBus || createEventBus();
+	deps.extentUpdater = deps.extentUpdater || createExtentUpdater();
+	deps.comms = deps.comms || createCommsService();
+
+	return new SiteService(deps);
+}
+
 function createCommsService() {
 	return new CommsService({});
+}
+
+function createExtentUpdater() {
+	return new ExtentUpdater();
+}
+
+function createStateService() {
+	return new StateService();
+}
+
+function createEventBus() {
+	return new EventBus();
+}
+
+function getGetterMethodName(propName) {
+	return "get" + propName;
+}
+
+function getSetterMethodName(propName) {
+	return "set" + propName;
+}
+
+function verifyCanSetAndGetProperty(propName, storedValue) {
+	var ss = createSiteService();
+
+	var setter = getSetterMethodName(propName);
+	var getter = getGetterMethodName(propName);
+
+	ss[setter](storedValue);
+	var returnedValue = ss[getter]();
+
+	expect(returnedValue).toBe(storedValue);
+}
+
+function verifyStateServiceCalledOnSetProperty(sitePropName, statePropName, storedValue) {
+	var state = new StateService(),
+		ss = createSiteService({ state: state }),
+		stateSetter = getSetterMethodName(statePropName),
+		siteSetter = getSetterMethodName(sitePropName);
+
+	spyOn(state, stateSetter);
+	ss[siteSetter](storedValue);
+
+	expect(state[stateSetter].calls.count()).toBeGreaterThan(0);
+}
+
+function verifyStateServiceCalledOnSetAndGetProperty(sitePropName, statePropName, storedValue) {
+	var state = new StateService(),
+		ss = createSiteService({ state: state }),
+		stateSetter = getSetterMethodName(statePropName),
+		stateGetter = getGetterMethodName(statePropName),
+		siteSetter = getSetterMethodName(sitePropName),
+		siteGetter = getGetterMethodName(sitePropName);
+
+	spyOn(state, stateSetter);
+	spyOn(state, stateGetter);
+	ss[siteSetter](storedValue);
+	ss[siteGetter]();
+
+	expect(state[stateSetter].calls.count()).toBeGreaterThan(0);
+	expect(state[stateGetter].calls.count()).toBeGreaterThan(0);
+}
+
+function verifyEventFiredWhenPropertySet(propName, propValue, eventName, done) {
+	var eb = new EventBus(),
+		ss = createSiteService({ eventBus: eb });
+
+	eb.subscribe(eventName, function(eventArg) {
+		expect(eventArg).toBe(propValue);
+		done();
+	});
+
+	ss["set" + propName](propValue);
+}
+
+function verifyEventNotFiredWhenPropertySetWithUnchangedValue(propName, propValue, eventName) {
+	var eb = new EventBus(),
+		ss = createSiteService({ eventBus: eb }),
+		setterMethod = "set" + propName;
+
+	ss[setterMethod](propValue);
+	eb.subscribe(eventName, function() {
+		fail(eventName + " event should not fire if new value is identical");
+	});
+
+	ss[setterMethod](propValue);
+}
+
+function verifyCanAddAndGetItems(propName, values) {
+	var ss = createSiteService();
+
+	var addMethod = "add" + propName;
+	for(var i = 0; i < values.length; i++) {
+		ss[addMethod](values[i]);
+	}
+
+	var getMethod = "get" + propName + "s";
+	var returnedValues = ss[getMethod]();
+	verifyArraysAreSimilar(returnedValues, values);
+}
+
+function verifyEventFiredWhenItemAdded(propName, propValue, eventName, done) {
+	var eb = new EventBus(),
+		ss = createSiteService({ eventBus: eb });
+
+	eb.subscribe(eventName, function(eventArg) {
+		expect(eventArg).toBe(propValue);
+		done();
+	});
+
+	var addMethod = "add" + propName;
+	ss[addMethod](propValue);
+}
+
+function verifyCanSetItemList(propName, values) {
+	var ss = createSiteService(),
+		setMethod = "set" + propName + "s",
+		getMethod = "get" + propName + "s";
+
+	ss[setMethod](values);
+	var returnedValues = ss[getMethod]();
+
+	verifyArraysAreSimilar(values, returnedValues);
+}
+
+function verifyEventFiredWhenItemListSet(propName, propList, eventName, done) {
+	var eb = new EventBus(),
+		ss = createSiteService({ eventBus: eb });
+
+	eb.subscribe(eventName, done);
+
+	var setMethod = "set" + propName + "s";
+	ss[setMethod](propList);
+}
+
+function verifyEventFiredForEachItemWhenItemListSet(propName, propList, eventName, done) {
+	var eb = new EventBus(),
+		ss = createSiteService({ eventBus: eb });
+
+	var eventCount = 0;
+	eb.subscribe(eventName, function(eventArg) {
+		expect(eventArg).toBe(propList[eventCount]);
+
+		eventCount++;
+		if(eventCount === propList.length) {
+			done();
+		}
+	});
+
+	var setMethod = "set" + propName + "s";
+	ss[setMethod](propList);
+}
+
+function verifyCanRemoveItems(propName, values, removedItem) {
+	var ss = createSiteService();
+	var setMethod = "set" + propName + "s";
+	var removeMethod = "remove" + propName;
+	var getMethod = "get" + propName + "s";
+
+	ss[setMethod](values);
+	ss[removeMethod](removedItem.id);
+	var returnedValues = ss[getMethod]();
+
+	expect(returnedValues.length).toBe(values.length - 1);
+
+	values.splice(values.indexOf(removedItem), 1);
+	verifyArraysAreSimilar(values, returnedValues);
+}
+
+function verifyEventFiredWhenItemRemoved(propName, propValue, eventName, done) {
+	var eb = new EventBus(),
+		ss = createSiteService({ eventBus: eb }),
+		setMethod = "set" + propName + "s",
+		removeMethod = "remove" + propName;
+
+	ss[setMethod]([propValue]);
+
+	eb.subscribe(eventName, function(eventArg) {
+		expect(eventArg).toBe(propValue);
+		done();
+	});
+
+	ss[removeMethod](propValue.id);
+}
+
+function verifyEventNotFiredWhenRemovedItemNotPresent(propName, propValue, eventName) {
+	var eb = new EventBus(),
+		ss = createSiteService({ eventBus: eb }),
+		removeMethod = "remove" + propName;
+
+	eb.subscribe(eventName, function() {
+		fail(eventName + " event should not fire if removed value was not present");
+	});
+
+	ss[removeMethod](propValue);
+}
+
+function verifyPropertyIsUpdated(itemName, itemType, oldItem, newItem, propName, newPropValue) {
+	var ss = createSiteService(),
+		setMethod = "set" + itemName + "s",
+		updateMethod = "update" + itemName,
+		getMethod = "get" + itemName + "s";
+
+	oldItem = cloneItem(oldItem, itemType);
+	ss[setMethod]([oldItem]);
+	ss[updateMethod](newItem);
+
+	var allItems = ss[getMethod]();
+	expect(allItems.length).toBe(1);
+	expect(allItems[0][propName]).toBe(newPropValue);
+}
+
+function verifyEventFiredWhenItemUpdated(
+	eventName, itemName, itemType, oldItem,
+	newItem, itemProp, itemPropValue, done) {
+
+	var eb = new EventBus(),
+		ss = createSiteService({ eventBus: eb }),
+		setMethod = "set" + itemName + "s",
+		updateMethod = "update" + itemName;
+
+	oldItem = cloneItem(oldItem, itemType);
+	ss[setMethod]([oldItem]);
+
+	eb.subscribe(eventName, function(updatedItem) {
+		expect(updatedItem[itemProp]).toBe(itemPropValue);
+		done();
+	});
+
+	ss[updateMethod](newItem);
+}
+
+function verifyEventNotFiredWhenUpdatedItemNotPresent(eventName, itemName, item, differentItem) {
+
+	var eb = new EventBus(),
+		ss = createSiteService({ eventBus: eb }),
+		setMethod = "set" + itemName + "s",
+		updateMethod = "update" + itemName;
+
+	ss[setMethod]([item]);
+
+	eb.subscribe(eventName, function() {
+		fail(eventName + " event should not fire if updated value was not present");
+	});
+
+	ss[updateMethod](differentItem);
+}
+
+function verifyArraysAreSimilar(first, second) {
+	expect(first.length).toBe(second.length);
+	verifyArrayContainsContentsOfArray(first, second);
+}
+
+function verifyArrayContainsContentsOfArray(supersetArray, subsetArray) {
+	for(var i = 0; i < subsetArray.length; i++) {
+		verifyArrayContainsObject(supersetArray, subsetArray[i]);
+	}
+}
+
+function verifyArrayContainsObject(array, obj) {
+	expect(array).toContain(obj);
+}
+
+function cloneItem(item, type) {
+	return type.parse(item);
 }
