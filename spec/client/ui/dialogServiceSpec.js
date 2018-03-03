@@ -10,20 +10,6 @@ var DialogService = loader.load("ui/DialogService"),
 var DIALOG_TITLE = "Edit Marker";
 var DIALOG_TEXT = "You do not have permission to edit this marker.";
 
-var createTextDialog = function() {
-	return new TextDialog(DIALOG_TITLE, DIALOG_TEXT);
-};
-
-var createDialogService = function() {
-	return new DialogService();
-};
-
-var createDialogServiceWithEventBus = function(eventBus) {
-	return new DialogService({
-		eventBus: eventBus
-	});
-};
-
 describe("A Dialog Service", function() {
 
 	it("can share singleton instance", function() {
@@ -34,8 +20,8 @@ describe("A Dialog Service", function() {
 	});
 
 	it("fires a dialogRequested event when a dialog is asked to be shown", function(done) {
-		var eb = new EventBus(),
-			ds = createDialogServiceWithEventBus(eb),
+		var eb = createEventBus(),
+			ds = createDialogService({ eventBus: eb }),
 			d = createTextDialog();
 
 		eb.subscribe("dialogRequested", function(dialog) {
@@ -55,8 +41,8 @@ describe("A Dialog Service", function() {
 	});
 
 	it("fires a dialogDismissalRequested event when dialog handle is asked to be dismissed", function(done) {
-		var eb = new EventBus(),
-			ds = createDialogServiceWithEventBus(eb),
+		var eb = createEventBus(),
+			ds = createDialogService({ eventBus: eb }),
 			d = createTextDialog();
 
 		ds.showDialog(d);
@@ -78,8 +64,8 @@ describe("A Dialog Service", function() {
 	});
 
 	it("fires a currentDialogDismissalRequested event when current dialog is dismissed", function(done) {
-		var eb = new EventBus(),
-			ds = createDialogServiceWithEventBus(eb);
+		var eb = createEventBus(),
+			ds = createDialogService({ eventBus: eb });
 
 		eb.subscribe("currentDialogDismissalRequested", done);
 
@@ -87,3 +73,19 @@ describe("A Dialog Service", function() {
 	});
 
 });
+
+function createTextDialog() {
+	return new TextDialog(DIALOG_TITLE, DIALOG_TEXT);
+}
+
+function createDialogService(deps) {
+	deps = deps || {};
+
+	deps.eventBus = deps.eventBus || createEventBus();
+
+	return new DialogService(deps);
+}
+
+function createEventBus() {
+	return new EventBus();
+}

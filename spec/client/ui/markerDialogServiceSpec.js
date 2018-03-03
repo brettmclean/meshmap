@@ -35,11 +35,10 @@ describe("A marker dialog service", function() {
 		});
 
 		it("calls showDialog on DialogService and provides ConfirmDialog", function() {
-			var dialogService = new DialogService(),
+			var dialogService = createDialogService(),
 				mds = new MarkerDialogService({
 					dialogService: dialogService
 				});
-			spyOn(dialogService, "showDialog");
 
 			mds.showConfirmDeletionDialog(MARKER1);
 
@@ -47,14 +46,13 @@ describe("A marker dialog service", function() {
 		});
 
 		it("includes provide marker's name in dialog text", function() {
-			var dialogService = new DialogService(),
+			var dialogService = createDialogService(),
 				mds = new MarkerDialogService({
 					dialogService: dialogService
 				}),
 				markerName = "Unique marker #384743",
 				marker = new PointMarker(6, LOCATION1);
 			marker.name = markerName;
-			spyOn(dialogService, "showDialog");
 
 			mds.showConfirmDeletionDialog(marker);
 
@@ -63,11 +61,10 @@ describe("A marker dialog service", function() {
 		});
 
 		it("calls provided callback function when user confirms deletion", function(done) {
-			var dialogService = new DialogService(),
+			var dialogService = createDialogService(),
 				mds = new MarkerDialogService({
 					dialogService: dialogService
 				});
-			spyOn(dialogService, "showDialog");
 
 			mds.showConfirmDeletionDialog(MARKER1, done);
 			var confirmDialog = getFirstArgOfFirstCall(dialogService.showDialog);
@@ -86,11 +83,10 @@ describe("A marker dialog service", function() {
 		});
 
 		it("calls showDialog on DialogService and provides ViewDialog", function() {
-			var dialogService = new DialogService(),
+			var dialogService = createDialogService(),
 				mds = new MarkerDialogService({
 					dialogService: dialogService
 				});
-			spyOn(dialogService, "showDialog");
 
 			mds.showEditMarkerDialog(MARKER1);
 
@@ -98,11 +94,10 @@ describe("A marker dialog service", function() {
 		});
 
 		it("calls showDialog on DialogService and provides EditMarkerContext as ViewDialog scope", function() {
-			var dialogService = new DialogService(),
+			var dialogService = createDialogService(),
 				mds = new MarkerDialogService({
 					dialogService: dialogService
 				});
-			spyOn(dialogService, "showDialog");
 
 			mds.showEditMarkerDialog(MARKER1);
 
@@ -111,11 +106,10 @@ describe("A marker dialog service", function() {
 		});
 
 		it("calls showDialog on DialogService and passes provided marker via EditMarkerContext", function() {
-			var dialogService = new DialogService(),
+			var dialogService = createDialogService(),
 				mds = new MarkerDialogService({
 					dialogService: dialogService
 				});
-			spyOn(dialogService, "showDialog");
 
 			mds.showEditMarkerDialog(MARKER1);
 
@@ -125,11 +119,10 @@ describe("A marker dialog service", function() {
 		});
 
 		it("calls provided callback function when user finishes edit", function(done) {
-			var dialogService = new DialogService(),
+			var dialogService = createDialogService(),
 				mds = new MarkerDialogService({
 					dialogService: dialogService
 				});
-			spyOn(dialogService, "showDialog");
 
 			mds.showEditMarkerDialog(MARKER1, done);
 			var viewDialog = getFirstArgOfFirstCall(dialogService.showDialog);
@@ -149,11 +142,10 @@ describe("A marker dialog service", function() {
 		});
 
 		it("calls showDialog on DialogService and provides ViewDialog", function() {
-			var dialogService = new DialogService(),
+			var dialogService = createDialogService(),
 				mds = new MarkerDialogService({
 					dialogService: dialogService
 				});
-			spyOn(dialogService, "showDialog");
 
 			mds.showMarkerInfoDialog(createMarkerInfoContext(MARKER1));
 
@@ -161,12 +153,11 @@ describe("A marker dialog service", function() {
 		});
 
 		it("calls showDialog on DialogService and passes provided MarkerInfoContext as ViewDialog scope", function() {
-			var dialogService = new DialogService(),
+			var dialogService = createDialogService(),
 				mds = new MarkerDialogService({
 					dialogService: dialogService
 				}),
 				markerInfoContext = createMarkerInfoContext(MARKER1);
-			spyOn(dialogService, "showDialog");
 
 			mds.showMarkerInfoDialog(markerInfoContext);
 
@@ -179,13 +170,11 @@ describe("A marker dialog service", function() {
 	describe("dismissMarkerInfoDialog method", function() {
 
 		it("passes most recent marker info dialog handle to dismissDialog on DialogService", function() {
-			var dialogService = new DialogService(),
+			var dialogService = createDialogService(),
 				mds = new MarkerDialogService({
 					dialogService: dialogService
 				}),
 				markerInfoContext = createMarkerInfoContext(MARKER1);
-			spyOn(dialogService, "showDialog");
-			spyOn(dialogService, "dismissDialog");
 
 			mds.showMarkerInfoDialog(markerInfoContext);
 			mds.dismissMarkerInfoDialog();
@@ -199,11 +188,10 @@ describe("A marker dialog service", function() {
 		});
 
 		it("does not call dismissDialog on DialogService if marker info dialog has not been shown", function() {
-			var dialogService = new DialogService(),
+			var dialogService = createDialogService(),
 				mds = new MarkerDialogService({
 					dialogService: dialogService
 				});
-			spyOn(dialogService, "dismissDialog");
 
 			mds.dismissMarkerInfoDialog();
 
@@ -211,13 +199,11 @@ describe("A marker dialog service", function() {
 		});
 
 		it("does not call dismissDialog on DialogService multiple times if called multiple times in a row", function() {
-			var dialogService = new DialogService(),
+			var dialogService = createDialogService(),
 				mds = new MarkerDialogService({
 					dialogService: dialogService
 				}),
 				markerInfoContext = createMarkerInfoContext(MARKER1);
-			spyOn(dialogService, "showDialog");
-			spyOn(dialogService, "dismissDialog");
 
 			mds.showMarkerInfoDialog(markerInfoContext);
 			mds.dismissMarkerInfoDialog();
@@ -230,14 +216,11 @@ describe("A marker dialog service", function() {
 
 });
 
-function verifyMethodExists(methodName) {
-	var mds = createMarkerDialogService();
-	expect(typeof mds[methodName]).toBe("function");
-}
-
-function getFirstArgOfFirstCall(spy) {
-	var firstCall = spy.calls.first();
-	return firstCall.args[0];
+function createDialogService() {
+	var dialogService = new DialogService({});
+	spyOn(dialogService, "showDialog");
+	spyOn(dialogService, "dismissDialog");
+	return dialogService;
 }
 
 function createMarkerDialogService() {
@@ -246,4 +229,14 @@ function createMarkerDialogService() {
 
 function createMarkerInfoContext(marker) {
 	return new MarkerInfoContext(marker);
+}
+
+function verifyMethodExists(methodName) {
+	var mds = createMarkerDialogService();
+	expect(typeof mds[methodName]).toBe("function");
+}
+
+function getFirstArgOfFirstCall(spy) {
+	var firstCall = spy.calls.first();
+	return firstCall.args[0];
 }

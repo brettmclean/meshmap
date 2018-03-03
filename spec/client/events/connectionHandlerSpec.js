@@ -154,7 +154,7 @@ function createDialogServiceWithShowDialogFake(showDialogFake) {
 }
 
 function createDialogServiceWithShowDialogFakeAndDismissDialogFake(showDialogFake, dismissDialogFake) {
-	var ds = new DialogService();
+	var ds = new DialogService({});
 	spyOn(ds, "showDialog").and.callFake(showDialogFake);
 	spyOn(ds, "dismissDialog").and.callFake(dismissDialogFake);
 	return ds;

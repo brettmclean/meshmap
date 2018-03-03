@@ -73,7 +73,7 @@ function createDialogService() {
 }
 
 function createDialogServiceWithShowDialogFake(showDialogFake) {
-	var ds = new DialogService();
+	var ds = new DialogService({});
 	spyOn(ds, "showDialog").and.callFake(showDialogFake);
 	return ds;
 }

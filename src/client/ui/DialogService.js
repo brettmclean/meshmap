@@ -6,9 +6,7 @@ meshmap.ui.DialogService = (function() {
 	var Dialog = meshmap.ui.dialogs.Dialog;
 
 	var DialogService = function(deps) {
-		deps = deps || /* istanbul ignore next */ {};
-
-		this._eventBus = deps.eventBus || null;
+		this._eventBus = deps.eventBus;
 	};
 
 	var fireEvent = function(eventName) {
@@ -20,9 +18,7 @@ meshmap.ui.DialogService = (function() {
 	};
 
 	var callEventBusPublish = function(publishArgs) {
-		if(this._eventBus) {
-			this._eventBus.publish.apply(this._eventBus, publishArgs);
-		}
+		this._eventBus.publish.apply(this._eventBus, publishArgs);
 	};
 
 	DialogService.instance = null;
