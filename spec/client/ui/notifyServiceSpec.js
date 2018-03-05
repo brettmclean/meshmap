@@ -16,77 +16,6 @@ var LAYOUT = {
 	LARGE: "large"
 };
 
-var createNotifyServiceWithEventBusAndSiteService = function(eventBus, siteService) {
-	return new NotifyService({
-		eventBus: eventBus,
-		siteService: siteService
-	});
-};
-
-var createTinyTextChangedVerificationCallback = function(
-	expectedSectionId, expectedText, expectedNotifyColor, done) {
-	return function (tinyTextChange) {
-		expect(tinyTextChange.sectionId).toBe(expectedSectionId);
-		expect(tinyTextChange.text).toBe(expectedText);
-		expect(tinyTextChange.notifyColor).toBe(expectedNotifyColor);
-		done();
-	};
-};
-
-var setupTestWithEventBusAndSiteService = function(callback) {
-	// jshint unused: false
-	var eb = new EventBus(),
-		ss = new MockSiteService(eb),
-		ns = createNotifyServiceWithEventBusAndSiteService(eb, ss);
-
-	callback(eb, ss);
-};
-
-var goToUsersSection = function(eventBus) {
-	eventBus.publish("sectionChanged", NotifyService.SECTIONS.USERS);
-};
-
-var goToChatSection = function(eventBus) {
-	eventBus.publish("sectionChanged", NotifyService.SECTIONS.CHAT);
-};
-
-var closeSidePanel = function(eventBus) {
-	eventBus.publish("sidePanelToggled", false);
-};
-
-var switchToSmallLayout = function(eventBus) {
-	eventBus.publish("layoutChanged", LAYOUT.SMALL);
-};
-
-var receiveStartupData = function(eventBus, startupData) {
-	eventBus.publish("startupDataReceived", startupData);
-};
-
-var receiveChatMessage = function(eventBus) {
-	eventBus.publish("chatMessageReceived", new ChatMessage("Hello"));
-};
-
-var MockSiteService = function(eventBus) {
-	this._eventBus = eventBus;
-
-	this._users = [];
-};
-
-MockSiteService.prototype.addUser = function(userInfo) {
-	this._users.push(userInfo);
-	this._eventBus.publish("userAdded", userInfo);
-};
-
-MockSiteService.prototype.removeUser = function(userInfo) {
-	var index = this._users.indexOf(userInfo);
-	this._users.splice(index, 1);
-	this._eventBus.publish("userRemoved", userInfo);
-};
-
-MockSiteService.prototype.getUsers = function() {
-	return this._users;
-};
-
 describe("A Notify Service", function() {
 
 	it("has section IDs", function() {
@@ -249,11 +178,89 @@ describe("A Notify Service", function() {
 		});
 	});
 
-	it("does not throw an error if event bus is not provided", function() {
-		expect(function() {
-			// jshint unused: false
-			var ns = new NotifyService();
-		}).not.toThrow();
+});
+
+function createNotifyService(deps) {
+	deps = deps || {};
+
+	deps.eventBus = deps.eventBus || createEventBus();
+	deps.siteService = deps.siteService || createSiteService(deps.eventBus);
+
+	return new NotifyService(deps);
+}
+
+function createEventBus() {
+	return new EventBus();
+}
+
+function createSiteService(eventBus) {
+	var ss = new MockSiteService(eventBus);
+	return ss;
+}
+
+function createTinyTextChangedVerificationCallback(
+	expectedSectionId, expectedText, expectedNotifyColor, done) {
+	return function (tinyTextChange) {
+		expect(tinyTextChange.sectionId).toBe(expectedSectionId);
+		expect(tinyTextChange.text).toBe(expectedText);
+		expect(tinyTextChange.notifyColor).toBe(expectedNotifyColor);
+		done();
+	};
+}
+
+function setupTestWithEventBusAndSiteService(callback) {
+	var eb = createEventBus(),
+		ss = createSiteService(eb);
+
+	createNotifyService({
+		eventBus: eb,
+		siteService: ss
 	});
 
-});
+	callback(eb, ss);
+}
+
+function goToUsersSection(eventBus) {
+	eventBus.publish("sectionChanged", NotifyService.SECTIONS.USERS);
+}
+
+function goToChatSection(eventBus) {
+	eventBus.publish("sectionChanged", NotifyService.SECTIONS.CHAT);
+}
+
+function closeSidePanel(eventBus) {
+	eventBus.publish("sidePanelToggled", false);
+}
+
+function switchToSmallLayout(eventBus) {
+	eventBus.publish("layoutChanged", LAYOUT.SMALL);
+}
+
+function receiveStartupData(eventBus, startupData) {
+	eventBus.publish("startupDataReceived", startupData);
+}
+
+function receiveChatMessage(eventBus) {
+	eventBus.publish("chatMessageReceived", new ChatMessage("Hello"));
+}
+
+function MockSiteService(eventBus) {
+	this._eventBus = eventBus;
+
+	this._users = [];
+}
+
+MockSiteService.prototype.addUser = function(userInfo) {
+	this._users.push(userInfo);
+	this._eventBus.publish("userAdded", userInfo);
+};
+
+MockSiteService.prototype.removeUser = function(userInfo) {
+	var index = this._users.indexOf(userInfo);
+	this._users.splice(index, 1);
+	this._eventBus.publish("userRemoved", userInfo);
+};
+
+MockSiteService.prototype.getUsers = function() {
+	return this._users;
+};

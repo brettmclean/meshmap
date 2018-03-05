@@ -3,10 +3,8 @@ meshmap.namespace("meshmap.ui");
 meshmap.ui.NotifyService = (function() {
 
 	var NotifyService = function(deps) {
-		deps = deps || /* istanbul ignore next */ {};
-
-		this._eventBus = deps.eventBus || null;
-		this._site = deps.siteService || null;
+		this._eventBus = deps.eventBus;
+		this._site = deps.siteService;
 
 		this._activeSection = null;
 		this._sidePanelIsOpen = true;
@@ -25,15 +23,13 @@ meshmap.ui.NotifyService = (function() {
 	};
 
 	var subscribeToEvents = function() {
-		if(this._eventBus) {
-			this._eventBus.subscribe("startupDataReceived", onStartupDataReceived.bind(this));
-			this._eventBus.subscribe("userAdded", onUserAdded.bind(this));
-			this._eventBus.subscribe("userRemoved", onUserRemoved.bind(this));
-			this._eventBus.subscribe("sectionChanged", onSectionChanged.bind(this));
-			this._eventBus.subscribe("layoutChanged", onLayoutChanged.bind(this));
-			this._eventBus.subscribe("sidePanelToggled", onSidePanelToggled.bind(this));
-			this._eventBus.subscribe("chatMessageReceived", onChatMessageReceived.bind(this));
-		}
+		this._eventBus.subscribe("startupDataReceived", onStartupDataReceived.bind(this));
+		this._eventBus.subscribe("userAdded", onUserAdded.bind(this));
+		this._eventBus.subscribe("userRemoved", onUserRemoved.bind(this));
+		this._eventBus.subscribe("sectionChanged", onSectionChanged.bind(this));
+		this._eventBus.subscribe("layoutChanged", onLayoutChanged.bind(this));
+		this._eventBus.subscribe("sidePanelToggled", onSidePanelToggled.bind(this));
+		this._eventBus.subscribe("chatMessageReceived", onChatMessageReceived.bind(this));
 	};
 
 	var onStartupDataReceived = function(startupData) {
