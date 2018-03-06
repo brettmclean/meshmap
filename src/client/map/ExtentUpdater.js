@@ -15,8 +15,6 @@ meshmap.map.ExtentUpdater = (function() {
 		this._lastPushedTime = 0;
 	};
 
-	ExtentUpdater.instance = null;
-
 	/* istanbul ignore next */
 	ExtentUpdater.prototype.watchExtentChanges = function() {
 		setInterval(checkExtentChanges.bind(this), POLLING_INTERVAL);
@@ -57,10 +55,6 @@ meshmap.map.ExtentUpdater = (function() {
 		var hasExtentToSend = !!extentUpdater._currExtent;
 		var extentIsDifferentFromLastPushed = extentUpdater._lastPushedExtent !== extentUpdater._currExtent;
 		return hasExtentToSend && extentIsDifferentFromLastPushed;
-	};
-
-	ExtentUpdater.prototype.setAsSingletonInstance = function() {
-		ExtentUpdater.instance = this;
 	};
 
 	return ExtentUpdater;

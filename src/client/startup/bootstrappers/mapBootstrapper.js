@@ -4,6 +4,7 @@ meshmap.startup.bootstrappers.mapBootstrapper = (function() {
 
 	// imports
 	var EventBus = meshmap.events.EventBus,
+		extentUpdaterFactory = meshmap.map.factories.extentUpdaterFactory,
 		mapApiProviderFactory = meshmap.map.mapApiProviderFactory,
 		MarkerSelectionContext = meshmap.map.MarkerSelectionContext,
 		ViewInjectionService = meshmap.angular.ViewInjectionService,
@@ -12,7 +13,6 @@ meshmap.startup.bootstrappers.mapBootstrapper = (function() {
 		MarkerDialogService = meshmap.ui.MarkerDialogService,
 		DialogService = meshmap.ui.DialogService,
 		SiteService = meshmap.state.SiteService,
-		ExtentUpdater = meshmap.map.ExtentUpdater,
 		MapService = meshmap.map.MapService,
 		CommsService = meshmap.utils.comms.CommsService,
 		Logger = meshmap.utils.logging.Logger,
@@ -48,7 +48,7 @@ meshmap.startup.bootstrappers.mapBootstrapper = (function() {
 			commsService: CommsService.instance,
 			eventBus: EventBus.instance,
 			scriptInjectionService: scriptInjectionService,
-			extentUpdater: ExtentUpdater.instance,
+			extentUpdater: extentUpdaterFactory.create(),
 			logger: Logger.instance,
 			markerPermissionsService: new MarkerPermissionsService(SiteService.instance),
 			markerDialogService: createMarkerDialogService(),

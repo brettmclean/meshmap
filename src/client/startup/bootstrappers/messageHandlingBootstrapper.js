@@ -6,7 +6,7 @@ meshmap.startup.bootstrappers.messageHandlingBootstrapper = (function() {
 	var EventBus = meshmap.events.EventBus,
 		Logger = meshmap.utils.logging.Logger,
 		CommsService = meshmap.utils.comms.CommsService,
-		ExtentUpdater = meshmap.map.ExtentUpdater,
+		extentUpdaterFactory = meshmap.map.factories.extentUpdaterFactory,
 		SiteService = meshmap.state.SiteService,
 		DialogService = meshmap.ui.DialogService,
 		StartupDataHandler = meshmap.events.messageHandlers.StartupDataHandler,
@@ -23,7 +23,7 @@ meshmap.startup.bootstrappers.messageHandlingBootstrapper = (function() {
 		var eventBus = EventBus.instance,
 			logger = Logger.instance,
 			commsService = CommsService.instance,
-			extentUpdater = ExtentUpdater.instance,
+			extentUpdater = extentUpdaterFactory.create(),
 			siteService = SiteService.instance,
 			dialogService = DialogService.instance;
 

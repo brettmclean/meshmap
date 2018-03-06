@@ -148,11 +148,4 @@ describe("An Extent Updater", function() {
 		verifyExtentPushed(cs, extent2, 2);
 	});
 
-	it("can share singleton instance", function() {
-		var eu = createExtentUpdater();
-		eu.setAsSingletonInstance();
-
-		expect(ExtentUpdater.instance).toBe(eu);
-	});
-
 });

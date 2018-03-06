@@ -6,14 +6,16 @@ meshmap.startup.bootstrappers.siteBootstrapper = (function() {
 	var StateService = meshmap.state.StateService,
 		SiteService = meshmap.state.SiteService,
 		EventBus = meshmap.events.EventBus,
-		ExtentUpdater = meshmap.map.ExtentUpdater,
+		extentUpdaterFactory = meshmap.map.factories.extentUpdaterFactory,
 		CommsService = meshmap.utils.comms.CommsService;
 
 	var init = function() {
+		var extentUpdater = extentUpdaterFactory.create();
+
 		var siteInstance = new SiteService({
 			state: new StateService(),
 			eventBus: EventBus.instance,
-			extentUpdater: ExtentUpdater.instance,
+			extentUpdater: extentUpdater,
 			comms: CommsService.instance
 		});
 

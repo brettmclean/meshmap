@@ -17,6 +17,11 @@
 	"events/MessageHandlingService": [
 		"model/datamodel"
 	],
+	"map/factories/extentUpdaterFactory": [
+		"utils/comms/CommsService",
+		"map/ExtentUpdateStrategy",
+		"map/ExtentUpdater"
+	],
 	"map/EditMarkerContext": [
 		"lib/microevent"
 	],
@@ -85,9 +90,7 @@
 		"ui/DialogService"
 	],
 	"startup/bootstrappers/extentUpdatingBootstrapper": [
-		"utils/comms/CommsService",
-		"map/ExtentUpdateStrategy",
-		"map/ExtentUpdater"
+		"map/factories/extentUpdaterFactory"
 	],
 	"startup/bootstrappers/loggingBootstrapper": [
 		"utils/logging/loggerFactory",
@@ -98,6 +101,7 @@
 		"events/EventBus",
 		"utils/scriptInjectionService",
 		"map/MapService",
+		"map/factories/extentUpdaterFactory",
 		"map/mapFactory",
 		"map/mapApiProviderFactory",
 		"angular/ViewInjectionService",
@@ -111,7 +115,7 @@
 		"events/EventBus",
 		"utils/logging/Logger",
 		"utils/comms/CommsService",
-		"map/ExtentUpdater",
+		"map/factories/extentUpdaterFactory",
 		"state/SiteService",
 		"ui/DialogService",
 		"events/messageHandlers/StartupDataHandler",
@@ -136,7 +140,7 @@
 		"state/StateService",
 		"state/SiteService",
 		"events/EventBus",
-		"map/ExtentUpdater",
+		"map/factories/extentUpdaterFactory",
 		"utils/comms/CommsService"
 	],
 	"startup/bootstrappers/startupWorkflowBootstrapper": [
