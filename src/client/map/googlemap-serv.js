@@ -9,17 +9,17 @@
 
 				// imports
 				var dm = meshmap.models,
-					EventBus = meshmap.events.EventBus,
 					CommsService = meshmap.utils.comms.CommsService,
 					SiteService = meshmap.state.SiteService,
 					DialogButton = meshmap.ui.dialogs.DialogButton,
 					ViewDialog = meshmap.ui.dialogs.ViewDialog,
 					DialogService = meshmap.ui.DialogService,
 					scriptInjectionService = meshmap.utils.scriptInjectionService,
+					eventBusFactory = meshmap.events.factories.eventBusFactory,
 					MapBase = meshmap.map.MapBase,
 					GoogleMap = meshmap.map.google.GoogleMap;
 
-				var eventBus = EventBus.instance;
+				var eventBus = eventBusFactory.create();
 				var commsService = CommsService.instance;
 				var siteService = SiteService.instance;
 				var dialogService = DialogService.instance;

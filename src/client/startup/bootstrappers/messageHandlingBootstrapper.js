@@ -3,7 +3,7 @@ meshmap.namespace("meshmap.startup.bootstrappers");
 meshmap.startup.bootstrappers.messageHandlingBootstrapper = (function() {
 
 	// imports
-	var EventBus = meshmap.events.EventBus,
+	var eventBusFactory = meshmap.events.factories.eventBusFactory,
 		Logger = meshmap.utils.logging.Logger,
 		CommsService = meshmap.utils.comms.CommsService,
 		extentUpdaterFactory = meshmap.map.factories.extentUpdaterFactory,
@@ -20,7 +20,7 @@ meshmap.startup.bootstrappers.messageHandlingBootstrapper = (function() {
 		MessageHandlingService = meshmap.events.MessageHandlingService;
 
 	var init = function() {
-		var eventBus = EventBus.instance,
+		var eventBus = eventBusFactory.create(),
 			logger = Logger.instance,
 			commsService = CommsService.instance,
 			extentUpdater = extentUpdaterFactory.create(),

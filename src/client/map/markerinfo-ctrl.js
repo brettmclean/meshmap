@@ -4,13 +4,14 @@ meshmap.angular.controllers.controller("MarkerInfoCtrl",
 		function($scope) {
 
 			// imports
-			var eventBus = meshmap.events.EventBus.instance,
+			var eventBusFactory = meshmap.events.factories.eventBusFactory,
 				siteService = meshmap.state.SiteService.instance,
 				DialogButton = meshmap.ui.dialogs.DialogButton,
 				ConfirmDialog = meshmap.ui.dialogs.ConfirmDialog,
 				ViewDialog = meshmap.ui.dialogs.ViewDialog,
 				DialogService = meshmap.ui.DialogService;
 
+			var eventBus = eventBusFactory.create();
 			var dialogService = DialogService.instance;
 
 			var editMarkerScope = $scope.$new();

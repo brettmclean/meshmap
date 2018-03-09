@@ -2,9 +2,9 @@ meshmap.namespace("meshmap.ui");
 
 meshmap.ui.layoutService = (function() {
 	// imports
-	var EventBus = meshmap.events.EventBus;
+	var eventBusFactory = meshmap.events.factories.eventBusFactory;
 
-	var eventBus = EventBus.instance;
+	var eventBus = eventBusFactory.create();
 
 	var MAX_WIDTH_SMALL_LAYOUT = 1024; // px
 	var TOOLBAR_HEIGHT = 50; // px

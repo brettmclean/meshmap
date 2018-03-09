@@ -4,10 +4,8 @@ meshmap.startup.bootstrappers.loggingBootstrapper = (function() {
 
 	// imports
 	var loggerFactory = meshmap.utils.logging.loggerFactory,
-		EventBus = meshmap.events.EventBus,
+		eventBusFactory = meshmap.events.factories.eventBusFactory,
 		startupParametersService = meshmap.startup.startupParametersService;
-
-	var eventBus = EventBus.instance;
 
 	var loggerInstance = null;
 	var logLevelOverride = null;
@@ -30,6 +28,7 @@ meshmap.startup.bootstrappers.loggingBootstrapper = (function() {
 	};
 
 	var subscribeToEvents = function() {
+		var eventBus = eventBusFactory.create();
 		eventBus.subscribe("configDownloaded", onConfigDownloaded);
 	};
 

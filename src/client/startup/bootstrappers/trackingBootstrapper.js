@@ -3,21 +3,20 @@ meshmap.namespace("meshmap.startup.bootstrappers");
 meshmap.startup.bootstrappers.trackingBootstrapper = (function() {
 
 	// imports
-	var EventBus = meshmap.events.EventBus,
+	var eventBusFactory = meshmap.events.factories.eventBusFactory,
 		Logger = meshmap.utils.logging.Logger,
 		trackingProviderFactory = meshmap.tracking.trackingProviderFactory,
 		TrackingService = meshmap.tracking.TrackingService;
 
-	var eventBus = null;
 	var logger = null;
 
 	var init = function() {
-		eventBus = EventBus.instance;
 		logger = Logger.instance;
 		subscribeToEvents();
 	};
 
 	var subscribeToEvents = function() {
+		var eventBus = eventBusFactory.create();
 		eventBus.subscribe("configDownloaded", onConfigDownloaded);
 	};
 

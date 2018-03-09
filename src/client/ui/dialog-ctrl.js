@@ -4,7 +4,7 @@ meshmap.angular.controllers.controller("DialogCtrl",
 		function($scope) {
 
 			// imports
-			var eventBus = meshmap.events.EventBus.instance,
+			var eventBusFactory = meshmap.events.factories.eventBusFactory,
 				ViewInjectionService = meshmap.angular.ViewInjectionService;
 
 			var UI_TYPE_MESSAGE = "message";
@@ -33,6 +33,7 @@ meshmap.angular.controllers.controller("DialogCtrl",
 			};
 
 			var subscribeToEvents = function() {
+				var eventBus = eventBusFactory.create();
 				eventBus.subscribe("dialogRequested", onDialogRequested);
 				eventBus.subscribe("dialogDismissalRequested", onDialogDismissalRequested);
 				eventBus.subscribe("currentDialogDismissalRequested", onCurrentDialogDismissalRequested);

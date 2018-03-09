@@ -3,11 +3,11 @@ meshmap.namespace("meshmap.startup.bootstrappers");
 meshmap.startup.bootstrappers.dialogBootstrapper = (function() {
 
 	// imports
-	var EventBus = meshmap.events.EventBus,
+	var eventBusFactory = meshmap.events.factories.eventBusFactory,
 		DialogService = meshmap.ui.DialogService;
 
 	var init = function() {
-		var eventBus = EventBus.instance;
+		var eventBus = eventBusFactory.create();
 
 		var dialogService = new DialogService({
 			eventBus: eventBus

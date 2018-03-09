@@ -3,7 +3,7 @@ meshmap.namespace("meshmap.startup.bootstrappers");
 meshmap.startup.bootstrappers.startupWorkflowBootstrapper = (function() {
 
 	// imports
-	var EventBus = meshmap.events.EventBus,
+	var eventBusFactory = meshmap.events.factories.eventBusFactory,
 		Logger = meshmap.utils.logging.Logger,
 		StorageService = meshmap.utils.StorageService,
 		CommsService = meshmap.utils.comms.CommsService,
@@ -12,7 +12,7 @@ meshmap.startup.bootstrappers.startupWorkflowBootstrapper = (function() {
 		StartupWorkflowService = meshmap.startup.StartupWorkflowService;
 
 	var init = function() {
-		var eventBus = EventBus.instance,
+		var eventBus = eventBusFactory.create(),
 			logger = Logger.instance,
 			commsService = CommsService.instance,
 			pageStateService = PageStateService.instance,

@@ -4,11 +4,11 @@ meshmap.startup.bootstrappers.notifyBootstrapper = (function() {
 
 	// imports
 	var SiteService = meshmap.state.SiteService,
-		EventBus = meshmap.events.EventBus,
+		eventBusFactory = meshmap.events.factories.eventBusFactory,
 		NotifyService = meshmap.ui.NotifyService;
 
 	var init = function() {
-		var eventBus = EventBus.instance;
+		var eventBus = eventBusFactory.create();
 		var siteService = SiteService.instance;
 
 		// jshint unused: false

@@ -4,13 +4,14 @@ meshmap.angular.controllers.controller("UsersCtrl",
 		function($scope) {
 
 			// imports
-			var eventBus = meshmap.events.EventBus.instance;
+			var eventBusFactory = meshmap.events.factories.eventBusFactory;
 
 			$scope.users = [];
 			$scope.myUserId = null;
 			$scope.siteOwnerId = null;
 
 			var subscribeToEvents = function() {
+				var eventBus = eventBusFactory.create();
 				eventBus.subscribe("userAdded", onUserAdded);
 				eventBus.subscribe("userRemoved", onUserRemoved);
 				eventBus.subscribe("userUpdated", onUserUpdated);

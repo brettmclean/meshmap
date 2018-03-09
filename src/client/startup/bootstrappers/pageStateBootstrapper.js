@@ -4,10 +4,10 @@ meshmap.startup.bootstrappers.pageStateBootstrapper = (function() {
 
 	// imports
 	var PageStateService = meshmap.state.PageStateService,
-		EventBus = meshmap.events.EventBus;
+		eventBusFactory = meshmap.events.factories.eventBusFactory;
 
 	var init = function() {
-		var eventBus = EventBus.instance;
+		var eventBus = eventBusFactory.create();
 
 		var pageStateService = new PageStateService({
 			eventBus: eventBus

@@ -1,4 +1,7 @@
 {
+	"events/factories/eventBusFactory": [
+		"events/EventBus"
+	],
 	"events/messageHandlers/ConnectionHandler": [
 		"ui/dialogs/AlertDialog"
 	],
@@ -83,10 +86,10 @@
 		"utils/comms/commsProviderFactory",
 		"utils/comms/CommsService",
 		"utils/logging/Logger",
-		"events/EventBus"
+		"events/factories/eventBusFactory"
 	],
 	"startup/bootstrappers/dialogBootstrapper": [
-		"events/EventBus",
+		"events/factories/eventBusFactory",
 		"ui/DialogService"
 	],
 	"startup/bootstrappers/extentUpdatingBootstrapper": [
@@ -94,11 +97,11 @@
 	],
 	"startup/bootstrappers/loggingBootstrapper": [
 		"utils/logging/loggerFactory",
-		"events/EventBus",
+		"events/factories/eventBusFactory",
 		"startup/startupParametersService"
 	],
 	"startup/bootstrappers/mapBootstrapper": [
-		"events/EventBus",
+		"events/factories/eventBusFactory",
 		"utils/scriptInjectionService",
 		"map/MapService",
 		"map/factories/extentUpdaterFactory",
@@ -112,7 +115,7 @@
 		"utils/comms/CommsService"
 	],
 	"startup/bootstrappers/messageHandlingBootstrapper": [
-		"events/EventBus",
+		"events/factories/eventBusFactory",
 		"utils/logging/Logger",
 		"utils/comms/CommsService",
 		"map/factories/extentUpdaterFactory",
@@ -130,21 +133,22 @@
 	],
 	"startup/bootstrappers/notifyBootstrapper": [
 		"state/SiteService",
-		"events/EventBus",
+		"events/factories/eventBusFactory",
 		"ui/NotifyService"
 	],
 	"startup/bootstrappers/pageStateBootstrapper": [
+		"events/factories/eventBusFactory",
 		"state/PageStateService"
 	],
 	"startup/bootstrappers/siteBootstrapper": [
 		"state/StateService",
 		"state/SiteService",
-		"events/EventBus",
+		"events/factories/eventBusFactory",
 		"map/factories/extentUpdaterFactory",
 		"utils/comms/CommsService"
 	],
 	"startup/bootstrappers/startupWorkflowBootstrapper": [
-		"events/EventBus",
+		"events/factories/eventBusFactory",
 		"utils/logging/Logger",
 		"utils/StorageService",
 		"utils/comms/CommsService",
@@ -153,7 +157,7 @@
 		"startup/StartupWorkflowService"
 	],
 	"startup/bootstrappers/trackingBootstrapper": [
-		"events/EventBus",
+		"events/factories/eventBusFactory",
 		"utils/logging/Logger",
 		"tracking/trackingProviderFactory",
 		"tracking/TrackingService"
@@ -224,7 +228,7 @@
 		"map/EditMarkerContext"
 	],
 	"ui/layoutService": [
-		"events/EventBus"
+		"events/factories/eventBusFactory"
 	],
 	"utils/comms/CommsProviderBase": [
 		"errors/ValueError",
@@ -253,7 +257,7 @@
 		"utils/logging/ConsoleLogProvider"
 	],
 	"utils/configService": [
-		"events/EventBus",
+		"events/factories/eventBusFactory",
 		"utils/ajaxService"
 	]
 

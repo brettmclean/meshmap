@@ -6,15 +6,14 @@ meshmap.startup.bootstrappers.commsBootstrapper = (function() {
 	var commsProviderFactory = meshmap.utils.comms.commsProviderFactory,
 		CommsService = meshmap.utils.comms.CommsService,
 		Logger = meshmap.utils.logging.Logger,
-		EventBus = meshmap.events.EventBus;
+		eventBusFactory = meshmap.events.factories.eventBusFactory;
 
 	var service = null;
 
-	var eventBus = null;
+	var eventBus = eventBusFactory.create();
 
 	var init = function() {
 		var logger = Logger.instance;
-		eventBus = EventBus.instance;
 
 		service = createService(logger, eventBus);
 		service.setAsSingletonInstance();

@@ -2,10 +2,10 @@ meshmap.namespace("meshmap.utils");
 
 meshmap.utils.configService = (function() {
 	// imports
-	var EventBus = meshmap.events.EventBus,
+	var eventBusFactory = meshmap.events.factories.eventBusFactory,
 		ajaxService = meshmap.utils.ajaxService;
 
-	var eventBus = EventBus.instance;
+	var eventBus = eventBusFactory.create();
 
 	ajaxService.get(
 		"/config.json",

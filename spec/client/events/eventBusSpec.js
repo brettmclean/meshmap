@@ -142,14 +142,6 @@ describe("An Event Bus", function() {
 		eb.publish(eventName2);
 	});
 
-	it("supports shared single instance", function(done) {
-		var eventName = "myEvent";
-
-		EventBus.instance.subscribe(eventName, done);
-
-		EventBus.instance.publish(eventName);
-	});
-
 	it("should allow an arbitrary number of event arguments", function(done) {
 		var eb = new EventBus();
 

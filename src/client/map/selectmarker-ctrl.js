@@ -4,9 +4,11 @@ meshmap.angular.controllers.controller("SelectMarkerCtrl",
 		function($scope) {
 
 			// imports
-			var eventBus = meshmap.events.EventBus.instance,
+			var eventBusFactory = meshmap.events.factories.eventBusFactory,
 				browserSupportService = meshmap.utils.browserSupportService,
 				symbols = meshmap.map.symbols;
+
+			var eventBus = eventBusFactory.create();
 
 			var MAX_OPTIONS_WIDTH = 320;
 			var SELECT_MARKER_TYPES_WIDTH = 50;

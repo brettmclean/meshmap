@@ -3,7 +3,7 @@ meshmap.namespace("meshmap.startup.bootstrappers");
 meshmap.startup.bootstrappers.mapBootstrapper = (function() {
 
 	// imports
-	var EventBus = meshmap.events.EventBus,
+	var eventBusFactory = meshmap.events.factories.eventBusFactory,
 		extentUpdaterFactory = meshmap.map.factories.extentUpdaterFactory,
 		mapApiProviderFactory = meshmap.map.mapApiProviderFactory,
 		MarkerSelectionContext = meshmap.map.MarkerSelectionContext,
@@ -28,7 +28,7 @@ meshmap.startup.bootstrappers.mapBootstrapper = (function() {
 	};
 
 	var subscribeToEvents = function() {
-		var eventBus = EventBus.instance;
+		var eventBus = eventBusFactory.create();
 		eventBus.subscribe("configDownloaded", onConfigDownloaded);
 	};
 
@@ -42,11 +42,12 @@ meshmap.startup.bootstrappers.mapBootstrapper = (function() {
 
 	var initMapService = function(mapConfig, apiProvider) {
 		var map = createMap(mapConfig, apiProvider);
+		var eventBus = eventBusFactory.create();
 
 		var mapService = new MapService({
 			map: map,
 			commsService: CommsService.instance,
-			eventBus: EventBus.instance,
+			eventBus: eventBus,
 			scriptInjectionService: scriptInjectionService,
 			extentUpdater: extentUpdaterFactory.create(),
 			logger: Logger.instance,

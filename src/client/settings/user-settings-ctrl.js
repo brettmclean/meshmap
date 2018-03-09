@@ -5,10 +5,12 @@ meshmap.angular.controllers.controller("UserSettingsCtrl",
 		function($scope, $timeout) {
 
 			// imports
-			var eventBus = meshmap.events.EventBus.instance,
+			var eventBusFactory = meshmap.events.factories.eventBusFactory,
+				UserSettingsService = meshmap.settings.UserSettingsService,
 				siteService = meshmap.state.SiteService.instance,
-				commsService = meshmap.utils.comms.CommsService.instance,
-				UserSettingsService = meshmap.settings.UserSettingsService;
+				commsService = meshmap.utils.comms.CommsService.instance;
+
+			var eventBus = eventBusFactory.create();
 
 			var SAVED_CHECKMARK_LENGTH_MS = 1500;
 

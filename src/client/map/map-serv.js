@@ -5,11 +5,11 @@ meshmap.angular.services.factory("Map",
 		function($q, GoogleMap) {
 
 			// imports
-			var EventBus = meshmap.events.EventBus,
+			var eventBusFactory = meshmap.events.factories.eventBusFactory,
 				Logger = meshmap.utils.logging.Logger,
 				MapBase = meshmap.map.MapBase;
 
-			var eventBus = EventBus.instance;
+			var eventBus = eventBusFactory.create();
 			var logger = Logger.instance;
 
 			var MARKER_TYPES = MapBase.MARKER_TYPES;

@@ -4,13 +4,14 @@ meshmap.angular.controllers.controller("AboutMapCtrl",
 		function($scope) {
 
 			// imports
-			var eventBus = meshmap.events.EventBus.instance;
+			var eventBusFactory = meshmap.events.factories.eventBusFactory;
 
 			$scope.siteName = null;
 			$scope.siteDescription = null;
 			$scope.siteCreateDate = null;
 
 			var subscribeToEvents = function() {
+				var eventBus = eventBusFactory.create();
 				eventBus.subscribe("siteNameChanged", onSiteNameChanged);
 				eventBus.subscribe("siteDescriptionChanged", onSiteDescriptionChanged);
 				eventBus.subscribe("startupDataReceived", onStartupDataReceived);

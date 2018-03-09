@@ -63,9 +63,6 @@ meshmap.events.EventBus = (function() {
 		return unsubscribeFunction;
 	};
 
-	var singleton = new EventBus();
-	EventBus.instance = singleton;
-
 	return EventBus;
 }());
 

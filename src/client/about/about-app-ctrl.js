@@ -4,7 +4,7 @@ meshmap.angular.controllers.controller("AboutAppCtrl",
 		function($scope) {
 
 			// imports
-			var eventBus = meshmap.events.EventBus.instance;
+			var eventBusFactory = meshmap.events.factories.eventBusFactory;
 
 			$scope.appName = null;
 			$scope.description = null;
@@ -14,6 +14,7 @@ meshmap.angular.controllers.controller("AboutAppCtrl",
 			$scope.source = null;
 
 			var subscribeToEvents = function() {
+				var eventBus = eventBusFactory.create();
 				eventBus.subscribe("configDownloaded", onConfigDownloaded);
 			};
 

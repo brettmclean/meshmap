@@ -4,7 +4,9 @@ meshmap.angular.controllers.controller("AdvancedCtrl",
 		function($scope) {
 
 			// imports
-			var eventBus = meshmap.events.EventBus.instance;
+			var eventBusFactory = meshmap.events.factories.eventBusFactory;
+
+			var eventBus = eventBusFactory.create();
 
 			var allViews = [];
 			var siteOwnershipDetermined = false;

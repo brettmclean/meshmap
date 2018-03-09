@@ -29,12 +29,12 @@
 			function($scope, $timeout) {
 
 				// imports
-				var EventBus = meshmap.events.EventBus;
+				var eventBusFactory = meshmap.events.factories.eventBusFactory;
 
 				// should match CSS transition length on .task-button-notify
 				var NOTIFY_TRANSITION_LENGTH_MS = 500;
 
-				var eventBus = EventBus.instance;
+				var eventBus = eventBusFactory.create();
 
 				var mapTask = new Task("map", null, "glyphicon-globe", { smallLayoutOnly: true });
 				var userTask = new Task("users", "html/partials/users.html", "glyphicon-user");

@@ -6,8 +6,10 @@ meshmap.angular.controllers.controller("MapCtrl",
 		function($scope, $compile, Map) {
 
 			// imports
-			var eventBus = meshmap.events.EventBus.instance,
+			var eventBusFactory = meshmap.events.factories.eventBusFactory,
 				layoutService = meshmap.ui.layoutService;
+
+			var eventBus = eventBusFactory.create();
 
 			var layout = "";
 			var windowHeight = 0;

@@ -4,7 +4,7 @@ meshmap.angular.controllers.controller("FooterCtrl",
 		function($scope) {
 
 			// imports
-			var eventBus = meshmap.events.EventBus.instance;
+			var eventBusFactory = meshmap.events.factories.eventBusFactory;
 
 			$scope.appName = null;
 			$scope.version = "?";
@@ -13,6 +13,7 @@ meshmap.angular.controllers.controller("FooterCtrl",
 			$scope.source = null;
 
 			var subscribeToEvents = function() {
+				var eventBus = eventBusFactory.create();
 				eventBus.subscribe("configDownloaded", onConfigDownloaded);
 			};
 

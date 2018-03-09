@@ -4,7 +4,7 @@ meshmap.angular.controllers.controller("ChatCtrl",
 		function($scope) {
 
 			// imports
-			var eventBus = meshmap.events.EventBus.instance,
+			var eventBusFactory = meshmap.events.factories.eventBusFactory,
 				commsService = meshmap.utils.comms.CommsService.instance,
 				siteService = meshmap.state.SiteService.instance;
 
@@ -36,6 +36,7 @@ meshmap.angular.controllers.controller("ChatCtrl",
 			};
 
 			var subscribeToEvents = function() {
+				var eventBus = eventBusFactory.create();
 				eventBus.subscribe("currentUserIdSet", onCurrentUserIdSet);
 				eventBus.subscribe("siteOwnerIdSet", onSiteOwnerIdSet);
 
