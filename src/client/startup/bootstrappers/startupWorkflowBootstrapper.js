@@ -4,10 +4,10 @@ meshmap.startup.bootstrappers.startupWorkflowBootstrapper = (function() {
 
 	// imports
 	var eventBusFactory = meshmap.events.factories.eventBusFactory,
+		pageStateServiceFactory = meshmap.state.factories.pageStateServiceFactory,
 		Logger = meshmap.utils.logging.Logger,
 		StorageService = meshmap.utils.StorageService,
 		CommsService = meshmap.utils.comms.CommsService,
-		PageStateService = meshmap.state.PageStateService,
 		SecretGenerator = meshmap.utils.SecretGenerator,
 		StartupWorkflowService = meshmap.startup.StartupWorkflowService;
 
@@ -15,7 +15,7 @@ meshmap.startup.bootstrappers.startupWorkflowBootstrapper = (function() {
 		var eventBus = eventBusFactory.create(),
 			logger = Logger.instance,
 			commsService = CommsService.instance,
-			pageStateService = PageStateService.instance,
+			pageStateService = pageStateServiceFactory.create(),
 			storageService = new StorageService(),
 			secretGenerator = new SecretGenerator();
 

@@ -137,8 +137,7 @@
 		"ui/NotifyService"
 	],
 	"startup/bootstrappers/pageStateBootstrapper": [
-		"events/factories/eventBusFactory",
-		"state/PageStateService"
+		"state/factories/pageStateServiceFactory"
 	],
 	"startup/bootstrappers/siteBootstrapper": [
 		"state/StateService",
@@ -149,10 +148,10 @@
 	],
 	"startup/bootstrappers/startupWorkflowBootstrapper": [
 		"events/factories/eventBusFactory",
+		"state/factories/pageStateServiceFactory",
 		"utils/logging/Logger",
 		"utils/StorageService",
 		"utils/comms/CommsService",
-		"state/PageStateService",
 		"utils/SecretGenerator",
 		"startup/StartupWorkflowService"
 	],
@@ -181,6 +180,10 @@
 	],
 	"startup/StartupWorkflowService": [
 		"model/datamodel"
+	],
+	"state/factories/pageStateServiceFactory": [
+		"state/PageStateService",
+		"events/factories/eventBusFactory"
 	],
 	"state/SiteService": [
 		"state/StateService",

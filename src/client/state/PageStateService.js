@@ -6,8 +6,6 @@ meshmap.state.PageStateService = (function() {
 		this._eventBus = deps.eventBus;
 	};
 
-	PageStateService.instance = null;
-
 	PageStateService.prototype.init = function() {
 		this._listenForPageUnload();
 	};
@@ -23,10 +21,6 @@ meshmap.state.PageStateService = (function() {
 
 	PageStateService.prototype._onPageUnload = function() {
 		this._eventBus.publish("pageUnloading");
-	};
-
-	PageStateService.prototype.setAsSingletonInstance = function() {
-		PageStateService.instance = this;
 	};
 
 	PageStateService.prototype.getPath = function() {

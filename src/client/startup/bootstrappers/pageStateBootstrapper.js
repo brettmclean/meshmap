@@ -3,17 +3,11 @@ meshmap.namespace("meshmap.startup.bootstrappers");
 meshmap.startup.bootstrappers.pageStateBootstrapper = (function() {
 
 	// imports
-	var PageStateService = meshmap.state.PageStateService,
-		eventBusFactory = meshmap.events.factories.eventBusFactory;
+	var pageStateServiceFactory = meshmap.state.factories.pageStateServiceFactory;
 
 	var init = function() {
-		var eventBus = eventBusFactory.create();
-
-		var pageStateService = new PageStateService({
-			eventBus: eventBus
-		});
+		var pageStateService = pageStateServiceFactory.create();
 		pageStateService.init();
-		pageStateService.setAsSingletonInstance();
 	};
 
 	return {
